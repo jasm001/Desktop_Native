@@ -4,9 +4,10 @@ Fecha de ultima actualizacion: 2026-06-11.
 
 ## Objetivo inmediato
 
-Implementar el Bloque 1: shell nativo WinUI 3 con navegacion, tema,
-accesibilidad y layout adaptable usando datos fijos. El portal administrativo
-permanece reservado para el Bloque 11.
+Implementar el Bloque 2: dominio y catalogo sintetico con reglas puras,
+busqueda, filtros y decisiones tipadas. La shell WinUI del Bloque 1 queda como
+consumidor de esos casos de uso. El portal administrativo permanece reservado
+para el Bloque 11.
 
 ## Estado del repositorio
 
@@ -15,6 +16,9 @@ permanece reservado para el Bloque 11.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
 - Nullable, analyzers, warnings como errores y paquetes centralizados activos.
 - Pruebas unitarias, de contratos y de arquitectura iniciales activas.
+- Shell WinUI con cinco vistas, tema claro/oscuro, navegacion por teclado,
+  layout adaptable y datos sinteticos validada.
+- Ejecutable Desktop x64 autocontenido para desarrollo local.
 - Gitleaks y CI de GitHub configurados.
 - No existen acciones privilegiadas, secretos, datos corporativos ni
   integraciones productivas.
@@ -56,7 +60,8 @@ El primer recorrido vertical usa datos sinteticos:
 7. mostrar progreso y resultado;
 8. registrar evidencia local saneada.
 
-No instala software real durante este recorrido.
+No instala software real durante este recorrido. La shell actual tampoco crea
+solicitudes o tickets; esas transiciones se implementan en bloques posteriores.
 
 ## Pendientes que no bloquean el esqueleto
 

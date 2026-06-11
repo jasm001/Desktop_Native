@@ -1,0 +1,141 @@
+<Window
+    x:Class="ITSupportNative.Desktop.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="IT Support Native">
+    <Grid x:Name="RootGrid" Background="{ThemeResource AppPageBackgroundBrush}">
+        <NavigationView
+            x:Name="ShellNavigation"
+            AutomationProperties.Name="Navegación principal"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="False"
+            IsTitleBarAutoPaddingEnabled="True"
+            OpenPaneLength="244"
+            PaneDisplayMode="Auto"
+            DisplayModeChanged="OnNavigationDisplayModeChanged"
+            SelectionChanged="OnNavigationSelectionChanged">
+            <NavigationView.PaneHeader>
+                <StackPanel Margin="8,8,8,20" Orientation="Horizontal" Spacing="12">
+                    <Image
+                        Width="34"
+                        Height="34"
+                        AutomationProperties.Name="Logotipo de IT Support Native"
+                        Source="ms-appx:///Assets/logo.png"
+                        Stretch="Uniform" />
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock FontWeight="SemiBold" Text="IT Support" />
+                        <TextBlock
+                            FontSize="12"
+                            Foreground="{ThemeResource AppSecondaryTextBrush}"
+                            Text="Native" />
+                    </StackPanel>
+                </StackPanel>
+            </NavigationView.PaneHeader>
+            <NavigationView.PaneFooter>
+                <Border
+                    x:Name="DevelopmentFooter"
+                    Margin="8,12"
+                    Padding="12"
+                    Background="{ThemeResource AppSubtleBackgroundBrush}"
+                    CornerRadius="10">
+                    <StackPanel Spacing="4">
+                        <TextBlock FontWeight="SemiBold" Text="Modo de desarrollo" />
+                        <TextBlock
+                            FontSize="12"
+                            Foreground="{ThemeResource AppSecondaryTextBrush}"
+                            Text="Datos sintéticos y acciones deshabilitadas"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </NavigationView.PaneFooter>
+            <NavigationView.MenuItems>
+                <NavigationViewItem
+                    x:Name="HomeNavigationItem"
+                    AutomationProperties.Name="Ir a Inicio"
+                    Content="Inicio"
+                    Icon="Home"
+                    Tag="home" />
+                <NavigationViewItem
+                    AutomationProperties.Name="Ir a Catálogo"
+                    Content="Catálogo"
+                    Icon="AllApps"
+                    Tag="catalog" />
+                <NavigationViewItem
+                    AutomationProperties.Name="Ir a Asistente"
+                    Content="Asistente"
+                    Icon="Message"
+                    Tag="assistant" />
+                <NavigationViewItem
+                    AutomationProperties.Name="Ir a Solicitudes"
+                    Content="Solicitudes"
+                    Icon="Document"
+                    Tag="requests" />
+                <NavigationViewItem
+                    AutomationProperties.Name="Ir a Salud del equipo"
+                    Content="Salud del equipo"
+                    Icon="Repair"
+                    Tag="device-health" />
+            </NavigationView.MenuItems>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid
+                    x:Name="CommandHeader"
+                    Padding="24,16"
+                    Background="{ThemeResource AppCardBackgroundBrush}"
+                    BorderBrush="{ThemeResource AppCardStrokeBrush}"
+                    BorderThickness="0,0,0,1"
+                    ColumnSpacing="16"
+                    SizeChanged="OnCommandHeaderSizeChanged">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition x:Name="SearchColumn" Width="320" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock FontSize="20" FontWeight="SemiBold" Text="Centro de soporte" />
+                        <TextBlock
+                            FontSize="12"
+                            Foreground="{ThemeResource AppSecondaryTextBrush}"
+                            Text="Ayuda local para Windows 11" />
+                    </StackPanel>
+                    <AutoSuggestBox
+                        x:Name="GlobalSearch"
+                        Grid.Column="1"
+                        AutomationProperties.Name="Buscar en IT Support Native"
+                        IsSuggestionListOpen="False"
+                        PlaceholderText="Buscar ayuda o software" />
+                    <Border
+                        x:Name="EnvironmentStatus"
+                        Grid.Column="2"
+                        Style="{StaticResource PillBorderStyle}"
+                        VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="7">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                Fill="{StaticResource AppSuccessBrush}" />
+                            <TextBlock VerticalAlignment="Center" Text="Entorno local" />
+                        </StackPanel>
+                    </Border>
+                    <ToggleSwitch
+                        x:Name="ThemeToggle"
+                        Grid.Column="3"
+                        AutomationProperties.Name="Usar tema oscuro"
+                        Header="Tema oscuro"
+                        OffContent="Claro"
+                        OnContent="Oscuro"
+                        Toggled="OnThemeToggled" />
+                </Grid>
+                <Frame
+                    x:Name="ContentFrame"
+                    Grid.Row="1"
+                    AutomationProperties.Name="Contenido principal"
+                    IsNavigationStackEnabled="False" />
+            </Grid>
+        </NavigationView>
+    </Grid>
+</Window>

@@ -2,15 +2,31 @@
 
 ## Estado
 
-- Fase actual: inicio de la experiencia nativa Windows 11.
-- Bloque activo: ninguno; Bloque 1 preparado como siguiente unidad.
-- Ultimo resultado: fundacion compilable y validada en el repositorio
-  independiente.
-- Siguiente resultado: shell WinUI 3 con navegacion y accesibilidad base.
+- Fase actual: dominio local para la experiencia nativa Windows 11.
+- Bloque activo: ninguno; Bloque 2 preparado como siguiente unidad.
+- Ultimo resultado: shell WinUI 3 compilable con cinco vistas, tema,
+  accesibilidad base y layout adaptable.
+- Siguiente resultado: dominio y catalogo sintetico con reglas puras.
 
 ## Ultima validacion
 
 - Fecha: 2026-06-11.
+- `dotnet restore ITSupportNative.slnx --force-evaluate`: correcto.
+- `dotnet format ITSupportNative.slnx --verify-no-changes --no-restore`:
+  correcto.
+- `dotnet build ITSupportNative.slnx --configuration Release --no-restore`:
+  correcto, 0 warnings y 0 errores.
+- `dotnet test ITSupportNative.slnx --configuration Release --no-build`:
+  correcto, 6 pruebas.
+- Smoke test: ejecutable autocontenido abre una ventana `IT Support Native`.
+- UI Automation: cinco rutas, foco por teclado, Enter y tema claro/oscuro
+  correctos.
+- Revision visual: 1280x820 claro/oscuro y 760x700 compacto correctos.
+- `corepack pnpm@11.5.3 run check`: correcto.
+- `gitleaks dir . --redact`: correcto, sin hallazgos.
+
+Validacion anterior de fundacion:
+
 - Remoto `Desktop_Native.git` verificado sin refs antes de inicializar.
 - `dotnet restore ITSupportNative.slnx --force-evaluate`: correcto.
 - `dotnet format ITSupportNative.slnx --verify-no-changes --no-restore`:
@@ -62,7 +78,7 @@ Solo un bloque principal puede estar `in_progress`.
 | Bloque | Estado | Evidencia |
 | --- | --- | --- |
 | 0. Fundacion del repositorio | completed | Solucion/workspace, lockfiles, CI y gates locales validados; commit raiz en `main`. |
-| 1. Shell nativo WinUI | pending | |
+| 1. Shell nativo WinUI | completed | Cinco vistas, tema, teclado, accesibilidad base, layout amplio/compacto y smoke test validados. |
 | 2. Dominio y catalogo sintetico | pending | |
 | 3. Conversacion determinista | pending | |
 | 4. Agente simulado e IPC | pending | |

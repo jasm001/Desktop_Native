@@ -1,0 +1,41 @@
+using ITSupportNative.Desktop.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Xaml;
+
+namespace ITSupportNative.Desktop;
+
+public partial class App : Application
+{
+    private Window? _window;
+
+    public App()
+    {
+        InitializeComponent();
+
+        Services = new ServiceCollection()
+            .AddSingleton<ShellViewModel>()
+            .AddSingleton<HomeViewModel>()
+            .AddSingleton<CatalogViewModel>()
+            .AddSingleton<AssistantViewModel>()
+            .AddSingleton<RequestsViewModel>()
+            .AddSingleton<DeviceHealthViewModel>()
+            .AddSingleton<MainWindow>()
+            .BuildServiceProvider();
+    }
+
+    public IServiceProvider Services { get; }
+
+    public static App CurrentApp => (App)Current;
+
+    public static T GetService<T>()
+        where T : notnull
+    {
+        return CurrentApp.Services.GetRequiredService<T>();
+    }
+
+    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    {
+        _window = GetService<MainWindow>();
+        _window.Activate();
+    }
+}

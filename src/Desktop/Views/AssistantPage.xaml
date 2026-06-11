@@ -1,0 +1,94 @@
+<Page
+    x:Class="ITSupportNative.Desktop.Views.AssistantPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:ITSupportNative.Desktop.Models">
+    <Grid MaxWidth="1120" Padding="32,28,32,48" HorizontalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Spacing="6">
+            <TextBlock Style="{StaticResource PageTitleTextStyle}" Text="Asistente" />
+            <TextBlock
+                Style="{StaticResource SecondaryTextStyle}"
+                Text="Orientación determinista de demostración. Una consulta nunca crea una solicitud." />
+        </StackPanel>
+        <Border
+            Grid.Row="1"
+            Margin="0,24"
+            Style="{StaticResource CardBorderStyle}">
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                MaxWidth="620"
+                Spacing="18">
+                <Border
+                    Width="64"
+                    Height="64"
+                    Background="{ThemeResource AppSubtleBackgroundBrush}"
+                    CornerRadius="32">
+                    <FontIcon
+                        FontSize="30"
+                        Foreground="{StaticResource AppBrandBrush}"
+                        Glyph="&#xE8BD;" />
+                </Border>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="22"
+                    FontWeight="SemiBold"
+                    Text="¿Cómo puedo orientarte?"
+                    TextAlignment="Center" />
+                <TextBlock
+                    Style="{StaticResource SecondaryTextStyle}"
+                    Text="Elige una consulta de ejemplo. En este bloque no hay IA, tickets ni acciones sobre el equipo."
+                    TextAlignment="Center" />
+                <ItemsControl ItemsSource="{x:Bind ViewModel.Suggestions}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:AssistantSuggestion">
+                            <Button
+                                Margin="0,5"
+                                HorizontalAlignment="Stretch"
+                                AutomationProperties.Name="{x:Bind Title}">
+                                <Grid MinWidth="420" ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <FontIcon
+                                        Foreground="{StaticResource AppBrandBrush}"
+                                        Glyph="{x:Bind Glyph}" />
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock FontWeight="SemiBold" Text="{x:Bind Title}" />
+                                        <TextBlock
+                                            FontSize="12"
+                                            Style="{StaticResource SecondaryTextStyle}"
+                                            Text="{x:Bind Prompt}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+        <Grid Grid.Row="2" ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+                AutomationProperties.Name="Escribir una consulta"
+                IsReadOnly="True"
+                PlaceholderText="La conversación se habilitará en el Bloque 3" />
+            <Button
+                Grid.Column="1"
+                AutomationProperties.Name="Enviar consulta deshabilitado"
+                IsEnabled="False">
+                <FontIcon Glyph="&#xE724;" />
+            </Button>
+        </Grid>
+    </Grid>
+</Page>

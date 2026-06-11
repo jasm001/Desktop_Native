@@ -2,13 +2,15 @@
 
 IT Support Native is a Windows 11 support product built around an unprivileged
 WinUI 3 client, a restricted device agent, and a shared control plane. The
-repository currently contains only the Block 0 foundation; no privileged action,
-production integration, or administrative portal behavior is implemented.
+repository currently contains the Block 0 foundation and the Block 1 native
+shell. No privileged action, production integration, or administrative portal
+behavior is implemented.
 
 ## Current Status
 
 - Block 0: repository foundation completed.
-- Next block: native WinUI shell.
+- Block 1: native WinUI shell completed.
+- Next block: synthetic catalog domain and rules.
 - Data policy: synthetic data and deterministic fakes only.
 - Remote: `https://github.com/jasm001/Desktop_Native.git`.
 
@@ -23,7 +25,7 @@ in [`WORKFLOW.md`](WORKFLOW.md).
 - Node.js 24 LTS.
 - Corepack.
 - Gitleaks 8.x for local secret scanning.
-- Visual Studio 2022 with Windows application development tooling for Block 1.
+- Visual Studio 2022 is recommended for interactive WinUI development.
 
 The repository ignores local portable installations under `.dotnet/` and
 `.tools/`. They are development conveniences, not source dependencies.
@@ -32,7 +34,7 @@ The repository ignores local portable installations under `.dotnet/` and
 
 ```text
 src/
-  Desktop/          Windows desktop boundary; WinUI starts in Block 1
+  Desktop/          WinUI 3 shell with five local synthetic views
   DeviceAgent/      Restricted Windows worker with no privileged actions yet
   Contracts/        Versioned shared contracts
   BuildingBlocks/   Dependency-light shared primitives
@@ -71,6 +73,15 @@ corepack pnpm@11.5.3 run check
 
 GitHub Actions repeats build, test, format, workspace, and secret-scan gates on
 `main` and pull requests.
+
+Run the native shell after a Release build:
+
+```powershell
+.\src\Desktop\bin\Release\net10.0-windows10.0.26100.0\win-x64\ITSupportNative.Desktop.exe
+```
+
+The development executable is self-contained for .NET and Windows App SDK. It
+runs as the current user and does not perform privileged actions.
 
 ## Security Baseline
 

@@ -22,4 +22,7 @@
   <Folder Name="/tests/Unit/">
     <Project Path="tests/Unit/ITSupportNative.UnitTests.csproj" />
   </Folder>
+  <Folder Name="/tests/WindowsUi/">
+    <Project Path="tests/WindowsUi/ITSupportNative.WindowsUi.Tests.csproj" />
+  </Folder>
 </Solution>
