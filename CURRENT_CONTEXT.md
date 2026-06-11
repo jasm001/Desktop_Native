@@ -13,13 +13,22 @@ para el Bloque 11.
 
 - Repositorio independiente inicializado en `main`.
 - Remoto: `https://github.com/jasm001/Desktop_Native.git`.
+- Bloque 0 publicado en `e42fe2c`.
+- Bloque 1 publicado en `f18e8cf`; ajustes de toolchain y lockfiles publicados
+  en `5f6dae7` y `531faf6`.
+- El handoff actual corrige en el working tree los lockfiles Desktop/WindowsUi
+  para conservar solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
 - Nullable, analyzers, warnings como errores y paquetes centralizados activos.
 - Pruebas unitarias, de contratos y de arquitectura iniciales activas.
 - Shell WinUI con cinco vistas, tema claro/oscuro, navegacion por teclado,
   layout adaptable y datos sinteticos validada.
 - Ejecutable Desktop x64 autocontenido para desarrollo local.
+- SDK global `10.0.301` validado desde `C:\Program Files\dotnet`.
+- La CLI compila y ejecuta la shell. La depuracion en IDE requiere Visual Studio
+  2026 version 18.0 o posterior; Visual Studio 2022 no admite `net10.0`.
 - Gitleaks y CI de GitHub configurados.
+- `scripts/Validate.ps1` pasa completo despues de la correccion x64.
 - No existen acciones privilegiadas, secretos, datos corporativos ni
   integraciones productivas.
 

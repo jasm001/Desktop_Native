@@ -1,63 +1,70 @@
 # Auditoria de consistencia documental
 
-Fecha: 2026-06-10.
+Fecha: 2026-06-11.
 
 ## Cobertura
 
-- 25 Markdown fuera de `executive` revisados.
-- 25 Markdown conservados dentro de la estructura clasificada.
-- 6 documentos nuevos de arranque, coordinacion y auditoria.
-- Ningun archivo de `executive` fue modificado o copiado como dependencia.
+Se contrastaron los documentos operativos, el plan modular, las decisiones
+normativas, los estandares de entrega, el modulo de catalogo, la documentacion
+del shell WinUI, el codigo actual, los lockfiles y los commits publicados.
 
-## Inconsistencias resueltas
+## Precedencia
 
-### Orden de desarrollo
+La precedencia documental esta definida en `README.md`. `MASTER_PROMPT.md` es
+solo un mecanismo de handoff y no puede modificar alcance, stack, arquitectura,
+seguridad o decisiones cerradas.
 
-El delivery anterior proponia portal administrativo antes del shell WinUI. La
-secuencia vigente inicia con aplicacion nativa, catalogo, agente y API; el portal
-queda como ultimo bloque funcional.
+Ante una contradiccion material:
 
-### Bot de Teams
+1. no elegir silenciosamente;
+2. conservar evidencia;
+3. registrar alternativas e impacto en `WORKFLOW.md`;
+4. detener solo la parte afectada hasta obtener decision.
 
-No se construye otro prototipo independiente. Primero se valida cliente/agente y
-API compartida. Despues se conecta el bot existente.
+## Estado verificado
 
-### Consultas y acciones
+- Bloque 0 completado y publicado en `e42fe2c`.
+- Bloque 1 completado y publicado en `f18e8cf`.
+- Toolchain .NET 10 publicado en `5f6dae7`.
+- El commit `531faf6` agrego RIDs no declarados a dos lockfiles. El handoff
+  actual los regenero para `win-x64` y `scripts/Validate.ps1` vuelve a pasar.
+- Bloque 2 es la siguiente unidad; no existe otro bloque principal activo.
+- La shell WinUI contiene cinco vistas y solo datos sinteticos.
+- No existen instalaciones, tickets, solicitudes, diagnosticos reales, IPC o
+  integraciones productivas.
+- El portal administrativo permanece reservado para el Bloque 11.
+- La CLI con SDK global .NET `10.0.301` restaura, compila, prueba y ejecuta el
+  cliente.
+- El gate completo valida restore bloqueado, formato, build Release sin
+  warnings, 6 pruebas, workspace pnpm y Gitleaks.
+- Visual Studio 2022 no admite `net10.0`; el IDE compatible es Visual Studio
+  2026 version 18.0 o posterior.
 
-Una consulta informativa no crea solicitud, ticket ni instalacion. Toda accion
-pasa por propuesta y confirmacion explicita.
+## Consistencia del siguiente bloque
 
-### Integraciones pendientes
+El Bloque 2 debe implementar dominio y casos de uso puros para catalogo
+sintetico:
 
-La falta de OpenText, UEMS, Entra, Azure, IA o PKI no bloquea el repositorio ni
-los recorridos locales. Se usan interfaces, fakes y datos sinteticos hasta
-cumplir el gate correspondiente.
+- producto, version, licencia y estado;
+- aprobado, comercial, no listado, EOL y prohibido;
+- alternativas;
+- busqueda y filtros;
+- decisiones `informar`, `proponer`, `escalar` y `rechazar`.
 
-### Contexto ejecutivo
-
-Los mapas técnicos ya no dependen de archivos de `executive`. Esa carpeta
-permanece separada para comunicacion con liderazgo.
+El dominio no depende de WinUI, Prisma, IA, backend ni integraciones externas.
+El Excel corporativo no se importa todavia y nunca se interpreta directamente
+como allowlist ejecutable.
 
 ## Diferencias intencionales
 
-- Los originales se conservaron como blueprint y trazabilidad.
-- `development` es la fuente de trabajo para la implementacion.
-- `reference` puede contener respuestas antiguas o lenguaje operativo que no
-  tiene precedencia sobre `core`, `standards` o `modules`.
-- El portal sigue siendo parte del producto y del MVP, aunque se implemente al
-  final del plan inicial.
+- El mockup React/Vite es referencia visual, no base de producto.
+- `reference/` conserva material historico y tiene menor precedencia.
+- El portal pertenece al producto, pero se implementa al final del plan.
+- Las integraciones faltantes se representan con contratos y fakes solo cuando
+  el bloque activo los necesita.
 
-## Incertidumbres externas, no contradicciones
+## Incertidumbres externas
 
-- sede y endpoints del piloto;
-- API y modelo operativo de OpenText;
-- App Registration y detalles de identidad;
-- hosting y presupuesto;
-- proceso final UEMS;
-- firma/PKI y Sophos;
-- proveedor de IA;
-- retencion de datos.
-
-Estas incertidumbres deben resolverse en
-`project-management/INFORMATION_REQUESTS.md`. No autorizan al desarrollo a
-inventar APIs, permisos o credenciales.
+Sede piloto, OpenText, UEMS, Entra, Azure, proveedor de IA, PKI, Sophos y
+retencion corporativa siguen pendientes. No bloquean el Bloque 2 y no autorizan
+inventar credenciales, permisos, endpoints o reglas corporativas.

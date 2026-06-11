@@ -12,6 +12,8 @@
 
 - Fecha: 2026-06-11.
 - `dotnet restore ITSupportNative.slnx --force-evaluate`: correcto.
+- `dotnet restore ITSupportNative.slnx --locked-mode` con SDK global
+  `10.0.301`: correcto.
 - `dotnet format ITSupportNative.slnx --verify-no-changes --no-restore`:
   correcto.
 - `dotnet build ITSupportNative.slnx --configuration Release --no-restore`:
@@ -19,11 +21,14 @@
 - `dotnet test ITSupportNative.slnx --configuration Release --no-build`:
   correcto, 6 pruebas.
 - Smoke test: ejecutable autocontenido abre una ventana `IT Support Native`.
+- Ejecucion desde PowerShell con el SDK global: correcta.
 - UI Automation: cinco rutas, foco por teclado, Enter y tema claro/oscuro
   correctos.
 - Revision visual: 1280x820 claro/oscuro y 760x700 compacto correctos.
 - `corepack pnpm@11.5.3 run check`: correcto.
 - `gitleaks dir . --redact`: correcto, sin hallazgos.
+- `scripts/Validate.ps1`: correcto despues de regenerar los lockfiles
+  Desktop/WindowsUi solo para `win-x64`.
 
 Validacion anterior de fundacion:
 
@@ -77,8 +82,8 @@ Solo un bloque principal puede estar `in_progress`.
 
 | Bloque | Estado | Evidencia |
 | --- | --- | --- |
-| 0. Fundacion del repositorio | completed | Solucion/workspace, lockfiles, CI y gates locales validados; commit raiz en `main`. |
-| 1. Shell nativo WinUI | completed | Cinco vistas, tema, teclado, accesibilidad base, layout amplio/compacto y smoke test validados. |
+| 0. Fundacion del repositorio | completed | Solucion/workspace, lockfiles, CI y gates locales validados; `e42fe2c`. |
+| 1. Shell nativo WinUI | completed | Cinco vistas, tema, teclado, accesibilidad base, layout amplio/compacto y smoke test validados; `f18e8cf`, toolchain `5f6dae7`; correccion x64 de lockfiles validada en el handoff actual. |
 | 2. Dominio y catalogo sintetico | pending | |
 | 3. Conversacion determinista | pending | |
 | 4. Agente simulado e IPC | pending | |

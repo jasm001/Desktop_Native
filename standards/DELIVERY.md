@@ -62,6 +62,7 @@ es `main`.
 - Escaneo de secretos, dependencias, SBOM y firma.
 - Nullable Reference Types, analyzers y reglas de arquitectura obligatorios.
 - Revisiones de codigo y ownership para seguridad, agente y catalogo.
+- CodeQL/Semgrep, Gitleaks, Trivy y ZAP segun `CODING_STANDARDS.md`.
 
 ## Toolchain de desarrollo Windows
 
@@ -74,7 +75,6 @@ es `main`.
   no debe usarse para cargar o depurar los proyectos .NET 10 de esta solucion.
 - La configuracion Desktop usa `x64`; el proyecto es WinUI sin empaquetar y no
   requiere marcar `Implementar` en el Administrador de configuracion.
-- CodeQL/Semgrep, Gitleaks, Trivy y ZAP segun `CODING_STANDARDS.md`.
 
 ## Pipeline
 

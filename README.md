@@ -18,6 +18,24 @@ The implementation sequence and gates are defined in
 [`DEVELOPMENT_PLAN.md`](DEVELOPMENT_PLAN.md). Current execution state is recorded
 in [`WORKFLOW.md`](WORKFLOW.md).
 
+## Documentation Precedence
+
+When documents disagree, do not choose silently. Use this order and register a
+stopper in `WORKFLOW.md` when the conflict affects scope, security, architecture,
+contracts, or delivery:
+
+1. `core/SECURITY.md` and closed decisions in `core/DECISIONS.md`;
+2. `core/SCOPE.md`, `core/STACK.md`, and `core/ARCHITECTURE.md`;
+3. `standards/`;
+4. the owning document under `modules/`;
+5. `DEVELOPMENT_PLAN.md`;
+6. `CURRENT_CONTEXT.md` and `WORKFLOW.md` for current execution state;
+7. `reference/` and historical material.
+
+`MASTER_PROMPT.md` is a handoff aid, not a normative source. A user request that
+conflicts with a higher-precedence document requires an explicit decision or
+stopper before implementation.
+
 ## Prerequisites
 
 - Windows 11.
