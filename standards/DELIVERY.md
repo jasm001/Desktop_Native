@@ -62,6 +62,18 @@ es `main`.
 - Escaneo de secretos, dependencias, SBOM y firma.
 - Nullable Reference Types, analyzers y reglas de arquitectura obligatorios.
 - Revisiones de codigo y ownership para seguridad, agente y catalogo.
+
+## Toolchain de desarrollo Windows
+
+- El repositorio fija .NET SDK `10.0.301` mediante `global.json`.
+- El build por CLI usa el SDK instalado en `C:\Program Files\dotnet` o la copia
+  portable ignorada bajo `.dotnet`.
+- El desarrollo y debugging WinUI de `net10.0` requieren Visual Studio 2026
+  version 18.0 o posterior.
+- Visual Studio 2022 version 17.x puede permanecer instalado en paralelo, pero
+  no debe usarse para cargar o depurar los proyectos .NET 10 de esta solucion.
+- La configuracion Desktop usa `x64`; el proyecto es WinUI sin empaquetar y no
+  requiere marcar `Implementar` en el Administrador de configuracion.
 - CodeQL/Semgrep, Gitleaks, Trivy y ZAP segun `CODING_STANDARDS.md`.
 
 ## Pipeline

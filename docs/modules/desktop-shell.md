@@ -38,6 +38,10 @@ demostracion.
 El ejecutable de desarrollo es x64, autocontenido para .NET y Windows App SDK, y
 se ejecuta con `asInvoker`.
 
+La edicion y depuracion interactiva requieren Visual Studio 2026 version 18.0 o
+posterior. Visual Studio 2022 no admite el target `net10.0`; la presencia del SDK
+.NET 10 global no cambia esa limitacion del IDE.
+
 ## Accesibilidad
 
 - destinos y controles principales tienen nombres de automatizacion;

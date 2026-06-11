@@ -25,7 +25,12 @@ in [`WORKFLOW.md`](WORKFLOW.md).
 - Node.js 24 LTS.
 - Corepack.
 - Gitleaks 8.x for local secret scanning.
-- Visual Studio 2022 is recommended for interactive WinUI development.
+- Visual Studio Community 2026 version 18.0 or later for interactive WinUI
+  development.
+
+Visual Studio 2022 version 17.x cannot load projects that target `net10.0`,
+even when the .NET 10 SDK is installed globally. Visual Studio 2026 can be
+installed side-by-side with Visual Studio 2022.
 
 The repository ignores local portable installations under `.dotnet/` and
 `.tools/`. They are development conveniences, not source dependencies.
@@ -82,6 +87,18 @@ Run the native shell after a Release build:
 
 The development executable is self-contained for .NET and Windows App SDK. It
 runs as the current user and does not perform privileged actions.
+
+For a direct Debug build and run from PowerShell:
+
+```powershell
+dotnet restore ITSupportNative.slnx --locked-mode
+dotnet run --project .\src\Desktop\ITSupportNative.Desktop.csproj `
+  --configuration Debug --no-restore
+```
+
+If Visual Studio reports that `Microsoft.NET.Sdk` cannot be found, verify the
+IDE version first. For this repository, `dotnet --info` must resolve SDK
+`10.0.301`, and the IDE must be Visual Studio 2026 version 18.0 or later.
 
 ## Security Baseline
 
