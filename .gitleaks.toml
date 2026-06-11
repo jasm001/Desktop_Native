@@ -1,0 +1,15 @@
+title = "IT Support Native secret scanning"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Ignore local SDKs, tools, caches, and generated outputs."
+paths = [
+  '''(^|/)\.dotnet/''',
+  '''(^|/)\.dotnet-home/''',
+  '''(^|/)\.git/''',
+  '''(^|/)\.packages/''',
+  '''(^|/)\.tools/''',
+  '''(^|/)(bin|node_modules|obj)/''',
+]

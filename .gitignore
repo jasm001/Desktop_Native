@@ -1,0 +1,90 @@
+# Visual Studio and .NET
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+**/bin/
+**/obj/
+**/TestResults/
+artifacts/
+.artifacts/
+coverage/
+coverage.*
+*.trx
+*.nupkg
+*.snupkg
+
+# Local SDKs, tools, and caches
+.dotnet/
+.dotnet-home/
+.packages/
+.tools/
+.nuget/
+
+# WinUI, Windows App SDK, MSIX, and signing
+AppPackages/
+BundleArtifacts/
+Generated Files/
+Package.StoreAssociation.xml
+*.appx
+*.appxbundle
+*.appxupload
+*.msix
+*.msixbundle
+*.msixupload
+*.cer
+*.pfx
+*.pvk
+*.snk
+
+# Node.js, pnpm, Next.js, and frontend tests
+node_modules/
+.pnpm-store/
+.next/
+out/
+dist/
+.turbo/
+.vercel/
+playwright-report/
+test-results/
+blob-report/
+*.tsbuildinfo
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Prisma and local databases
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+prisma/dev.db*
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+secrets.json
+*.secrets.json
+*.key
+*.pem
+*.p12
+
+# OS and editors
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+~$*

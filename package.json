@@ -1,0 +1,16 @@
+{
+  "name": "it-support-native",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.5.3",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "format:check": "node scripts/check-text-format.mjs",
+    "lint": "corepack pnpm@11.5.3 --recursive lint",
+    "test": "corepack pnpm@11.5.3 --recursive test",
+    "build": "corepack pnpm@11.5.3 --recursive build",
+    "check": "node scripts/check-text-format.mjs && corepack pnpm@11.5.3 --recursive lint && corepack pnpm@11.5.3 --recursive test && corepack pnpm@11.5.3 --recursive build"
+  }
+}

@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="src/BuildingBlocks/ITSupportNative.BuildingBlocks.csproj" />
+  </Folder>
+  <Folder Name="/src/Contracts/">
+    <Project Path="src/Contracts/ITSupportNative.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/src/Desktop/">
+    <Project Path="src/Desktop/ITSupportNative.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/src/DeviceAgent/">
+    <Project Path="src/DeviceAgent/ITSupportNative.DeviceAgent.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/Architecture/">
+    <Project Path="tests/Architecture/ITSupportNative.ArchitectureTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Contract/">
+    <Project Path="tests/Contract/ITSupportNative.ContractTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Unit/">
+    <Project Path="tests/Unit/ITSupportNative.UnitTests.csproj" />
+  </Folder>
+</Solution>
