@@ -96,9 +96,9 @@
             <InfoBar
                 IsClosable="False"
                 IsOpen="True"
-                Message="Los diagnósticos reales de solo lectura se implementarán en el Bloque 5."
+                Message="El DeviceAgent ya implementa diagnósticos de solo lectura, pero esta vista continúa usando datos sintéticos y todavía no se conecta al agente."
                 Severity="Informational"
-                Title="Próximo alcance" />
+                Title="Estado de integración" />
         </StackPanel>
     </ScrollViewer>
 </Page>

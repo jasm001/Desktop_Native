@@ -1,8 +1,11 @@
 # Adaptadores de instalacion y configuracion
 
-El Bloque 4 no implementa estos adaptadores. La accion
+Los Bloques 4 y 5 no implementan estos adaptadores. La accion
 `software.install.simulated.v1` solo prueba IPC, autorizacion y estado; no llama
 WinGet, MSI, MSIX, PowerShell ni procesos hijos.
+
+El Bloque 6 es la primera unidad que puede agregar un adaptador real, siempre
+validado primero en una VM Windows 11 desechable con snapshot.
 
 ## Objetivo
 

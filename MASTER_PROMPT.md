@@ -16,19 +16,22 @@ Repositorio:
   existente.
 
 Estado confirmado:
-- Bloques 0 a 4 completados y publicados en `main`.
+- Bloques 0 a 5 completados y publicados en `main`.
 - Bloque 3 publicado en `b09f07a`.
 - Bloque 4 publicado en `b56bfcb`.
-- Bloque 5 es la siguiente unidad y no hay otro bloque principal activo.
+- Bloque 5 publicado en `e3a0b8d`.
+- Bloque 6 es la siguiente unidad y no hay otro bloque principal activo.
 - La shell WinUI usa catalogo y conversacion sinteticos; no crea tickets,
   solicitudes corporativas ni instalaciones reales.
 - El DeviceAgent expone un protocolo IPC v1 tipado mediante Named Pipe, usa
   autorizacion deny-by-default y solo ejecuta un trabajo sintetico allowlisted.
 - El estado de trabajos vive en SQLite local y soporta idempotencia,
   cancelacion, progreso y recuperacion simulada.
+- El DeviceAgent obtiene snapshots diagnosticos efimeros de solo lectura con
+  fallos parciales tipados y prerrequisitos allowlisted.
 - La shell todavia no invoca el DeviceAgent.
 - SDK fijado: .NET 10.0.301.
-- `scripts/Validate.ps1` pasa completo: build Release sin warnings, 68 pruebas,
+- `scripts/Validate.ps1` pasa completo: build Release sin warnings, 82 pruebas,
   checks del workspace y escaneo de secretos.
 - Los lockfiles Desktop/WindowsUi estan limitados al RID `win-x64`.
 - Visual Studio 2022 no admite net10.0; para depuracion en IDE se requiere
@@ -42,12 +45,13 @@ Antes de editar:
 4. lee `core/SCOPE.md`, `core/STACK.md`, `core/ARCHITECTURE.md`,
    `core/SECURITY.md` y `core/DECISIONS.md`;
 5. lee `standards/CODING_STANDARDS.md` y `standards/DELIVERY.md`;
-6. para el Bloque 5, lee `modules/DEVICE_AGENT.md` y
-   `docs/modules/device-agent-ipc.md`;
-7. consulta `docs/modules/desktop-shell.md` solo si integras el resultado con la
-   vista Salud del equipo;
-8. inspecciona `src/Contracts/Agent`, `src/DeviceAgent/Core`,
-   `src/DeviceAgent` y sus pruebas antes de crear contratos o abstracciones.
+6. para el Bloque 6, lee `modules/DEVICE_AGENT.md`,
+   `modules/EXECUTION_ADAPTERS.md`, `docs/modules/device-agent-ipc.md` y
+   `docs/modules/read-only-device-diagnostics.md`;
+7. inspecciona `src/Contracts/Agent`, `src/DeviceAgent/Core`,
+   `src/DeviceAgent` y sus pruebas antes de crear contratos o abstracciones;
+8. consulta `docs/modules/desktop-shell.md` solo si conectas estados del
+   adaptador con WinUI.
 
 Reglas no negociables:
 - no cambies stack, alcance, arquitectura, persistencia o fronteras de seguridad
@@ -61,52 +65,66 @@ Reglas no negociables:
 - no uses secretos, credenciales, datos corporativos ni endpoints productivos;
 - usa contratos tipados, DI, nullable, async, `CancellationToken`, limites y
   resultados saneados;
+- no ejecutes el primer adaptador real en la PC principal; usa una VM Windows 11
+  desechable con snapshot/checkpoint;
+- no descargues ni ejecutes un paquete hasta documentar origen oficial, version,
+  arquitectura, licencia, hash o firma disponible y modo unattended soportado;
+- el adaptador fija comandos y parametros internamente; IPC, UI, backend e IA
+  solo envian identificadores tipados y allowlisted;
 - manten el nucleo comprobable sin dependencia de WinUI;
 - corrige causas, no parches aislados, y actualiza pruebas y documentacion;
 - no declares terminado un cambio sin build y pruebas aplicables.
 
 Tarea:
-Ejecuta el Bloque 5 de `DEVELOPMENT_PLAN.md`: diagnostico local de solo lectura.
+Ejecuta el Bloque 6 de `DEVELOPMENT_PLAN.md`: primer adaptador real validado en
+una VM Windows 11.
 
 Criterio de aceptacion:
-- crear modelos y resultados tipados para un snapshot diagnostico acotado;
-- recolectar mediante APIs .NET/Windows de solo lectura:
-  - version de Windows y arquitectura;
-  - capacidad y espacio disponible de almacenamiento, sin enumerar archivos;
-  - memoria total y disponible;
-  - estado de red y alcance de dominio con timeout y resultado explicito;
-  - version del DeviceAgent;
-  - prerrequisitos declarados para una accion tipada;
-- separar contratos, casos de uso y colectores de infraestructura;
-- hacer que fallos parciales produzcan estados tipados y saneados, sin abortar
-  todo el snapshot ni filtrar excepciones o datos sensibles;
-- mantener resultados deterministas en estructura, orden y unidades;
-- extender IPC solo con mensajes versionados y allowlisted, sin campos de
-  ejecucion libre;
-- cubrir reglas, fallos parciales, cancelacion, limites y fronteras con pruebas
-  unitarias, de contrato e integracion;
-- actualizar `modules/DEVICE_AGENT.md` y crear o actualizar el documento tecnico
-  propietario bajo `docs/modules/`;
-- actualizar `CURRENT_CONTEXT.md` y `WORKFLOW.md`;
-- si conectas Salud del equipo, mantener WinUI como adaptador fino y conservar
-  una experiencia segura cuando el agente no este disponible;
-- no persistir snapshots diagnosticos en SQLite salvo que un documento de mayor
-  precedencia lo exija; la SQLite actual es para la cola tecnica de trabajos;
-- no implementar remediacion, instalaciones, tickets, backend, portal,
-  telemetria productiva, inventario general ni integraciones corporativas;
-- no adelantar el adaptador real del Bloque 6.
+- seleccionar un paquete libre, aprobado para la prueba, silencioso, de bajo
+  riesgo y sin credenciales, drivers ni reinicio obligatorio;
+- registrar version fijada, arquitecturas soportadas, origen oficial, licencia,
+  hash o firma disponible y evidencia del modo unattended;
+- crear un adaptador cerrado y versionado con `Detect`, `Preflight`, `Install`,
+  `Verify` y `Uninstall`;
+- declarar timeout, codigos de salida, politica de retry y comportamiento de
+  reinicio;
+- usar una lista fija de ejecutable y argumentos; no aceptar comando, ruta,
+  switches ni argumentos desde IPC, UI, backend o IA;
+- verificar origen e integridad antes de ejecutar y sanear stdout, stderr,
+  rutas, nombres internos y excepciones;
+- mantener autorizacion deny-by-default por accion, target, version y adaptador;
+- conservar idempotencia: repetir `Install` sobre el estado objetivo no duplica
+  ni corrompe la instalacion;
+- soportar cancelacion solo donde sea segura y devolver estado tipado cuando no
+  pueda interrumpirse;
+- cubrir seleccion, autorizacion, preflight, idempotencia, timeout, codigos de
+  salida, fallo controlado, verificacion y desinstalacion con pruebas;
+- validar en una VM Windows 11 con snapshot inicial, instalacion, repeticion,
+  verificacion, desinstalacion y restauracion del snapshot;
+- mantener la accion sintetica existente para pruebas que no requieren VM;
+- actualizar `modules/EXECUTION_ADAPTERS.md`, `modules/DEVICE_AGENT.md` y crear
+  o actualizar el documento tecnico propietario bajo `docs/modules/`;
+- actualizar `CURRENT_CONTEXT.md` y `WORKFLOW.md` con evidencia real, sin marcar
+  el Bloque 6 `completed` antes de terminar la matriz en VM;
+- no implementar todavia backend, tickets, portal, UEMS real, telemetria
+  productiva, inventario general, remediaciones generales ni el Bloque 7.
 
 Forma de trabajo:
-1. confirma el Bloque 5 y define un incremento pequeno verificable;
-2. inspecciona patrones, APIs disponibles y fronteras existentes;
-3. registra cualquier contradiccion o decision que altere contratos publicos,
-   seguridad, alcance o persistencia;
-4. implementa el incremento completo;
-5. actualiza pruebas y documentacion propietaria;
-6. ejecuta el gate completo;
-7. si cambian dependencias, regenera y valida los lockfiles;
-8. informa archivos, comandos, resultados, riesgos residuales, estado
-   documental y mensaje de commit sugerido.
+1. confirma que el Bloque 6 es la unidad activa y define un solo paquete y
+   version como incremento;
+2. verifica que existe una VM Windows 11 desechable con snapshot; si no existe,
+   registra el bloqueo y no ejecutes el paquete en el host;
+3. documenta la evidencia oficial del paquete y su modo unattended antes de
+   descargar o ejecutar;
+4. inspecciona patrones, contratos y fronteras existentes;
+5. registra cualquier contradiccion o decision que altere contratos publicos,
+   seguridad, alcance, privilegios o persistencia;
+6. implementa el adaptador completo y sus pruebas automatizadas;
+7. ejecuta el gate del repositorio y la matriz manual/automatizada en la VM;
+8. actualiza documentacion propietaria y seguimiento con evidencia verificable;
+9. si cambian dependencias, regenera y valida los lockfiles;
+10. informa archivos, comandos, resultados, evidencia de VM, riesgos
+    residuales, estado documental y mensaje de commit sugerido.
 
 Gate base:
 .\scripts\Validate.ps1

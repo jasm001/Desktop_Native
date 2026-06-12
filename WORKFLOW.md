@@ -3,7 +3,7 @@
 ## Estado
 
 - Fase actual: capacidades locales controladas para Windows 11.
-- Bloque activo: ninguno; Bloque 5 completado localmente.
+- Bloque activo: ninguno; Bloque 5 completado y publicado.
 - Ultimo resultado: diagnostico local de solo lectura con snapshot efimero,
   fallos parciales tipados y prerrequisitos allowlisted.
 - Siguiente resultado: primer adaptador real validado en VM Windows 11.
@@ -87,7 +87,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 2. Dominio y catalogo sintetico | completed | Modelos puros, siete fixtures, busqueda/filtros, cuatro decisiones tipadas, integracion fina con Desktop y 26 pruebas unitarias de catalogo; `0d1e315`. |
 | 3. Conversacion determinista | completed | Cinco estados, intenciones fijas, solicitud sintetica idempotente, 13 pruebas unitarias y 3 pruebas del adaptador WinUI; `b09f07a`. |
 | 4. Agente simulado e IPC | completed | Contrato v1, Named Pipe con ACL de usuario actual, allowlist exacta, maquina de estados, cancelacion, evidencia saneada, SQLite, recuperacion e IPC real cubiertos por 18 pruebas nuevas; `b56bfcb`. |
-| 5. Diagnostico de solo lectura | completed | Snapshot IPC efimero, colectores Windows de solo lectura, prerrequisitos tipados, fallos parciales saneados y pruebas de frontera. |
+| 5. Diagnostico de solo lectura | completed | Snapshot IPC efimero, colectores Windows de solo lectura, prerrequisitos tipados, fallos parciales saneados y pruebas de frontera; `e3a0b8d`. |
 | 6. Primer adaptador en VM | pending | |
 | 7. API compartida y persistencia | pending | |
 | 8. Casos, tickets y OpenText fake | pending | |
@@ -98,7 +98,7 @@ Solo un bloque principal puede estar `in_progress`.
 ## Stoppers futuros no bloqueantes
 
 Estos stoppers condicionan solo la mejora posterior de refresco administrado de
-politicas. No cambian el estado `pending` del Bloque 5 ni bloquean el MVP actual.
+politicas. No cambian el estado `pending` del Bloque 6 ni bloquean el MVP actual.
 
 ```text
 Fecha: 2026-06-12

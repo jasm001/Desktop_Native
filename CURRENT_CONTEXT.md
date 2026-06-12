@@ -17,7 +17,7 @@ la seleccion del paquete ni ejecutar cambios en la PC principal.
 - Bloque 2 publicado en `0d1e315`.
 - Bloque 3 publicado en `b09f07a`.
 - Bloque 4 publicado en `b56bfcb`.
-- Bloque 5 implementado localmente y pendiente de publicacion.
+- Bloque 5 publicado en `e3a0b8d`.
 - Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
 - Nullable, analyzers, warnings como errores y paquetes centralizados activos.
@@ -53,7 +53,7 @@ la seleccion del paquete ni ejecutar cambios en la PC principal.
 - La CLI compila y ejecuta la shell. La depuracion en IDE requiere Visual Studio
   2026 version 18.0 o posterior; Visual Studio 2022 no admite `net10.0`.
 - Gitleaks y CI de GitHub configurados.
-- Build Release y pruebas pasan para el Bloque 5; la validacion completa se
+- Build Release y 82 pruebas pasan para el Bloque 5; la validacion completa se
   registra en `WORKFLOW.md`.
 - No existen acciones privilegiadas, secretos, datos corporativos ni
   integraciones productivas.
@@ -95,9 +95,9 @@ El primer recorrido vertical usa datos sinteticos:
 7. mostrar progreso y resultado;
 8. registrar evidencia local saneada.
 
-No instala software real durante este recorrido. El agente simulado ya puede
-crear trabajos locales tipados por IPC, pero la shell actual no los invoca y
-tampoco crea solicitudes o tickets corporativos.
+No instala software real durante este recorrido. El agente ya puede crear
+trabajos simulados y obtener diagnosticos locales tipados por IPC, pero la shell
+actual no los invoca y tampoco crea solicitudes o tickets corporativos.
 
 ## Pendientes que no bloquean el esqueleto
 
@@ -115,13 +115,13 @@ tampoco crea solicitudes o tickets corporativos.
   desarrollo.
 
 Estos pendientes bloquean integraciones o piloto, no la implementacion local.
-Los dos pendientes de conectividad de politicas tampoco bloquean el Bloque 5 ni
+Los dos pendientes de conectividad de politicas tampoco bloquean el Bloque 6 ni
 el flujo principal; condicionan solo la mejora posterior descrita en
 `docs/modules/domain-policy-refresh.md`.
 
 El roadmap posterior tambien contempla autoservicio local, evidencia,
 reparaciones cerradas, almacenamiento, perifericos, mantenimiento, perfiles y
-reprovisionamiento. No modifica el Bloque 5 ni el plan principal. La direccion
+reprovisionamiento. No modifica el Bloque 6 ni el plan principal. La direccion
 empresarial o independiente queda pendiente y se documenta en
 `docs/modules/endpoint-self-service.md` y
 `docs/modules/device-reprovisioning.md`.

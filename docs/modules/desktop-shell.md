@@ -5,7 +5,7 @@
 `src/Desktop` contiene el cliente Windows 11 sin privilegios. Presenta la shell
 navegable y consume los dominios sinteticos de catalogo y conversacion como
 adaptador de presentacion. No ejecuta comandos, no crea solicitudes reales y no
-se conecta al agente, backend o integraciones corporativas.
+se conecta al DeviceAgent, backend o integraciones corporativas.
 
 ## Experiencia
 
@@ -66,8 +66,10 @@ con la matriz real de monitores.
 - no hay elevacion ni `runas`;
 - no existen shell, PowerShell, procesos hijos o argumentos dinamicos;
 - no se almacenan secretos, credenciales o datos corporativos;
-- las referencias de solicitud son sinteticas; instalaciones, tickets,
-  diagnosticos reales e IA quedan fuera de este bloque;
+- las referencias de solicitud son sinteticas;
+- el DeviceAgent ya implementa diagnosticos de solo lectura, pero la vista Salud
+  del equipo conserva fixtures y no abre IPC;
+- instalaciones reales, tickets e IA permanecen fuera de la shell actual;
 - el contenido identifica explicitamente el modo local y sintetico.
 
 ## Pruebas
@@ -78,7 +80,9 @@ con la matriz real de monitores.
 - UI Automation para las cinco rutas, tema y teclado;
 - revision visual en tema claro, oscuro y layout compacto.
 
-## Siguiente bloque
+## Estado posterior
 
-El Bloque 4 agregara un agente simulado e IPC tipado. La shell seguira sin
-ejecutar acciones privilegiadas.
+Los Bloques 4 y 5 agregaron IPC tipado, trabajos simulados y diagnosticos de solo
+lectura en el DeviceAgent. El Bloque 6 valida el primer adaptador real en una VM
+Windows 11. La shell seguira sin ejecutar acciones privilegiadas y no se conecta
+al agente hasta que exista un incremento especifico para esa integracion.
