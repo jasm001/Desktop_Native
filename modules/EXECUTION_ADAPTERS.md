@@ -140,3 +140,31 @@ Solo se evalua cuando:
 
 El bot invoca el ID del paquete aprobado. No controla los clicks ni recibe una
 API general de automatizacion visual.
+
+## Reparaciones y perfiles declarativos
+
+Las reparaciones locales usan el mismo contrato cerrado que los instaladores:
+
+- `Detect`;
+- `Preflight`;
+- `Remediate`;
+- `Verify`;
+- `Rollback` o compensacion declarada;
+- timeout, cancelacion y evidencia saneada.
+
+Casos iniciales posteriores al MVP:
+
+- servicio conocido detenido;
+- cola de impresion en estado reparable;
+- componentes de Windows Update;
+- cache de una aplicacion expresamente soportada;
+- limpieza de ubicaciones temporales allowlisted;
+- comprobaciones de camara, audio, Bluetooth, pantalla, impresora y dock.
+
+No se aceptan scripts enviados por IA, portal o usuario. Los bundles offline
+estan firmados y versionados.
+
+Los perfiles de ambientacion declaran un resultado deseado, por ejemplo
+`office-standard.v1` o `developer-windows.v1`. Incluyen aplicaciones, ajustes
+permitidos, prerrequisitos y verificaciones; no contienen credenciales ni copias
+de archivos personales.

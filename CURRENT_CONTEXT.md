@@ -114,6 +114,13 @@ Los dos pendientes de conectividad de politicas tampoco bloquean el Bloque 5 ni
 el flujo principal; condicionan solo la mejora posterior descrita en
 `docs/modules/domain-policy-refresh.md`.
 
+El roadmap posterior tambien contempla autoservicio local, evidencia,
+reparaciones cerradas, almacenamiento, perifericos, mantenimiento, perfiles y
+reprovisionamiento. No modifica el Bloque 5 ni el plan principal. La direccion
+empresarial o independiente queda pendiente y se documenta en
+`docs/modules/endpoint-self-service.md` y
+`docs/modules/device-reprovisioning.md`.
+
 ## Stopper
 
 Se considera stopper una decision que altere seguridad, privilegios, contratos

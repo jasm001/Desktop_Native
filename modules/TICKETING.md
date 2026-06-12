@@ -46,6 +46,8 @@ Es obligatorio cuando:
 - hay software comercial/licencia;
 - el software no esta aprobado;
 - se solicita backup o formateo;
+- BitLocker requiere recuperacion o enrolamiento humano durante un
+  reprovisionamiento;
 - una politica corporativa exige ticket real;
 - el usuario pide escalamiento.
 
@@ -124,6 +126,7 @@ Servicios:
 | License or Subscription Request | Crear ticket manual/escalado a licencias/compras |
 | Backup Information | Crear ticket manual/escalado |
 | Laptop Formatting | Crear ticket manual/escalado |
+| BitLocker durante reprovisionamiento | Crear ticket y continuar solo cuando el procedimiento humano confirme el siguiente paso |
 | Software no listado | Escalar a revision de seguridad; ruta exacta por confirmar |
 | Software prohibido | Rechazar y registrar; excepcion fuera del flujo normal |
 
@@ -136,6 +139,11 @@ Ejemplos de `Software Problems/Configuration`:
 
 Aunque termine en reinstalacion, conserva la categoria de problema/configuracion
 y documenta la accion tomada.
+
+El reprovisionamiento automatizado es una capacidad posterior. Hasta que exista,
+`Laptop Formatting` conserva el flujo humano. El ticket nunca contiene PIN,
+recovery password ni una formula derivada del asset tag; solo registra que se
+requiere intervencion y la correlacion del proceso.
 
 ## Campos comunes
 

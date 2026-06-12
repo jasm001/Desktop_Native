@@ -63,6 +63,12 @@
 | D-059 | WinUI y Teams usan los mismos estados de consulta, propuesta, confirmacion y accion. |
 | D-060 | Una futura actualizacion de politicas se activa mediante campana administrativa explicita; el agente no detecta cambios de GPO mediante ping. |
 | D-061 | La conexion automatica a red corporativa solo puede usar un mecanismo de maquina o pre-logon aprobado; nunca credenciales humanas almacenadas. |
+| D-062 | El roadmap posterior prioriza evidencia, reparaciones cerradas, almacenamiento, perifericos, mantenimiento, perfiles y modo local antes del borrado/reprovisionamiento. |
+| D-063 | El agente no persiste mediante firmware o kernel; despues de reinstalar Windows debe ser desplegado nuevamente por ISO/UEMS, Autopilot, provisioning package o bootstrap autenticado. |
+| D-064 | La rama empresarial y la independiente comparten contratos y proveedores; ninguna dependencia corporativa se codifica dentro del dominio. |
+| D-065 | El producto conserva asset tag y configuracion permitida, pero nunca deriva, almacena o muestra PIN o recovery password de BitLocker. |
+| D-066 | Hermes/RAG puede explicar o seleccionar acciones conocidas; el agente nunca ejecuta scripts o argumentos generados por IA. |
+| D-067 | La direccion corporativa o producto independiente se decide despues sin detener el MVP; los niveles local, personal/pro y equipos pequenos son opciones posteriores. |
 
 ## Supuestos de trabajo por validar
 
@@ -75,6 +81,8 @@
 | W-005 | La empresa proporcionara recursos Azure para el piloto. |
 | W-006 | Network/Endpoint Management puede entregar un perfil FortiClient EMS de maquina, pre-logon o equivalente para el equipo de prueba. |
 | W-007 | Axis Atmos puede proporcionar al equipo de prueba las rutas de dominio necesarias para DNS, controlador de dominio, `SYSVOL` y `NETLOGON`. |
+| W-008 | La ISO/UEMS corporativa puede incluir un bootstrap firmado del agente y volver a instalarlo despues del borrado. |
+| W-009 | Un portal independiente puede autenticar al usuario y entregar un bootstrap de un solo uso sin incluir secretos ni configuracion sensible en el instalador. |
 
 ## Requieren decision de negocio
 
@@ -107,6 +115,10 @@
 24. API/procedimiento y grupo autorizado para restablecimiento administrativo.
 25. Texto oficial que debe mostrarse sobre la ventana de 48-72 horas y la espera
     recomendada de 24 horas entre cambios.
+26. Si el producto sigue como iniciativa corporativa, producto independiente o
+    ambas variantes con proveedores distintos.
+27. Mecanismo corporativo actual para iniciar una reinstalacion remota sin USB y
+    si permite agregar un bootstrap firmado a la ISO/UEMS.
 
 ## Gate para crear el repositorio
 

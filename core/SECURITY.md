@@ -92,6 +92,29 @@
 - No recolectar inventario general ya gestionado por otras areas. Limitarse a
   identidad del endpoint, version del agente, postura minima y evidencia de las
   acciones del producto.
+- Los paquetes de evidencia muestran al usuario su contenido antes de
+  compartirlos y excluyen archivos personales, tokens, secretos y logs completos.
+- Los perfiles de ambientacion contienen configuracion declarativa permitida,
+  no copias de documentos ni credenciales de aplicaciones.
+
+## Borrado, enrolamiento y BitLocker
+
+- El producto no implementa persistencia propia en firmware, UEFI o kernel.
+- Un driver kernel no se usa para sobrevivir a reinstalaciones ni sustituir
+  Autopilot, UEMS, una imagen aprobada o un bootstrap descargable.
+- Todo borrado exige autorizacion fuerte, correlacion, comprobaciones previas,
+  doble confirmacion y un proveedor de despliegue soportado.
+- El usuario confirma que realizo su respaldo mediante el canal corporativo; el
+  agente no copia archivos personales ni acepta USB si la politica lo prohibe.
+- Asset tag, PIN de inicio y recovery password son conceptos separados.
+- Un PIN sigue siendo una credencial aunque sea derivable del asset tag. El
+  producto nunca lo deriva, almacena, registra o muestra.
+- La recuperacion o enrolamiento de BitLocker se escala al procedimiento humano
+  aprobado cuando no exista una API corporativa segura.
+- El bootstrap posterior al borrado usa token de un solo uso, expiracion,
+  vinculacion a usuario/dispositivo y revocacion.
+- Desenrolar revoca identidades, certificados, tokens, campanas y acceso al
+  portal antes de permitir una reinstalacion limpia.
 
 ## Cadena de suministro
 
@@ -126,6 +149,12 @@ Antes del piloto, modelar al menos:
 - compromiso del repositorio interno de instaladores;
 - agente infectado que intenta reproducir o modificar trabajos;
 - persistencia de una exclusion antivirus demasiado amplia.
+- secuestro de un token de reprovisionamiento;
+- reutilizacion de un bootstrap despues de desenrolar;
+- borrado remoto no autorizado o dirigido al equipo incorrecto;
+- suplantacion de identidad de hardware tras una reinstalacion;
+- persistencia abusiva mediante firmware, driver o tarea fuera del mecanismo
+  corporativo aprobado.
 
 ## Antivirus y exclusiones
 

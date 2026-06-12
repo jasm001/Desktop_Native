@@ -64,6 +64,26 @@ provisionamiento automatico y roles corporativos quedan para despues.
 9. Base de conocimiento y revision de soluciones.
 10. Auditoria, reportes y configuracion.
 
+## Portal de autoservicio posterior
+
+Si el producto opera de forma independiente, el portal puede ofrecer al usuario:
+
+- dispositivos propios enrolados;
+- perfiles de ambientacion disponibles;
+- aplicaciones seleccionadas para despues de una reinstalacion;
+- descarga de bootstrap firmado con token de un solo uso;
+- progreso de preparacion y reprovisionamiento;
+- revocacion/desenrolamiento del dispositivo;
+- paquetes de evidencia que el usuario autorizo compartir.
+
+El bootstrap no incluye secretos ni el perfil completo. Tras autenticar, canjea
+un token corto vinculado a usuario, dispositivo, expiracion y una sola
+instalacion.
+
+Desenrolar revoca certificados, tokens, campanas y acceso futuro antes de una
+instalacion limpia. No intenta borrar remotamente un equipo sin autorizacion
+reforzada y controles adicionales.
+
 El modulo de tickets muestra primero los casos propios del bot y sus metricas.
 Las escalaciones incluyen enlace al ticket real de OpenText; no se replica desde
 cero toda la interfaz de Service Manager.

@@ -103,3 +103,27 @@ mecanismo de maquina o pre-logon administrado.
 
 Esta capacidad no forma parte del Bloque 5 ni cambia el diagnostico de solo
 lectura. Se detalla en `../docs/modules/domain-policy-refresh.md`.
+
+## Roadmap de capacidades locales
+
+El orden posterior previsto es:
+
+1. diagnostico de solo lectura;
+2. paquete de evidencia para soporte;
+3. reparaciones locales firmadas y cerradas;
+4. limpieza segura de almacenamiento;
+5. diagnostico guiado de perifericos;
+6. coordinador de mantenimiento y reinicios;
+7. perfiles declarativos de ambientacion;
+8. operacion local limitada sin backend o IA;
+9. campanas de actualizacion del producto;
+10. seleccion de aplicaciones para reprovisionamiento;
+11. borrado y reprovisionamiento.
+
+El agente no carga scripts arbitrarios, incluso cuando no hay Internet. Las
+acciones offline forman parte de un paquete firmado, versionado y probado. Un
+RAG local puede explicar resultados o elegir entre acciones allowlisted, pero no
+produce contenido ejecutable.
+
+Los detalles viven en `../docs/modules/endpoint-self-service.md` y
+`../docs/modules/device-reprovisioning.md`.

@@ -263,6 +263,66 @@ o pre-logon aprobado. No se almacenan credenciales humanas y el rechazo de esa
 capacidad no bloquea el producto: se mantiene la orientacion/escalamiento del
 MVP.
 
+## Autoservicio y mantenimiento posterior
+
+El DeviceAgent puede crecer mediante capacidades independientes y tipadas:
+
+- diagnostico de solo lectura;
+- exportacion de evidencia saneada;
+- reparaciones locales firmadas y allowlisted;
+- limpieza segura de almacenamiento;
+- diagnostico guiado de perifericos;
+- coordinacion de mantenimiento y reinicios;
+- perfiles declarativos de ambientacion;
+- operacion local limitada cuando backend o IA no estan disponibles.
+
+Hermes, RAG u otro proveedor puede explicar una deteccion o proponer una accion
+conocida. Nunca produce scripts, argumentos o comandos ejecutables. El agente
+solo resuelve identificadores instalados y firmados.
+
+El coordinador agrupa trabajos compatibles para reducir reinicios. Una
+actualizacion critica puede tener fecha limite no posponible, pero siempre
+muestra motivo, tiempo estimado, cuenta regresiva y necesidad de guardar
+archivos. Si BitLocker exige PIN al arrancar, informa que se requiere presencia
+del usuario; no conoce ni deriva ese PIN.
+
+La responsabilidad detallada vive en
+`../docs/modules/endpoint-self-service.md`.
+
+## Borrado y reprovisionamiento posterior
+
+El agente no sobrevive fisicamente a una reinstalacion de Windows. La
+continuidad se obtiene porque una autoridad externa vuelve a instalar un
+bootstrap firmado y el backend reconoce un registro previo del dispositivo.
+
+Proveedores previstos:
+
+- `IEnrollmentProvider`;
+- `IOperatingSystemDeploymentProvider`;
+- `IDeviceIdentityProvider`;
+- `ISecurityAgentProvider`;
+- `INetworkAccessProvider`;
+- `IDomainJoinProvider`;
+- `ISoftwareProvisioningProvider`.
+
+La rama empresarial usa la ISO/UEMS aprobada para instalar Windows, UEMS,
+Sophos y el bootstrap. La rama independiente usa Windows limpio y un portal
+autenticado para descargar un bootstrap de un solo uso que recupera el perfil
+despues de validar usuario y dispositivo.
+
+Antes del borrado solo se conserva fuera del endpoint la configuracion
+permitida: identidad del dispositivo, hostname, asset tag, perfil, aplicaciones
+seleccionadas y correlacion. El usuario confirma que completo el respaldo en el
+canal aprobado; el producto no copia ni inspecciona archivos personales.
+
+BitLocker no se automatiza con datos derivados del asset tag. Si el proceso
+corporativo requiere enrolar o recuperar BitLocker, se crea o escala un ticket
+para intervencion humana. El PIN y la recovery password nunca se almacenan,
+calculan ni muestran.
+
+El flujo completo vive en `../docs/modules/device-reprovisioning.md` y se
+implementa despues de las capacidades de autoservicio.
+
 ## Persistencia
 
 Entidades centrales:

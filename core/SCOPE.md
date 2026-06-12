@@ -97,6 +97,11 @@
 - Integracion profunda con GoTo/LogMeIn Rescue.
 - Anillos de despliegue, mantenimiento y rollback.
 - Base de conocimiento empresarial con RAG y permisos por documento.
+- Paquetes de evidencia saneada para tickets y soporte.
+- Reparaciones locales tipadas, firmadas y allowlisted.
+- Limpieza segura de almacenamiento y diagnostico guiado de perifericos.
+- Coordinacion de mantenimiento, actualizaciones y reinicios con consentimiento.
+- Perfiles declarativos de ambientacion y continuidad local sin IA.
 
 ## Fase 3
 
@@ -105,6 +110,30 @@
 - Reportes ejecutivos y SLO.
 - ARM64.
 - Multitenancy solo si el producto pasa de interno a comercial.
+- Seleccion previa de aplicaciones y restauracion de configuracion permitida
+  despues de una reinstalacion.
+- Borrado y reprovisionamiento como ultima capacidad, mediante proveedor externo
+  aprobado; nunca por persistencia de firmware o kernel propia.
+
+## Direcciones posteriores al MVP
+
+La decision comercial futura no cambia el MVP. El mismo dominio admite dos
+perfiles de despliegue:
+
+- empresarial: ISO/UEMS reinstala Windows, seguridad y bootstrap firmado;
+- independiente: Windows limpio y portal autenticado entrega un bootstrap
+  firmado, de un solo uso y asociado al usuario/dispositivo.
+
+La rama independiente puede evolucionar en tres niveles sin debilitar las
+fronteras de seguridad:
+
+1. local: diagnostico, evidencia, mantenimiento y perfiles;
+2. personal/pro: reparacion, ambientacion y reprovisionamiento asistido;
+3. equipos pequenos/MSP: campanas, catalogo, auditoria e inventario minimo.
+
+La direccion final queda pendiente de aceptacion corporativa y validacion de
+mercado. Ninguna variante permite scripts libres, control remoto generico,
+credenciales humanas persistidas o reparaciones generadas por IA.
 
 ## Criterios de aceptacion del MVP
 

@@ -61,6 +61,20 @@ El proyecto no audita ni modifica la configuracion interna de UEMS. El owner de
 Endpoint Central recibe nuestros artefactos/requisitos y controla el despliegue,
 actualizacion y rollback en la sede piloto.
 
+### Perfiles posteriores de despliegue
+
+La operacion futura admite dos ramas sin cambiar el dominio:
+
+- empresarial: la ISO/UEMS corporativa reinstala Windows, UEMS, Sophos y un
+  bootstrap firmado del agente;
+- independiente: el usuario instala Windows 11 limpio, entra a un portal
+  autenticado y descarga un bootstrap firmado y de un solo uso asociado a su
+  perfil.
+
+En ambas ramas el instalador contiene solo configuracion publica minima. El
+perfil, aplicaciones y politicas se descargan despues de validar usuario,
+dispositivo, expiracion y revocacion.
+
 ## Offline y continuidad
 
 - Sin IA: catalogo y acciones fijas siguen disponibles.
@@ -69,6 +83,48 @@ actualizacion y rollback en la sede piloto.
 - Sin red durante ejecucion: estados/evidencia quedan en SQLite local.
 - Al reconectar: sincronizacion idempotente y cierre de ticket.
 - Reinicio: el agente recupera la maquina de estados.
+- Las reparaciones offline proceden unicamente de bundles firmados y allowlisted.
+- La base local de conocimiento explica resultados, pero no genera scripts.
+
+## Mantenimiento y experiencia del usuario
+
+- Agrupar instalaciones, politicas y actualizaciones compatibles para reducir
+  reinicios.
+- Ejecutar mantenimiento pesado solo en una ventana aprobada, con alimentacion
+  y condiciones suficientes.
+- Informar antes de actuar y permitir posposicion dentro de la politica.
+- Para una actualizacion critica, mostrar fecha limite, motivo, duracion,
+  cuenta regresiva y aviso para guardar trabajo.
+- Si el arranque requiere PIN de BitLocker, avisar que el usuario debe estar
+  presente; el producto no conoce el PIN.
+- Verificar el resultado despues del reinicio y conservar evidencia saneada.
+
+## Borrado y reprovisionamiento posterior
+
+El borrado se implementa al final del roadmap. El agente prepara y correlaciona
+el proceso, pero no puede sobrevivir a la reinstalacion. Una ISO/UEMS,
+Autopilot/provisioning package o bootstrap descargado debe reinstalarlo.
+
+Antes de iniciar:
+
+- mostrar impacto y datos que se perderan;
+- exigir confirmacion de respaldo completado por el usuario en OneDrive u otro
+  canal aprobado;
+- guardar fuera del endpoint hostname, asset tag, perfil y aplicaciones
+  elegidas;
+- comprobar energia, conectividad, autorizacion, revocacion y mecanismo de
+  recuperacion;
+- crear ticket si BitLocker o enrolamiento de dominio requiere intervencion
+  humana.
+
+Despues de reinstalar, el agente valida identidad, recupera el perfil, verifica
+agentes de seguridad y prepara las aplicaciones seleccionadas cuando el usuario
+inicia sesion.
+
+No se implementa persistencia propia en UEFI/kernel, autologon con credenciales
+humanas ni calculo de PIN desde el asset tag.
+
+La especificacion vive en `../docs/modules/device-reprovisioning.md`.
 
 ## Red corporativa y politicas
 

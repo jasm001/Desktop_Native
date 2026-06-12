@@ -136,6 +136,24 @@ Recomendacion: Probar primero solo lectura y despues una GPO de laboratorio
 Owner: Desarrollo / Network / Active Directory / Security.
 ```
 
+```text
+Fecha: 2026-06-12
+Modulo: Producto / despliegue y reprovisionamiento
+Decision requerida: Elegir despues del MVP si la evolucion continua como
+  iniciativa corporativa, producto independiente o ambas variantes mediante
+  proveedores distintos.
+Evidencia: Resultado de aprobacion corporativa; capacidad de ISO/UEMS para
+  incluir bootstrap; prueba del portal/bootstrap independiente; demanda de los
+  niveles local, personal/pro y equipos pequenos.
+Alternativas: Rama empresarial ISO/UEMS; rama independiente Windows limpio +
+  portal; mantener solo autoservicio local sin borrado remoto.
+Impacto: Define proveedores, empaquetado y modelo comercial, pero no cambia el
+  dominio, el Bloque 5 ni los Bloques 6-11.
+Recomendacion: Mantener contratos neutrales y posponer el borrado hasta validar
+  autoservicio, seguridad, enrolamiento y retiro.
+Owner: Product Owner / Security / Endpoint Management.
+```
+
 ## Formato de stopper
 
 ```text
