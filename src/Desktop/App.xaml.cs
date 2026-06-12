@@ -1,6 +1,7 @@
 using ITSupportNative.Catalog.Application;
 using ITSupportNative.Catalog.Domain;
 using ITSupportNative.Catalog.Fixtures;
+using ITSupportNative.Conversation.Application;
 using ITSupportNative.Desktop.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
@@ -19,6 +20,7 @@ public partial class App : Application
             .AddSingleton<IReadOnlyList<SoftwareProduct>>(SyntheticCatalog.Products)
             .AddSingleton<CatalogSearchService>()
             .AddSingleton<CatalogDecisionService>()
+            .AddSingleton<ConversationService>()
             .AddSingleton<ShellViewModel>()
             .AddSingleton<HomeViewModel>()
             .AddSingleton<CatalogViewModel>()

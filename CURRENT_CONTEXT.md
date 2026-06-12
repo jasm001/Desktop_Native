@@ -4,10 +4,10 @@ Fecha de ultima actualizacion: 2026-06-12.
 
 ## Objetivo inmediato
 
-Implementar el Bloque 3: conversacion determinista con estados de consulta,
-propuesta, confirmacion, solicitud creada y cancelacion. Debe reutilizar las
-decisiones del catalogo y conservar la regla de que consultar nunca crea una
-solicitud. El portal administrativo permanece reservado para el Bloque 11.
+Implementar el Bloque 4: agente simulado e IPC tipado con Named Pipes y ACL de
+desarrollo. Debe consumir solo mensajes versionados y mantener ejecucion,
+persistencia durable y acciones reales fuera del cliente WinUI. El portal
+administrativo permanece reservado para el Bloque 11.
 
 ## Estado del repositorio
 
@@ -16,7 +16,8 @@ solicitud. El portal administrativo permanece reservado para el Bloque 11.
 - Bloque 0 publicado en `e42fe2c`.
 - Bloque 1 publicado en `f18e8cf`; ajustes de toolchain y lockfiles publicados
   en `5f6dae7` y `531faf6`.
-- Bloque 2 implementado y validado en el working tree actual; pendiente de
+- Bloque 2 publicado en `0d1e315`.
+- Bloque 3 implementado y validado en el working tree actual; pendiente de
   publicacion por el usuario.
 - Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
@@ -29,12 +30,18 @@ solicitud. El portal administrativo permanece reservado para el Bloque 11.
 - Fixtures sinteticos cubren aprobado, comercial, no listado, EOL y prohibido.
 - La vista Catalogo consume el caso de uso mediante DI y no contiene reglas de
   autorizacion.
+- Conversacion determinista con cinco estados, intenciones fijas, confirmacion
+  explicita, cancelacion e idempotencia por comando.
+- La referencia `SyntheticRequest` vive solo en la sesion local; no es una
+  solicitud corporativa persistida.
+- La vista Asistente consume la maquina de estados mediante DI y mantiene el
+  texto libre deshabilitado.
 - Ejecutable Desktop x64 autocontenido para desarrollo local.
 - SDK global `10.0.301` validado desde `C:\Program Files\dotnet`.
 - La CLI compila y ejecuta la shell. La depuracion en IDE requiere Visual Studio
   2026 version 18.0 o posterior; Visual Studio 2022 no admite `net10.0`.
 - Gitleaks y CI de GitHub configurados.
-- Build Release y 33 pruebas pasan para el Bloque 2; la validacion completa se
+- Build Release y 50 pruebas pasan para el Bloque 3; la validacion completa se
   registra en `WORKFLOW.md`.
 - No existen acciones privilegiadas, secretos, datos corporativos ni
   integraciones productivas.

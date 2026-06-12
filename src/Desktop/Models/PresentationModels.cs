@@ -1,3 +1,5 @@
+using System.Windows.Input;
+
 namespace ITSupportNative.Desktop.Models;
 
 public sealed record ShellRoute(string Key, string Label, string Glyph);
@@ -28,7 +30,11 @@ public sealed record ActivityPreview(
     string Timestamp,
     string Glyph);
 
-public sealed record AssistantSuggestion(string Title, string Prompt, string Glyph);
+public sealed record AssistantSuggestion(
+    string Title,
+    string Prompt,
+    string Glyph,
+    ICommand Command);
 
 public sealed record RequestPreview(
     string Reference,

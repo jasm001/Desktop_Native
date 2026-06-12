@@ -1,6 +1,7 @@
 using ITSupportNative.BuildingBlocks;
 using ITSupportNative.Catalog;
 using ITSupportNative.Contracts;
+using ITSupportNative.Conversation;
 
 namespace ITSupportNative.ArchitectureTests;
 
@@ -17,6 +18,7 @@ public sealed class DependencyBoundaryTests
     [Theory]
     [InlineData(typeof(ProductInfo))]
     [InlineData(typeof(CatalogModule))]
+    [InlineData(typeof(ConversationModule))]
     [InlineData(typeof(ContractVersion))]
     public void FoundationalAssembliesDoNotReferenceExecutableBoundaries(Type assemblyMarker)
     {

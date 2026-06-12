@@ -104,6 +104,12 @@
       },
       "itsupportnative.catalog": {
         "type": "Project"
+      },
+      "itsupportnative.conversation": {
+        "type": "Project",
+        "dependencies": {
+          "ITSupportNative.Catalog": "[1.0.0, )"
+        }
       }
     }
   }

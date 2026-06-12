@@ -15,42 +15,63 @@
                 Style="{StaticResource SecondaryTextStyle}"
                 Text="Orientación determinista de demostración. Una consulta nunca crea una solicitud." />
         </StackPanel>
-        <Border
+        <ScrollViewer
             Grid.Row="1"
-            Margin="0,24"
-            Style="{StaticResource CardBorderStyle}">
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                MaxWidth="620"
-                Spacing="18">
-                <Border
-                    Width="64"
-                    Height="64"
-                    Background="{ThemeResource AppSubtleBackgroundBrush}"
-                    CornerRadius="32">
-                    <FontIcon
-                        FontSize="30"
-                        Foreground="{StaticResource AppBrandBrush}"
-                        Glyph="&#xE8BD;" />
-                </Border>
-                <TextBlock
+            VerticalScrollBarVisibility="Auto">
+            <Border
+                Margin="0,24"
+                Style="{StaticResource CardBorderStyle}">
+                <StackPanel
+                    MaxWidth="680"
                     HorizontalAlignment="Center"
-                    FontSize="22"
-                    FontWeight="SemiBold"
-                    Text="¿Cómo puedo orientarte?"
-                    TextAlignment="Center" />
-                <TextBlock
-                    Style="{StaticResource SecondaryTextStyle}"
-                    Text="Elige una consulta de ejemplo. En este bloque no hay IA, tickets ni acciones sobre el equipo."
-                    TextAlignment="Center" />
+                    VerticalAlignment="Center"
+                    Spacing="18">
+                    <Border
+                        Width="64"
+                        Height="64"
+                        Background="{ThemeResource AppSubtleBackgroundBrush}"
+                        CornerRadius="32">
+                        <FontIcon
+                            FontSize="30"
+                            Foreground="{StaticResource AppBrandBrush}"
+                            Glyph="&#xE8BD;" />
+                    </Border>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="22"
+                        FontWeight="SemiBold"
+                        Text="¿Cómo puedo orientarte?"
+                        TextAlignment="Center" />
+                    <TextBlock
+                        Style="{StaticResource SecondaryTextStyle}"
+                        Text="Elige una intención fija. No hay IA, tickets reales ni acciones sobre el equipo."
+                        TextAlignment="Center" />
+                <Border
+                    HorizontalAlignment="Stretch"
+                    AutomationProperties.Name="Estado de la conversación"
+                    Style="{StaticResource PillBorderStyle}">
+                    <StackPanel Spacing="6">
+                        <TextBlock
+                            FontWeight="SemiBold"
+                            Text="{x:Bind ViewModel.StateLabel, Mode=OneWay}" />
+                        <TextBlock
+                            Style="{StaticResource SecondaryTextStyle}"
+                            Text="{x:Bind ViewModel.Response, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            FontSize="12"
+                            Text="{x:Bind ViewModel.RequestReference, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
                 <ItemsControl ItemsSource="{x:Bind ViewModel.Suggestions}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:AssistantSuggestion">
                             <Button
                                 Margin="0,5"
                                 HorizontalAlignment="Stretch"
-                                AutomationProperties.Name="{x:Bind Title}">
+                                AutomationProperties.Name="{x:Bind Title}"
+                                Command="{x:Bind Command}">
                                 <Grid MinWidth="420" ColumnSpacing="12">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -72,8 +93,26 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </StackPanel>
-        </Border>
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="8">
+                    <Button
+                        AutomationProperties.Name="Continuar propuesta"
+                        Command="{x:Bind ViewModel.ContinueCommand}"
+                        Content="Continuar" />
+                    <Button
+                        AutomationProperties.Name="Confirmar solicitud sintética"
+                        Command="{x:Bind ViewModel.ConfirmCommand}"
+                        Content="Confirmar" />
+                    <Button
+                        AutomationProperties.Name="Cancelar propuesta"
+                        Command="{x:Bind ViewModel.CancelCommand}"
+                        Content="Cancelar" />
+                </StackPanel>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
         <Grid Grid.Row="2" ColumnSpacing="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -82,7 +121,7 @@
             <TextBox
                 AutomationProperties.Name="Escribir una consulta"
                 IsReadOnly="True"
-                PlaceholderText="La conversación se habilitará en el Bloque 3" />
+                PlaceholderText="El texto libre se habilitará en un bloque posterior" />
             <Button
                 Grid.Column="1"
                 AutomationProperties.Name="Enviar consulta deshabilitado"

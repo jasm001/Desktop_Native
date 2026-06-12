@@ -9,6 +9,9 @@
   <Folder Name="/src/Contracts/">
     <Project Path="src/Contracts/ITSupportNative.Contracts.csproj" />
   </Folder>
+  <Folder Name="/src/Conversation/">
+    <Project Path="src/Conversation/ITSupportNative.Conversation.csproj" />
+  </Folder>
   <Folder Name="/src/Desktop/">
     <Project Path="src/Desktop/ITSupportNative.Desktop.csproj" />
   </Folder>

@@ -210,11 +210,18 @@
       "itsupportnative.catalog": {
         "type": "Project"
       },
+      "itsupportnative.conversation": {
+        "type": "Project",
+        "dependencies": {
+          "ITSupportNative.Catalog": "[1.0.0, )"
+        }
+      },
       "itsupportnative.desktop": {
         "type": "Project",
         "dependencies": {
           "CommunityToolkit.Mvvm": "[8.4.2, )",
           "ITSupportNative.Catalog": "[1.0.0, )",
+          "ITSupportNative.Conversation": "[1.0.0, )",
           "Microsoft.Extensions.DependencyInjection": "[10.0.9, )",
           "Microsoft.Windows.SDK.BuildTools": "[10.0.26100.8249, )",
           "Microsoft.WindowsAppSDK": "[2.1.3, )"
