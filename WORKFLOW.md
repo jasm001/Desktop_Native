@@ -23,8 +23,9 @@
   correcto, 0 warnings y 0 errores.
 - `dotnet test ITSupportNative.slnx --configuration Release --no-build`:
   correcto, 68 pruebas.
-- Smoke test: el ejecutable Release inicia la ventana `IT Support Native` con
-  la composicion DI del catalogo y la conversacion.
+- Smoke tests: el ejecutable Release inicia la ventana `IT Support Native` con
+  la composicion DI del catalogo y la conversacion; el host DeviceAgent inicia
+  con su composicion DI y permanece activo hasta recibir la cancelacion.
 - `corepack pnpm@11.5.3 run check`: correcto.
 - `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
 - `scripts/Validate.ps1`: correcto.
@@ -82,10 +83,10 @@ Solo un bloque principal puede estar `in_progress`.
 | Bloque | Estado | Evidencia |
 | --- | --- | --- |
 | 0. Fundacion del repositorio | completed | Solucion/workspace, lockfiles, CI y gates locales validados; `e42fe2c`. |
-| 1. Shell nativo WinUI | completed | Cinco vistas, tema, teclado, accesibilidad base, layout amplio/compacto y smoke test validados; `f18e8cf`, toolchain `5f6dae7`; correccion x64 de lockfiles validada en el handoff actual. |
+| 1. Shell nativo WinUI | completed | Cinco vistas, tema, teclado, accesibilidad base, layout amplio/compacto y smoke test validados; `f18e8cf`, toolchain `5f6dae7` y lockfiles x64 `531faf6`. |
 | 2. Dominio y catalogo sintetico | completed | Modelos puros, siete fixtures, busqueda/filtros, cuatro decisiones tipadas, integracion fina con Desktop y 26 pruebas unitarias de catalogo; `0d1e315`. |
-| 3. Conversacion determinista | completed | Cinco estados, intenciones fijas, solicitud sintetica idempotente, 13 pruebas unitarias y 3 pruebas del adaptador WinUI. |
-| 4. Agente simulado e IPC | completed | Contrato v1, Named Pipe con ACL de usuario actual, allowlist exacta, maquina de estados, cancelacion, evidencia saneada, SQLite, recuperacion e IPC real cubiertos por 18 pruebas nuevas. |
+| 3. Conversacion determinista | completed | Cinco estados, intenciones fijas, solicitud sintetica idempotente, 13 pruebas unitarias y 3 pruebas del adaptador WinUI; `b09f07a`. |
+| 4. Agente simulado e IPC | completed | Contrato v1, Named Pipe con ACL de usuario actual, allowlist exacta, maquina de estados, cancelacion, evidencia saneada, SQLite, recuperacion e IPC real cubiertos por 18 pruebas nuevas; `b56bfcb`. |
 | 5. Diagnostico de solo lectura | pending | |
 | 6. Primer adaptador en VM | pending | |
 | 7. API compartida y persistencia | pending | |

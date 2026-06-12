@@ -75,7 +75,7 @@ La ACL no sustituye la autorizacion del mensaje. El agente tambien valida:
 - idempotency key;
 - estado valido para cancelacion.
 
-## Fuera de alcance
+## Fuera del alcance del Bloque 4
 
 - instalaciones, desinstalaciones o diagnosticos reales;
 - WinGet, MSI, MSIX o PowerShell firmado;
@@ -86,5 +86,6 @@ La ACL no sustituye la autorizacion del mensaje. El agente tambien valida:
 - sincronizacion de evidencia con API o tickets;
 - conexion de la shell a una solicitud real.
 
-Los adaptadores reales empiezan en el Bloque 6 y solo despues de validar el
-paquete en una VM Windows 11.
+Los diagnosticos locales de solo lectura empiezan en el Bloque 5. Los
+adaptadores reales empiezan en el Bloque 6 y solo despues de validar el paquete
+en una VM Windows 11.

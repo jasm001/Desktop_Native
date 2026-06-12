@@ -17,10 +17,8 @@ corporativo general.
 - Bloque 1 publicado en `f18e8cf`; ajustes de toolchain y lockfiles publicados
   en `5f6dae7` y `531faf6`.
 - Bloque 2 publicado en `0d1e315`.
-- Bloque 3 implementado y validado en el working tree actual; pendiente de
-  publicacion por el usuario.
-- Bloque 4 implementado y validado en el working tree actual; pendiente de
-  publicacion por el usuario.
+- Bloque 3 publicado en `b09f07a`.
+- Bloque 4 publicado en `b56bfcb`.
 - Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
 - Nullable, analyzers, warnings como errores y paquetes centralizados activos.
