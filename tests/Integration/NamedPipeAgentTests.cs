@@ -54,6 +54,45 @@ public sealed class NamedPipeAgentTests : IDisposable
     }
 
     [Fact]
+    public async Task CurrentUserPipeReturnsTypedDiagnosticSnapshot()
+    {
+        string pipeName = $"ITSupportNative.Tests.{Guid.NewGuid():N}";
+        AgentRequestDispatcher dispatcher = CreateDispatcher();
+        using var timeout = new CancellationTokenSource();
+        timeout.CancelAfter(TimeSpan.FromSeconds(10));
+
+        Task serverTask = RunSingleRequestServerAsync(pipeName, dispatcher, timeout.Token);
+        await using var client = new NamedPipeClientStream(
+            ".",
+            pipeName,
+            PipeDirection.InOut,
+            PipeOptions.Asynchronous,
+            TokenImpersonationLevel.Impersonation);
+        await client.ConnectAsync(timeout.Token);
+
+        AgentRequestEnvelope request = AgentJson.CreateRequest(
+            AgentMessageTypes.GetDiagnostics,
+            "correlation-diagnostic-pipe",
+            DiagnosticTestDoubles.AuthorizedRequest());
+        await AgentPipeFraming.WriteAsync(
+            client,
+            AgentJson.Serialize(request),
+            timeout.Token);
+        byte[] responseBytes = await AgentPipeFraming.ReadAsync(client, timeout.Token);
+        AgentResponseEnvelope? response =
+            AgentJson.Deserialize<AgentResponseEnvelope>(responseBytes);
+        AgentDiagnosticSnapshot? snapshot = response is null
+            ? null
+            : AgentJson.DeserializePayload<AgentDiagnosticSnapshot>(response.Payload);
+
+        await serverTask;
+        Assert.NotNull(response);
+        Assert.True(response.Success);
+        Assert.NotNull(snapshot);
+        Assert.Equal(AgentMessageTypes.DiagnosticSnapshot, response.MessageType);
+    }
+
+    [Fact]
     public void DevelopmentServerCanBeCreatedForCurrentUser()
     {
         using NamedPipeServerStream server =
@@ -80,7 +119,9 @@ public sealed class NamedPipeAgentTests : IDisposable
             new SqliteAgentJobStore(stateFile),
             new AgentActionAuthorizationPolicy(),
             TimeProvider.System);
-        return new AgentRequestDispatcher(service);
+        return new AgentRequestDispatcher(
+            service,
+            DiagnosticTestDoubles.CreateService());
     }
 
     private static async Task RunSingleRequestServerAsync(

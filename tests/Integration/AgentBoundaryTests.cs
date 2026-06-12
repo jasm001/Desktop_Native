@@ -1,3 +1,4 @@
+using ITSupportNative.DeviceAgent.Diagnostics;
 using ITSupportNative.DeviceAgent.Jobs;
 
 namespace ITSupportNative.IntegrationTests;
@@ -22,5 +23,19 @@ public sealed class AgentBoundaryTests
             .ToArray();
 
         Assert.DoesNotContain(references, ForbiddenAssemblyNames.Contains);
+    }
+
+    [Fact]
+    public void DiagnosticUseCaseDoesNotDependOnJobPersistence()
+    {
+        Type[] constructorDependencies = typeof(AgentDiagnosticsService)
+            .GetConstructors()
+            .Single()
+            .GetParameters()
+            .Select(parameter => parameter.ParameterType)
+            .ToArray();
+
+        Assert.DoesNotContain(typeof(IAgentJobStore), constructorDependencies);
+        Assert.DoesNotContain(typeof(SqliteAgentJobStore), constructorDependencies);
     }
 }

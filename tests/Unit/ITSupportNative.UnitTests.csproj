@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\BuildingBlocks\ITSupportNative.BuildingBlocks.csproj" />
     <ProjectReference Include="..\..\src\Catalog\ITSupportNative.Catalog.csproj" />
+    <ProjectReference Include="..\..\src\Contracts\ITSupportNative.Contracts.csproj" />
     <ProjectReference Include="..\..\src\Conversation\ITSupportNative.Conversation.csproj" />
   </ItemGroup>
 

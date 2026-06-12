@@ -5,7 +5,8 @@ WinUI 3 client, a restricted device agent, and a shared control plane. The
 repository currently contains the Block 0 foundation, the Block 1 native shell,
 the Block 2 synthetic catalog domain, and the Block 3 deterministic
 conversation flow. Block 4 adds a simulated device agent with typed local IPC
-and durable synthetic jobs. No privileged action, production integration, or
+and durable synthetic jobs. Block 5 adds bounded read-only device diagnostics
+with partial typed results. No privileged action, production integration, or
 administrative portal behavior is implemented.
 
 ## Current Status
@@ -17,7 +18,9 @@ administrative portal behavior is implemented.
   completed.
 - Block 4: simulated device agent, typed IPC, SQLite recovery, and deny-by-default
   authorization completed.
-- Next block: read-only device diagnostics.
+- Block 5: bounded read-only diagnostics and typed action prerequisites
+  completed.
+- Next block: first real adapter validated in a Windows 11 VM.
 - Data policy: synthetic data and deterministic fakes only.
 - Remote: `https://github.com/jasm001/Desktop_Native.git`.
 

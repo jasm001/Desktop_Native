@@ -4,10 +4,8 @@ Fecha de ultima actualizacion: 2026-06-12.
 
 ## Objetivo inmediato
 
-Implementar el Bloque 5: diagnostico local de solo lectura. Debe recolectar solo
-Windows/arquitectura, almacenamiento, memoria, red, dominio, version del agente
-y prerrequisitos declarados, sin explorar archivos personales ni inventario
-corporativo general.
+Preparar el Bloque 6: primer adaptador real en una VM Windows 11, sin adelantar
+la seleccion del paquete ni ejecutar cambios en la PC principal.
 
 ## Estado del repositorio
 
@@ -19,6 +17,7 @@ corporativo general.
 - Bloque 2 publicado en `0d1e315`.
 - Bloque 3 publicado en `b09f07a`.
 - Bloque 4 publicado en `b56bfcb`.
+- Bloque 5 implementado localmente y pendiente de publicacion.
 - Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
 - Nullable, analyzers, warnings como errores y paquetes centralizados activos.
@@ -43,12 +42,18 @@ corporativo general.
 - Autorizacion deny-by-default por version, mensaje, accion, target y version.
 - Trabajo simulado con progreso, cancelacion, evidencia saneada e idempotencia.
 - Estado local durable en SQLite y recuperacion de trabajos interrumpidos.
+- Snapshot diagnostico efimero por IPC con Windows, arquitectura,
+  almacenamiento agregado, memoria, red, dominio, version del agente y
+  prerrequisitos tipados.
+- Fallos parciales saneados, timeout de dominio y cancelacion cubiertos.
+- Los diagnosticos no persisten en SQLite ni exponen nombres internos, rutas,
+  archivos, IP o excepciones.
 - Ejecutable Desktop x64 autocontenido para desarrollo local.
 - SDK global `10.0.301` validado desde `C:\Program Files\dotnet`.
 - La CLI compila y ejecuta la shell. La depuracion en IDE requiere Visual Studio
   2026 version 18.0 o posterior; Visual Studio 2022 no admite `net10.0`.
 - Gitleaks y CI de GitHub configurados.
-- Build Release y 68 pruebas pasan para el Bloque 4; la validacion completa se
+- Build Release y pruebas pasan para el Bloque 5; la validacion completa se
   registra en `WORKFLOW.md`.
 - No existen acciones privilegiadas, secretos, datos corporativos ni
   integraciones productivas.

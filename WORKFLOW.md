@@ -3,10 +3,10 @@
 ## Estado
 
 - Fase actual: capacidades locales controladas para Windows 11.
-- Bloque activo: ninguno; Bloque 5 preparado como siguiente unidad.
-- Ultimo resultado: agente simulado con contrato IPC v1, autorizacion cerrada,
-  estado durable y recuperacion.
-- Siguiente resultado: diagnostico local de solo lectura.
+- Bloque activo: ninguno; Bloque 5 completado localmente.
+- Ultimo resultado: diagnostico local de solo lectura con snapshot efimero,
+  fallos parciales tipados y prerrequisitos allowlisted.
+- Siguiente resultado: primer adaptador real validado en VM Windows 11.
 
 ## Ultima validacion
 
@@ -14,18 +14,18 @@
 - SDK global `10.0.301`: correcto.
 - El gate .NET local usa `-m:1`, deshabilita build servers y escribe build/test
   en `.artifacts/validate` para no competir con el build host del IDE.
-- Lockfiles regenerados por referencias de proyecto; Desktop/WindowsUi
-  conservan unicamente `win-x64`.
+- Lockfile Unit regenerado por la referencia directa a Contracts; los lockfiles
+  Desktop/WindowsUi conservan unicamente `win-x64`.
 - `dotnet restore ITSupportNative.slnx --locked-mode`: correcto.
 - `dotnet format ITSupportNative.slnx --verify-no-changes --no-restore`:
   correcto.
 - `dotnet build ITSupportNative.slnx --configuration Release --no-restore`:
   correcto, 0 warnings y 0 errores.
 - `dotnet test ITSupportNative.slnx --configuration Release --no-build`:
-  correcto, 68 pruebas.
-- Smoke tests: el ejecutable Release inicia la ventana `IT Support Native` con
-  la composicion DI del catalogo y la conversacion; el host DeviceAgent inicia
-  con su composicion DI y permanece activo hasta recibir la cancelacion.
+  correcto, 82 pruebas.
+- Pruebas nuevas: modelos diagnosticos, estructura contractual, orden y unidades
+  de prerrequisitos, fallos parciales saneados, cancelacion, limites, colectores
+  Windows, frontera de persistencia y consulta real por Named Pipe.
 - `corepack pnpm@11.5.3 run check`: correcto.
 - `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
 - `scripts/Validate.ps1`: correcto.
@@ -87,7 +87,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 2. Dominio y catalogo sintetico | completed | Modelos puros, siete fixtures, busqueda/filtros, cuatro decisiones tipadas, integracion fina con Desktop y 26 pruebas unitarias de catalogo; `0d1e315`. |
 | 3. Conversacion determinista | completed | Cinco estados, intenciones fijas, solicitud sintetica idempotente, 13 pruebas unitarias y 3 pruebas del adaptador WinUI; `b09f07a`. |
 | 4. Agente simulado e IPC | completed | Contrato v1, Named Pipe con ACL de usuario actual, allowlist exacta, maquina de estados, cancelacion, evidencia saneada, SQLite, recuperacion e IPC real cubiertos por 18 pruebas nuevas; `b56bfcb`. |
-| 5. Diagnostico de solo lectura | pending | |
+| 5. Diagnostico de solo lectura | completed | Snapshot IPC efimero, colectores Windows de solo lectura, prerrequisitos tipados, fallos parciales saneados y pruebas de frontera. |
 | 6. Primer adaptador en VM | pending | |
 | 7. API compartida y persistencia | pending | |
 | 8. Casos, tickets y OpenText fake | pending | |

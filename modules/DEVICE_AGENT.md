@@ -6,14 +6,15 @@ El DeviceAgent es la unica frontera que puede ejecutar acciones locales. WinUI,
 Teams, IA y backend solo pueden enviar contratos tipados y autorizados; nunca
 envian shell, PowerShell libre, rutas arbitrarias ni argumentos generados.
 
-## Implementacion local del Bloque 4
+## Implementacion local de los Bloques 4 y 5
 
 `src/Contracts/Agent` define el protocolo v1 compartido. Los unicos mensajes de
 entrada son:
 
 - `agent.job.start`;
 - `agent.job.get`;
-- `agent.job.cancel`.
+- `agent.job.cancel`;
+- `agent.diagnostics.get`.
 
 `StartAgentJobRequest` contiene identificadores de solicitud, idempotencia,
 accion, target y version. No expone comando, argumentos ni contenido ejecutable.
@@ -22,6 +23,9 @@ accion, target y version. No expone comando, argumentos ni contenido ejecutable.
 
 - despacho deny-by-default por version y tipo de mensaje;
 - allowlist exacta por accion, target y version;
+- caso de uso de diagnostico independiente de persistencia;
+- colectores de Windows, almacenamiento, memoria, red y version;
+- evaluacion determinista de prerrequisitos declarados;
 - maquina de estados de trabajos simulados;
 - persistencia SQLite local;
 - progreso, cancelacion y evidencia saneada;
@@ -43,6 +47,34 @@ software.install.simulated.v1 / secure-transfer / 6.5
 Esta entrada existe solo para probar el protocolo y las reglas. No instala,
 descarga, detecta ni modifica software. Cualquier otra combinacion se rechaza.
 
+La misma entrada declara prerrequisitos sinteticos y acotados para demostrar la
+evaluacion tipada: Windows, arquitectura x64, 1 GiB disponible, 512 MiB de
+memoria disponible y red activa. Declarar un prerrequisito no autoriza ni
+ejecuta la accion.
+
+## Diagnostico de solo lectura
+
+`agent.diagnostics.get` recibe solo `actionId`, `targetId` y `targetVersion`.
+La combinacion debe existir exactamente en la politica instalada. La respuesta
+`agent.diagnostics.snapshot` conserva secciones fijas:
+
+- version numerica de Windows y arquitectura;
+- capacidad y espacio disponible agregados de volumenes fijos;
+- memoria fisica total y disponible;
+- disponibilidad de red y alcance saneado del dominio;
+- version del DeviceAgent;
+- prerrequisitos ordenados con estado `Satisfied`, `NotSatisfied` o `Unknown`.
+
+Los valores de capacidad usan bytes. No se devuelven letras o nombres de
+unidad, dominio, host, interfaz, IP, excepciones ni rutas. El probe de dominio
+resuelve con timeout el sufijo de dominio reportado por Windows y solo devuelve
+un estado tipado; no valida controladores, SYSVOL, NETLOGON ni salud de GPO.
+
+Cada colector falla de forma independiente. Un fallo se transforma en
+`Unavailable`, `TimedOut` o `NotApplicable` con un codigo fijo y no aborta las
+otras secciones. La cancelacion solicitada por el caller si cancela el snapshot
+completo.
+
 ## Persistencia y recuperacion
 
 El estado vive en:
@@ -57,6 +89,10 @@ La base SQLite conserva snapshots de trabajos e idempotency keys. Un trabajo
 
 El esquema local es tecnico y no contiene credenciales, salida de procesos,
 inventario general ni datos corporativos.
+
+Los snapshots diagnosticos no se escriben en SQLite. Se construyen bajo demanda
+y se devuelven por IPC; la base local sigue siendo exclusiva de la cola durable
+de trabajos.
 
 ## Seguridad del IPC
 
@@ -75,9 +111,9 @@ La ACL no sustituye la autorizacion del mensaje. El agente tambien valida:
 - idempotency key;
 - estado valido para cancelacion.
 
-## Fuera del alcance del Bloque 4
+## Fuera del alcance despues del Bloque 5
 
-- instalaciones, desinstalaciones o diagnosticos reales;
+- instalaciones, desinstalaciones o remediaciones reales;
 - WinGet, MSI, MSIX o PowerShell firmado;
 - trabajo emitido por backend;
 - identidad de dispositivo o usuario corporativa;
@@ -86,9 +122,8 @@ La ACL no sustituye la autorizacion del mensaje. El agente tambien valida:
 - sincronizacion de evidencia con API o tickets;
 - conexion de la shell a una solicitud real.
 
-Los diagnosticos locales de solo lectura empiezan en el Bloque 5. Los
-adaptadores reales empiezan en el Bloque 6 y solo despues de validar el paquete
-en una VM Windows 11.
+Los adaptadores reales empiezan en el Bloque 6 y solo despues de validar el
+paquete en una VM Windows 11.
 
 ## Capacidad posterior condicionada
 

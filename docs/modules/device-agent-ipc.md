@@ -2,9 +2,9 @@
 
 ## Responsabilidad
 
-El Bloque 4 demuestra que un proceso separado puede recibir mensajes locales
-tipados, rechazarlos por defecto, conservar estado durable y reportar un
-resultado sin ejecutar acciones sobre el dispositivo.
+Los Bloques 4 y 5 demuestran que un proceso separado puede recibir mensajes
+locales tipados, rechazarlos por defecto, conservar trabajos durables y devolver
+diagnosticos efimeros sin ejecutar acciones sobre el dispositivo.
 
 ## Protocolo
 
@@ -16,6 +16,17 @@ Cada frame usa:
 El envelope de solicitud contiene `version`, `messageType`, `correlationId` y un
 `payload` tipado. La respuesta conserva la correlacion y devuelve un snapshot de
 trabajo o un `AgentErrorCode`.
+
+Mensajes allowlisted en v1:
+
+- `agent.job.start`;
+- `agent.job.get`;
+- `agent.job.cancel`;
+- `agent.diagnostics.get`.
+
+`agent.diagnostics.get` solo acepta una referencia tipada
+`actionId`/`targetId`/`targetVersion`. No contiene comando, argumentos, ruta,
+script ni opciones libres. La respuesta usa `agent.diagnostics.snapshot`.
 
 Errores tipados:
 
@@ -52,6 +63,8 @@ para permitir cierre limpio, pruebas aisladas y recuperacion tras reinicio.
 La persistencia es una cola tecnica local. PostgreSQL, outbox y auditoria central
 siguen reservados para el Bloque 7.
 
+El snapshot diagnostico nunca se persiste en esta base.
+
 ## Named Pipe
 
 `NamedPipeAgentWorker` atiende una solicitud por conexion en el pipe de
@@ -68,7 +81,7 @@ El servidor usa:
 ## Pruebas
 
 `tests/Contract` verifica serializacion, versiones, errores tipados y ausencia de
-campos de ejecucion libre.
+campos de ejecucion libre en trabajos y diagnosticos.
 
 `tests/Integration` verifica:
 
@@ -80,7 +93,13 @@ campos de ejecucion libre.
 - recuperacion SQLite tras recrear el servicio;
 - intercambio real por Named Pipe con ACL de usuario actual;
 - ausencia de dependencias del nucleo hacia Desktop o WinUI.
+- snapshot diagnostico por dispatcher y Named Pipe;
+- fallos parciales saneados, cancelacion y limites;
+- colectores reales de Windows con datos agregados;
+- ausencia de dependencia del diagnostico hacia la persistencia de trabajos.
 
 La prueba de Named Pipe debe ejecutarse fuera del sandbox de Codex porque el
 sandbox bloquea la conexion local aun cuando servidor y cliente comparten
 usuario.
+
+El detalle del snapshot vive en `read-only-device-diagnostics.md`.

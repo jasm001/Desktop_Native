@@ -93,6 +93,27 @@ public sealed class AgentRequestDispatcherTests : IDisposable
         Assert.Equal(AgentErrorCode.JobNotFound, response.Error?.Code);
     }
 
+    [Fact]
+    public async Task AllowlistedDiagnosticMessageReturnsEphemeralSnapshot()
+    {
+        AgentRequestDispatcher dispatcher = CreateDispatcher();
+        AgentRequestEnvelope request = AgentJson.CreateRequest(
+            AgentMessageTypes.GetDiagnostics,
+            "correlation-diagnostics",
+            DiagnosticTestDoubles.AuthorizedRequest());
+
+        AgentResponseEnvelope response = await dispatcher.DispatchAsync(
+            request,
+            CancellationToken.None);
+        AgentDiagnosticSnapshot? snapshot =
+            AgentJson.DeserializePayload<AgentDiagnosticSnapshot>(response.Payload);
+
+        Assert.True(response.Success);
+        Assert.Equal(AgentMessageTypes.DiagnosticSnapshot, response.MessageType);
+        Assert.NotNull(snapshot);
+        Assert.Equal("correlation-diagnostics", response.CorrelationId);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_testDirectory))
@@ -110,6 +131,8 @@ public sealed class AgentRequestDispatcherTests : IDisposable
             new SqliteAgentJobStore(stateFile),
             new AgentActionAuthorizationPolicy(),
             TimeProvider.System);
-        return new AgentRequestDispatcher(service);
+        return new AgentRequestDispatcher(
+            service,
+            DiagnosticTestDoubles.CreateService());
     }
 }

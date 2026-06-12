@@ -1,10 +1,13 @@
 using System.Text.Json;
 using ITSupportNative.Contracts.Agent;
+using ITSupportNative.DeviceAgent.Diagnostics;
 using ITSupportNative.DeviceAgent.Jobs;
 
 namespace ITSupportNative.DeviceAgent.Ipc;
 
-public sealed class AgentRequestDispatcher(AgentJobService jobs)
+public sealed class AgentRequestDispatcher(
+    AgentJobService jobs,
+    AgentDiagnosticsService diagnostics)
 {
     public async Task<AgentResponseEnvelope> DispatchAsync(
         AgentRequestEnvelope request,
@@ -40,6 +43,10 @@ public sealed class AgentRequestDispatcher(AgentJobService jobs)
                 correlationId,
                 cancellationToken),
             AgentMessageTypes.CancelJob => await HandleCancelAsync(
+                request.Payload,
+                correlationId,
+                cancellationToken),
+            AgentMessageTypes.GetDiagnostics => await HandleDiagnosticsAsync(
                 request.Payload,
                 correlationId,
                 cancellationToken),
@@ -93,6 +100,35 @@ public sealed class AgentRequestDispatcher(AgentJobService jobs)
 
         AgentJobCommandResult result = await jobs.CancelAsync(command.JobId, cancellationToken);
         return ToResponse(result, correlationId);
+    }
+
+    private async Task<AgentResponseEnvelope> HandleDiagnosticsAsync(
+        JsonElement payload,
+        string correlationId,
+        CancellationToken cancellationToken)
+    {
+        GetAgentDiagnosticsRequest? command =
+            DeserializePayload<GetAgentDiagnosticsRequest>(payload);
+        if (command is null)
+        {
+            return InvalidPayload(correlationId);
+        }
+
+        AgentDiagnosticCommandResult result =
+            await diagnostics.CollectAsync(command, cancellationToken);
+        if (result.Success && result.Snapshot is not null)
+        {
+            return AgentJson.CreateSuccess(
+                AgentMessageTypes.DiagnosticSnapshot,
+                correlationId,
+                result.Snapshot);
+        }
+
+        AgentError error = result.Error
+            ?? new AgentError(
+                AgentErrorCode.InternalError,
+                "The agent did not produce a valid diagnostic result.");
+        return AgentJson.CreateError(correlationId, error.Code, error.Message);
     }
 
     private static TPayload? DeserializePayload<TPayload>(JsonElement payload)

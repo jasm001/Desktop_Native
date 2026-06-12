@@ -67,4 +67,70 @@ public sealed class AgentContractTests
         Assert.DoesNotContain(propertyNames, name => name.Contains("Command", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(propertyNames, name => name.Contains("Argument", StringComparison.OrdinalIgnoreCase));
     }
+
+    [Fact]
+    public void DiagnosticRequestRoundTripsWithoutExecutionFields()
+    {
+        var command = new GetAgentDiagnosticsRequest(
+            "software.install.simulated.v1",
+            "secure-transfer",
+            "6.5");
+        AgentRequestEnvelope envelope = AgentJson.CreateRequest(
+            AgentMessageTypes.GetDiagnostics,
+            "correlation-diagnostics",
+            command);
+
+        AgentRequestEnvelope? restored =
+            AgentJson.Deserialize<AgentRequestEnvelope>(AgentJson.Serialize(envelope));
+        GetAgentDiagnosticsRequest? restoredCommand = restored is null
+            ? null
+            : AgentJson.DeserializePayload<GetAgentDiagnosticsRequest>(restored.Payload);
+        string[] propertyNames = typeof(GetAgentDiagnosticsRequest)
+            .GetProperties()
+            .Select(property => property.Name)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(command, restoredCommand);
+        Assert.Equal(
+            [
+                nameof(GetAgentDiagnosticsRequest.ActionId),
+                nameof(GetAgentDiagnosticsRequest.TargetId),
+                nameof(GetAgentDiagnosticsRequest.TargetVersion),
+            ],
+            propertyNames);
+        Assert.DoesNotContain(propertyNames, name => name.Contains("Command", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(propertyNames, name => name.Contains("Argument", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(propertyNames, name => name.Contains("Path", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void DiagnosticSnapshotUsesFixedSectionsAndByteUnits()
+    {
+        string[] propertyNames = typeof(AgentDiagnosticSnapshot)
+            .GetProperties()
+            .Select(property => property.Name)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(
+            [
+                nameof(AgentDiagnosticSnapshot.ActionPrerequisites),
+                nameof(AgentDiagnosticSnapshot.Agent),
+                nameof(AgentDiagnosticSnapshot.CapturedAtUtc),
+                nameof(AgentDiagnosticSnapshot.Memory),
+                nameof(AgentDiagnosticSnapshot.Network),
+                nameof(AgentDiagnosticSnapshot.Storage),
+                nameof(AgentDiagnosticSnapshot.Windows),
+            ],
+            propertyNames);
+        Assert.Contains(
+            typeof(StorageDiagnosticResult).GetProperties(),
+            property => property.Name == nameof(StorageDiagnosticResult.AvailableBytes)
+                && property.PropertyType == typeof(long?));
+        Assert.Contains(
+            typeof(MemoryDiagnosticResult).GetProperties(),
+            property => property.Name == nameof(MemoryDiagnosticResult.TotalBytes)
+                && property.PropertyType == typeof(long?));
+    }
 }

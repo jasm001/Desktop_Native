@@ -15,4 +15,6 @@ public sealed class DeviceAgentOptions
         "jobs.db");
 
     public int SimulationIntervalMilliseconds { get; set; } = 250;
+
+    public int DomainProbeTimeoutMilliseconds { get; set; } = 2000;
 }
