@@ -21,7 +21,7 @@
                         Text="Contenido sintético para validar la experiencia. No instala software." />
                 </StackPanel>
                 <Border Grid.Column="1" Style="{StaticResource PillBorderStyle}">
-                    <TextBlock VerticalAlignment="Center" Text="6 productos de demostración" />
+                    <TextBlock VerticalAlignment="Center" Text="{x:Bind ViewModel.ProductCountLabel}" />
                 </Border>
             </Grid>
             <AutoSuggestBox

@@ -1,3 +1,6 @@
+using ITSupportNative.Catalog.Application;
+using ITSupportNative.Catalog.Domain;
+using ITSupportNative.Catalog.Fixtures;
 using ITSupportNative.Desktop.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
@@ -13,6 +16,9 @@ public partial class App : Application
         InitializeComponent();
 
         Services = new ServiceCollection()
+            .AddSingleton<IReadOnlyList<SoftwareProduct>>(SyntheticCatalog.Products)
+            .AddSingleton<CatalogSearchService>()
+            .AddSingleton<CatalogDecisionService>()
             .AddSingleton<ShellViewModel>()
             .AddSingleton<HomeViewModel>()
             .AddSingleton<CatalogViewModel>()

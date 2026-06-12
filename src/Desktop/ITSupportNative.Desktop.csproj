@@ -25,4 +25,8 @@
     <Content Include="Assets\logo.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Catalog\ITSupportNative.Catalog.csproj" />
+  </ItemGroup>
+
 </Project>

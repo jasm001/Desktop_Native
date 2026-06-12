@@ -102,6 +102,9 @@
       "itsupportnative.buildingblocks": {
         "type": "Project"
       },
+      "itsupportnative.catalog": {
+        "type": "Project"
+      },
       "itsupportnative.contracts": {
         "type": "Project"
       }

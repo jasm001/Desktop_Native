@@ -3,32 +3,30 @@
 ## Estado
 
 - Fase actual: dominio local para la experiencia nativa Windows 11.
-- Bloque activo: ninguno; Bloque 2 preparado como siguiente unidad.
-- Ultimo resultado: shell WinUI 3 compilable con cinco vistas, tema,
-  accesibilidad base y layout adaptable.
-- Siguiente resultado: dominio y catalogo sintetico con reglas puras.
+- Bloque activo: ninguno; Bloque 3 preparado como siguiente unidad.
+- Ultimo resultado: dominio y catalogo sintetico con reglas puras, busqueda,
+  filtros, alternativas y decisiones tipadas.
+- Siguiente resultado: conversacion determinista sin creacion implicita de
+  solicitudes.
 
 ## Ultima validacion
 
-- Fecha: 2026-06-11.
-- `dotnet restore ITSupportNative.slnx --force-evaluate`: correcto.
-- `dotnet restore ITSupportNative.slnx --locked-mode` con SDK global
-  `10.0.301`: correcto.
+- Fecha: 2026-06-12.
+- SDK global `10.0.301`: correcto.
+- Lockfiles regenerados por referencias de proyecto; Desktop/WindowsUi
+  conservan unicamente `win-x64`.
+- `dotnet restore ITSupportNative.slnx --locked-mode`: correcto.
 - `dotnet format ITSupportNative.slnx --verify-no-changes --no-restore`:
   correcto.
 - `dotnet build ITSupportNative.slnx --configuration Release --no-restore`:
   correcto, 0 warnings y 0 errores.
 - `dotnet test ITSupportNative.slnx --configuration Release --no-build`:
-  correcto, 6 pruebas.
-- Smoke test: ejecutable autocontenido abre una ventana `IT Support Native`.
-- Ejecucion desde PowerShell con el SDK global: correcta.
-- UI Automation: cinco rutas, foco por teclado, Enter y tema claro/oscuro
-  correctos.
-- Revision visual: 1280x820 claro/oscuro y 760x700 compacto correctos.
+  correcto, 33 pruebas.
+- Smoke test: el ejecutable Release inicia la ventana `IT Support Native` con
+  la composicion DI del catalogo.
 - `corepack pnpm@11.5.3 run check`: correcto.
-- `gitleaks dir . --redact`: correcto, sin hallazgos.
-- `scripts/Validate.ps1`: correcto despues de regenerar los lockfiles
-  Desktop/WindowsUi solo para `win-x64`.
+- `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
+- `scripts/Validate.ps1`: correcto.
 
 Validacion anterior de fundacion:
 
@@ -84,7 +82,7 @@ Solo un bloque principal puede estar `in_progress`.
 | --- | --- | --- |
 | 0. Fundacion del repositorio | completed | Solucion/workspace, lockfiles, CI y gates locales validados; `e42fe2c`. |
 | 1. Shell nativo WinUI | completed | Cinco vistas, tema, teclado, accesibilidad base, layout amplio/compacto y smoke test validados; `f18e8cf`, toolchain `5f6dae7`; correccion x64 de lockfiles validada en el handoff actual. |
-| 2. Dominio y catalogo sintetico | pending | |
+| 2. Dominio y catalogo sintetico | completed | Modelos puros, siete fixtures, busqueda/filtros, cuatro decisiones tipadas, integracion fina con Desktop y 26 pruebas unitarias de catalogo. |
 | 3. Conversacion determinista | pending | |
 | 4. Agente simulado e IPC | pending | |
 | 5. Diagnostico de solo lectura | pending | |

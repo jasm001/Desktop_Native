@@ -19,6 +19,34 @@ Se detectan aproximadamente 224 nombres candidatos en la hoja principal. Esa
 cifra no significa 224 paquetes instalables: hay encabezados internos,
 aplicaciones de otras plataformas, versiones antiguas y entradas propietarias.
 
+## Implementacion local del Bloque 2
+
+`src/Catalog` contiene la primera frontera ejecutable del dominio, sin
+dependencias de WinUI, Prisma, IA, persistencia o integraciones. Incluye:
+
+- producto, version, licencia, estado, aliases y alternativas;
+- estados `Approved`, `Unlisted`, `EndOfLife` y `Prohibited`;
+- licencia `Commercial` como condicion independiente de autorizacion;
+- busqueda determinista por nombre, alias, fabricante, categoria y version;
+- filtros combinables por estado y tipo de licencia;
+- decisiones tipadas `Inform`, `Propose`, `Escalate` y `Reject`;
+- fixtures pequenos y completamente sinteticos.
+
+Las reglas vigentes del incremento son:
+
+| Consulta | Resultado |
+| --- | --- |
+| Informacion sobre cualquier referencia | `Inform`; nunca crea una accion |
+| Adquisicion de producto aprobado no comercial | `Propose` |
+| Adquisicion de producto comercial | `Escalate` |
+| Adquisicion de producto no listado o desconocido | `Escalate` |
+| Adquisicion de producto EOL | `Reject` |
+| Adquisicion de producto prohibido | `Reject` |
+
+Una propuesta sigue siendo solo una decision de catalogo. No crea solicitud,
+ticket, trabajo ni instalacion. Esas transiciones pertenecen a bloques
+posteriores.
+
 ## Regla
 
 El Excel prueba que un producto puede estar permitido, prohibido o sujeto a

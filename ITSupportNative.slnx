@@ -3,6 +3,9 @@
   <Folder Name="/src/BuildingBlocks/">
     <Project Path="src/BuildingBlocks/ITSupportNative.BuildingBlocks.csproj" />
   </Folder>
+  <Folder Name="/src/Catalog/">
+    <Project Path="src/Catalog/ITSupportNative.Catalog.csproj" />
+  </Folder>
   <Folder Name="/src/Contracts/">
     <Project Path="src/Contracts/ITSupportNative.Contracts.csproj" />
   </Folder>

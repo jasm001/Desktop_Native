@@ -2,10 +2,10 @@
 
 ## Responsabilidad
 
-`src/Desktop` contiene el cliente Windows 11 sin privilegios. En el Bloque 1 su
-responsabilidad se limita a presentar una shell navegable con datos sinteticos.
-No ejecuta comandos, no crea solicitudes reales y no se conecta al agente,
-backend o integraciones corporativas.
+`src/Desktop` contiene el cliente Windows 11 sin privilegios. Presenta la shell
+navegable y consume el dominio sintetico de catalogo como adaptador de
+presentacion. No ejecuta comandos, no crea solicitudes reales y no se conecta
+al agente, backend o integraciones corporativas.
 
 ## Experiencia
 
@@ -29,8 +29,11 @@ demostracion.
 ## Arquitectura
 
 - `App` crea el contenedor de `Microsoft.Extensions.DependencyInjection`.
+- `App` registra los fixtures y casos de uso puros de `src/Catalog`.
 - `MainWindow` posee solo navegacion, tema y comportamiento adaptable de shell.
 - Los ViewModels exponen contenido de presentacion inmutable.
+- `CatalogViewModel` transforma resultados del dominio a tarjetas; no decide
+  autorizacion, escalamiento o rechazo.
 - `ShellRouteCatalog` mantiene las rutas permitidas del bloque.
 - Los recursos visuales viven en `Themes`.
 - Cada destino mantiene su XAML y code-behind de enlace por separado.
@@ -74,6 +77,5 @@ con la matriz real de monitores.
 
 ## Siguiente bloque
 
-El Bloque 2 agregara dominio y catalogo sintetico como reglas puras. La shell no
-debe absorber esas reglas: consumira casos de uso desde la frontera de
-aplicacion.
+El Bloque 3 agregara conversacion determinista sobre los casos de uso puros. La
+shell seguira sin crear solicitudes ante una consulta.

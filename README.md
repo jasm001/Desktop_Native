@@ -2,15 +2,16 @@
 
 IT Support Native is a Windows 11 support product built around an unprivileged
 WinUI 3 client, a restricted device agent, and a shared control plane. The
-repository currently contains the Block 0 foundation and the Block 1 native
-shell. No privileged action, production integration, or administrative portal
-behavior is implemented.
+repository currently contains the Block 0 foundation, the Block 1 native shell,
+and the Block 2 synthetic catalog domain. No privileged action, production
+integration, or administrative portal behavior is implemented.
 
 ## Current Status
 
 - Block 0: repository foundation completed.
 - Block 1: native WinUI shell completed.
-- Next block: synthetic catalog domain and rules.
+- Block 2: synthetic catalog domain and deterministic rules completed.
+- Next block: deterministic conversation states.
 - Data policy: synthetic data and deterministic fakes only.
 - Remote: `https://github.com/jasm001/Desktop_Native.git`.
 

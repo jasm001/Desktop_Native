@@ -1,13 +1,13 @@
 # Contexto actual
 
-Fecha de ultima actualizacion: 2026-06-11.
+Fecha de ultima actualizacion: 2026-06-12.
 
 ## Objetivo inmediato
 
-Implementar el Bloque 2: dominio y catalogo sintetico con reglas puras,
-busqueda, filtros y decisiones tipadas. La shell WinUI del Bloque 1 queda como
-consumidor de esos casos de uso. El portal administrativo permanece reservado
-para el Bloque 11.
+Implementar el Bloque 3: conversacion determinista con estados de consulta,
+propuesta, confirmacion, solicitud creada y cancelacion. Debe reutilizar las
+decisiones del catalogo y conservar la regla de que consultar nunca crea una
+solicitud. El portal administrativo permanece reservado para el Bloque 11.
 
 ## Estado del repositorio
 
@@ -16,19 +16,26 @@ para el Bloque 11.
 - Bloque 0 publicado en `e42fe2c`.
 - Bloque 1 publicado en `f18e8cf`; ajustes de toolchain y lockfiles publicados
   en `5f6dae7` y `531faf6`.
-- El handoff actual corrige en el working tree los lockfiles Desktop/WindowsUi
-  para conservar solo el RID declarado `win-x64`.
+- Bloque 2 implementado y validado en el working tree actual; pendiente de
+  publicacion por el usuario.
+- Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
 - Nullable, analyzers, warnings como errores y paquetes centralizados activos.
 - Pruebas unitarias, de contratos y de arquitectura iniciales activas.
 - Shell WinUI con cinco vistas, tema claro/oscuro, navegacion por teclado,
   layout adaptable y datos sinteticos validada.
+- Dominio puro de catalogo con producto, version, licencia, estado,
+  alternativas, busqueda, filtros y decisiones tipadas.
+- Fixtures sinteticos cubren aprobado, comercial, no listado, EOL y prohibido.
+- La vista Catalogo consume el caso de uso mediante DI y no contiene reglas de
+  autorizacion.
 - Ejecutable Desktop x64 autocontenido para desarrollo local.
 - SDK global `10.0.301` validado desde `C:\Program Files\dotnet`.
 - La CLI compila y ejecuta la shell. La depuracion en IDE requiere Visual Studio
   2026 version 18.0 o posterior; Visual Studio 2022 no admite `net10.0`.
 - Gitleaks y CI de GitHub configurados.
-- `scripts/Validate.ps1` pasa completo despues de la correccion x64.
+- Build Release y 33 pruebas pasan para el Bloque 2; la validacion completa se
+  registra en `WORKFLOW.md`.
 - No existen acciones privilegiadas, secretos, datos corporativos ni
   integraciones productivas.
 
