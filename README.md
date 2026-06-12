@@ -4,7 +4,8 @@ IT Support Native is a Windows 11 support product built around an unprivileged
 WinUI 3 client, a restricted device agent, and a shared control plane. The
 repository currently contains the Block 0 foundation, the Block 1 native shell,
 the Block 2 synthetic catalog domain, and the Block 3 deterministic
-conversation flow. No privileged action, production integration, or
+conversation flow. Block 4 adds a simulated device agent with typed local IPC
+and durable synthetic jobs. No privileged action, production integration, or
 administrative portal behavior is implemented.
 
 ## Current Status
@@ -14,7 +15,9 @@ administrative portal behavior is implemented.
 - Block 2: synthetic catalog domain and deterministic rules completed.
 - Block 3: deterministic conversation states and idempotent synthetic requests
   completed.
-- Next block: simulated device agent and typed IPC.
+- Block 4: simulated device agent, typed IPC, SQLite recovery, and deny-by-default
+  authorization completed.
+- Next block: read-only device diagnostics.
 - Data policy: synthetic data and deterministic fakes only.
 - Remote: `https://github.com/jasm001/Desktop_Native.git`.
 
@@ -64,8 +67,8 @@ src/
   Catalog/          Pure synthetic software catalog and decisions
   Conversation/     Deterministic conversation state machine
   Desktop/          WinUI 3 shell with five local synthetic views
-  DeviceAgent/      Restricted Windows worker with no privileged actions yet
-  Contracts/        Versioned shared contracts
+  DeviceAgent/      Restricted Windows worker and testable simulated agent core
+  Contracts/        Versioned shared IPC and HTTP contracts
   BuildingBlocks/   Dependency-light shared primitives
   AdminWeb/         Reserved until Block 11
   Worker/           Reserved durable Node.js worker boundary
@@ -91,10 +94,14 @@ Run the complete local gate from PowerShell:
 Equivalent commands:
 
 ```powershell
-dotnet restore ITSupportNative.slnx --locked-mode
+dotnet restore ITSupportNative.slnx --locked-mode -m:1 --disable-build-servers
 dotnet format ITSupportNative.slnx --verify-no-changes --no-restore
-dotnet build ITSupportNative.slnx --configuration Release --no-restore
-dotnet test ITSupportNative.slnx --configuration Release --no-build
+dotnet restore ITSupportNative.slnx --locked-mode -m:1 `
+  --artifacts-path .artifacts/validate --disable-build-servers
+dotnet build ITSupportNative.slnx --configuration Release --no-restore -m:1 `
+  --artifacts-path .artifacts/validate --disable-build-servers
+dotnet test ITSupportNative.slnx --configuration Release --no-build -m:1 `
+  --artifacts-path .artifacts/validate --disable-build-servers
 corepack pnpm@11.5.3 install --frozen-lockfile
 corepack pnpm@11.5.3 run check
 .\scripts\Test-Secrets.ps1
@@ -115,7 +122,7 @@ runs as the current user and does not perform privileged actions.
 For a direct Debug build and run from PowerShell:
 
 ```powershell
-dotnet restore ITSupportNative.slnx --locked-mode
+dotnet restore ITSupportNative.slnx --locked-mode -m:1 --disable-build-servers
 dotnet run --project .\src\Desktop\ITSupportNative.Desktop.csproj `
   --configuration Debug --no-restore
 ```

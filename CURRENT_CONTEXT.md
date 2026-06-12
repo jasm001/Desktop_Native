@@ -4,10 +4,10 @@ Fecha de ultima actualizacion: 2026-06-12.
 
 ## Objetivo inmediato
 
-Implementar el Bloque 4: agente simulado e IPC tipado con Named Pipes y ACL de
-desarrollo. Debe consumir solo mensajes versionados y mantener ejecucion,
-persistencia durable y acciones reales fuera del cliente WinUI. El portal
-administrativo permanece reservado para el Bloque 11.
+Implementar el Bloque 5: diagnostico local de solo lectura. Debe recolectar solo
+Windows/arquitectura, almacenamiento, memoria, red, dominio, version del agente
+y prerrequisitos declarados, sin explorar archivos personales ni inventario
+corporativo general.
 
 ## Estado del repositorio
 
@@ -18,6 +18,8 @@ administrativo permanece reservado para el Bloque 11.
   en `5f6dae7` y `531faf6`.
 - Bloque 2 publicado en `0d1e315`.
 - Bloque 3 implementado y validado en el working tree actual; pendiente de
+  publicacion por el usuario.
+- Bloque 4 implementado y validado en el working tree actual; pendiente de
   publicacion por el usuario.
 - Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
@@ -36,12 +38,19 @@ administrativo permanece reservado para el Bloque 11.
   solicitud corporativa persistida.
 - La vista Asistente consume la maquina de estados mediante DI y mantiene el
   texto libre deshabilitado.
+- Contrato IPC v1 con mensajes tipados para iniciar, consultar y cancelar
+  trabajos; no contiene comando ni argumentos libres.
+- DeviceAgent dividido entre host Worker y nucleo comprobable.
+- Named Pipe de desarrollo limitado al usuario actual y frames de hasta 64 KiB.
+- Autorizacion deny-by-default por version, mensaje, accion, target y version.
+- Trabajo simulado con progreso, cancelacion, evidencia saneada e idempotencia.
+- Estado local durable en SQLite y recuperacion de trabajos interrumpidos.
 - Ejecutable Desktop x64 autocontenido para desarrollo local.
 - SDK global `10.0.301` validado desde `C:\Program Files\dotnet`.
 - La CLI compila y ejecuta la shell. La depuracion en IDE requiere Visual Studio
   2026 version 18.0 o posterior; Visual Studio 2022 no admite `net10.0`.
 - Gitleaks y CI de GitHub configurados.
-- Build Release y 50 pruebas pasan para el Bloque 3; la validacion completa se
+- Build Release y 68 pruebas pasan para el Bloque 4; la validacion completa se
   registra en `WORKFLOW.md`.
 - No existen acciones privilegiadas, secretos, datos corporativos ni
   integraciones productivas.
@@ -83,8 +92,9 @@ El primer recorrido vertical usa datos sinteticos:
 7. mostrar progreso y resultado;
 8. registrar evidencia local saneada.
 
-No instala software real durante este recorrido. La shell actual tampoco crea
-solicitudes o tickets; esas transiciones se implementan en bloques posteriores.
+No instala software real durante este recorrido. El agente simulado ya puede
+crear trabajos locales tipados por IPC, pero la shell actual no los invoca y
+tampoco crea solicitudes o tickets corporativos.
 
 ## Pendientes que no bloquean el esqueleto
 

@@ -1,5 +1,9 @@
 # Adaptadores de instalacion y configuracion
 
+El Bloque 4 no implementa estos adaptadores. La accion
+`software.install.simulated.v1` solo prueba IPC, autorizacion y estado; no llama
+WinGet, MSI, MSIX, PowerShell ni procesos hijos.
+
 ## Objetivo
 
 Automatizar instalaciones configurables sin dar al modelo control libre del

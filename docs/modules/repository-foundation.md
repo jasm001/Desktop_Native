@@ -8,8 +8,9 @@ implementing product behavior.
 ## Boundaries
 
 - `src/Desktop`: reserved Windows desktop boundary; WinUI starts in Block 1.
-- `src/DeviceAgent`: restricted Windows worker process with no privileged
-  actions in Block 0.
+- `src/DeviceAgent`: restricted Windows worker host.
+- `src/DeviceAgent/Core`: testable IPC, authorization, durable state, and
+  simulated jobs without privileged actions.
 - `src/Contracts`: versioned cross-process and HTTP contracts.
 - `src/BuildingBlocks`: shared primitives with no executable dependencies.
 - `src/AdminWeb`: reserved portal boundary; implementation starts in Block 11.

@@ -16,6 +16,7 @@
     <Project Path="src/Desktop/ITSupportNative.Desktop.csproj" />
   </Folder>
   <Folder Name="/src/DeviceAgent/">
+    <Project Path="src/DeviceAgent/Core/ITSupportNative.DeviceAgent.Core.csproj" />
     <Project Path="src/DeviceAgent/ITSupportNative.DeviceAgent.csproj" />
   </Folder>
   <Folder Name="/tests/" />
@@ -24,6 +25,9 @@
   </Folder>
   <Folder Name="/tests/Contract/">
     <Project Path="tests/Contract/ITSupportNative.ContractTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Integration/">
+    <Project Path="tests/Integration/ITSupportNative.IntegrationTests.csproj" />
   </Folder>
   <Folder Name="/tests/Unit/">
     <Project Path="tests/Unit/ITSupportNative.UnitTests.csproj" />
