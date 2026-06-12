@@ -89,3 +89,17 @@ La ACL no sustituye la autorizacion del mensaje. El agente tambien valida:
 Los diagnosticos locales de solo lectura empiezan en el Bloque 5. Los
 adaptadores reales empiezan en el Bloque 6 y solo despues de validar el paquete
 en una VM Windows 11.
+
+## Capacidad posterior condicionada
+
+Un flujo futuro puede recibir campanas explicitas para refrescar politicas de
+equipo. El agente permanecera inactivo entre consultas HTTPS salientes,
+aplicara jitter y no inferira cambios mediante ping o inspeccion general de AD.
+
+La accion sera tipada y allowlisted. No aceptara switches enviados por backend,
+no guardara credenciales FortiClient/Windows y no iniciara una sesion de tecnico.
+La conexion automatica solo se habilitara si Network y Security aprueban un
+mecanismo de maquina o pre-logon administrado.
+
+Esta capacidad no forma parte del Bloque 5 ni cambia el diagnostico de solo
+lectura. Se detalla en `../docs/modules/domain-policy-refresh.md`.

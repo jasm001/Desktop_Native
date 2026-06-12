@@ -61,6 +61,8 @@
 | D-057 | La prueba inicia con agente nativo y API compartida; despues se amplia el bot de Teams existente. |
 | D-058 | Una consulta nunca crea instalacion ni ticket sin confirmacion explicita posterior. |
 | D-059 | WinUI y Teams usan los mismos estados de consulta, propuesta, confirmacion y accion. |
+| D-060 | Una futura actualizacion de politicas se activa mediante campana administrativa explicita; el agente no detecta cambios de GPO mediante ping. |
+| D-061 | La conexion automatica a red corporativa solo puede usar un mecanismo de maquina o pre-logon aprobado; nunca credenciales humanas almacenadas. |
 
 ## Supuestos de trabajo por validar
 
@@ -71,6 +73,8 @@
 | W-003 | Una sede entre Guadalajara, Ensenada, Merida o Queretaro alojara aproximadamente 100 usuarios. |
 | W-004 | Digital Office puede crear grupo/cuenta tecnica del bot en OpenText. |
 | W-005 | La empresa proporcionara recursos Azure para el piloto. |
+| W-006 | Network/Endpoint Management puede entregar un perfil FortiClient EMS de maquina, pre-logon o equivalente para el equipo de prueba. |
+| W-007 | Axis Atmos puede proporcionar al equipo de prueba las rutas de dominio necesarias para DNS, controlador de dominio, `SYSVOL` y `NETLOGON`. |
 
 ## Requieren decision de negocio
 

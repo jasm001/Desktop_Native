@@ -104,8 +104,15 @@ tampoco crea solicitudes o tickets corporativos.
 - proveedor de IA aprobado;
 - PKI/firma y reglas Sophos;
 - retencion corporativa.
+- perfil FortiClient EMS de maquina/pre-logon para una futura campana de
+  refresco de politicas;
+- prueba de alcance de dominio mediante Axis Atmos en el equipo fisico de
+  desarrollo.
 
 Estos pendientes bloquean integraciones o piloto, no la implementacion local.
+Los dos pendientes de conectividad de politicas tampoco bloquean el Bloque 5 ni
+el flujo principal; condicionan solo la mejora posterior descrita en
+`docs/modules/domain-policy-refresh.md`.
 
 ## Stopper
 

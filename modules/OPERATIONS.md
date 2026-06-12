@@ -79,12 +79,45 @@ actualizacion y rollback en la sede piloto.
 - Ofrecer instruccion o deep link al cliente VPN aprobado.
 - Permitir que el trabajo espere hasta que el controlador de dominio sea
   alcanzable.
-- FortiClient requiere identidad de usuario y queda fuera de automatizacion.
+- El perfil FortiClient conocido para el MVP requiere identidad de usuario y
+  queda fuera de automatizacion.
 - Axis Atmos puede evaluarse como prerrequisito del piloto, pero el agente no
   inicia sesion en nombre del usuario.
 - Para el MVP, si no hay red corporativa ya activa, `gpupdate` se escala.
 - En oficinas puede ejecutarse el adaptador de politica si el controlador de
   dominio es alcanzable y el usuario acepta logoff/reinicio.
+
+### Mejora posterior: campanas de refresco de politicas
+
+Despues del MVP se puede evaluar un flujo administrado para sustituir el
+procedimiento manual del tecnico sin almacenar sus credenciales:
+
+1. el owner de AD/UEMS publica una campana explicita en el backend;
+2. el DeviceAgent consulta por HTTPS saliente con un intervalo inicial de una
+   hora y jitter para evitar consultas simultaneas;
+3. la campana identifica alcance, vigencia y una accion tipada, no comandos;
+4. WinUI informa al usuario y permite aceptar o posponer;
+5. el equipo obtiene conectividad mediante un mecanismo corporativo aprobado de
+   maquina, pre-logon o acceso privado;
+6. el agente valida DNS corporativo, controlador de dominio y acceso requerido
+   a `SYSVOL`/`NETLOGON`;
+7. el agente ejecuta `group-policy.refresh.computer.v1` con timeout y evidencia
+   saneada;
+8. logoff y reinicio requieren una segunda confirmacion y una ventana segura;
+9. tras reiniciar, el agente verifica el resultado y reporta la correlacion de
+   la campana.
+
+El sondeo no usa ping para detectar cambios de GPO. Una respuesta ICMP solo
+demuestra alcance parcial y AD no envia al endpoint una notificacion generica de
+que existe una politica nueva. La fuente de verdad para este flujo es la campana
+administrativa explicita.
+
+Esta mejora no usa una cuenta de tecnico, una sesion oculta ni credenciales VPN
+persistidas. Si no existe conectividad de maquina aprobada, conserva el
+comportamiento del MVP: orientar o escalar.
+
+La especificacion tecnica, gates y evidencia pendiente viven en
+`../docs/modules/domain-policy-refresh.md`.
 
 ## Identidad y contrasenas
 

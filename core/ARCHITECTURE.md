@@ -246,6 +246,23 @@ temporal. El gobierno de esa practica queda fuera del alcance.
 - La expiracion puede no manifestarse mientras el equipo trabaja solo con cache.
   Al recuperar LAN/VPN, el dominio puede exigir el cambio o rechazar acceso.
 
+### Campana futura de refresco
+
+Una mejora posterior al MVP puede usar el control plane como fuente explicita de
+campanas de refresco de politicas. El agente consulta por HTTPS saliente con baja
+frecuencia y jitter; no intenta descubrir cambios con ping ni replica cambios
+desde una VM, sandbox o usuario alterno.
+
+El backend entrega identidad de campana, alcance, expiracion y el identificador
+de una accion conocida. El endpoint valida politica instalada, conectividad de
+dominio y consentimiento local. `gpupdate`, logoff y reboot son pasos separados,
+tipados y auditables.
+
+La conectividad automatica queda condicionada a un perfil corporativo de maquina
+o pre-logon aprobado. No se almacenan credenciales humanas y el rechazo de esa
+capacidad no bloquea el producto: se mantiene la orientacion/escalamiento del
+MVP.
+
 ## Persistencia
 
 Entidades centrales:

@@ -95,6 +95,47 @@ Solo un bloque principal puede estar `in_progress`.
 | 10. Endurecimiento para piloto | pending | |
 | 11. Portal administrativo web | pending | |
 
+## Stoppers futuros no bloqueantes
+
+Estos stoppers condicionan solo la mejora posterior de refresco administrado de
+politicas. No cambian el estado `pending` del Bloque 5 ni bloquean el MVP actual.
+
+```text
+Fecha: 2026-06-12
+Modulo: DeviceAgent / conectividad corporativa
+Decision requerida: Confirmar si Endpoint Management puede crear para el equipo
+  de prueba un perfil FortiClient EMS de maquina, pre-logon o equivalente, sin
+  credenciales humanas persistidas.
+Evidencia: Export o captura saneada del perfil; version de FortiClient/EMS;
+  metodo de autenticacion; alcance/rutas; comportamiento de auto-connect,
+  desconexion y recuperacion tras reinicio.
+Alternativas: Mantener VPN iniciada manualmente por el usuario; usar Axis Atmos
+  si publica todos los servicios de dominio requeridos; escalar como en el MVP.
+Impacto: Sin perfil aprobado no existe autoconexion segura para ejecutar una
+  campana fuera de LAN.
+Recomendacion: Solicitar un perfil limitado al equipo/OU de prueba con
+  certificado de maquina o mecanismo corporativo equivalente.
+Owner: Network / Endpoint Management / Security.
+```
+
+```text
+Fecha: 2026-06-12
+Modulo: DeviceAgent / conectividad corporativa
+Decision requerida: Validar en el equipo fisico de prueba si Axis Atmos permite
+  localizar y alcanzar DNS corporativo, controlador de dominio, SYSVOL y
+  NETLOGON sin FortiClient.
+Evidencia: Fecha y red de la prueba; estado de Axis; `nltest /dsgetdc:<dominio>`
+  con nombres saneados; resolucion DNS; acceso a rutas requeridas; resultado de
+  una GPO inocua y reversible; necesidad de logoff/reboot.
+Alternativas: Perfil FortiClient EMS de maquina/pre-logon; conexion manual;
+  conservar orientacion/escalamiento del MVP.
+Impacto: Si Axis no publica esos servicios, no puede ser la conectividad para
+  el refresco automatico de politicas.
+Recomendacion: Probar primero solo lectura y despues una GPO de laboratorio
+  aprobada, sin compartir nombres, IP, credenciales ni salida sensible.
+Owner: Desarrollo / Network / Active Directory / Security.
+```
+
 ## Formato de stopper
 
 ```text
