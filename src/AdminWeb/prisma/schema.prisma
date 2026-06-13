@@ -1,0 +1,128 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RequestStatus {
+  CONFIRMED
+  COMPLETED
+  FAILED
+}
+
+enum JobStatus {
+  QUEUED
+  COMPLETED
+  FAILED
+}
+
+enum OutboxStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Device {
+  id          String   @id @db.VarChar(128)
+  displayName String   @map("display_name") @db.VarChar(120)
+  environment String   @db.VarChar(32)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  requests SupportRequest[]
+
+  @@map("devices")
+}
+
+model SupportRequest {
+  id               String        @id @db.Uuid
+  reference        String        @unique @db.VarChar(128)
+  idempotencyKey   String        @unique @map("idempotency_key") @db.VarChar(100)
+  idempotencyHash  String        @map("idempotency_hash") @db.Char(64)
+  correlationId    String        @map("correlation_id") @db.VarChar(100)
+  requesterSubject String        @map("requester_subject") @db.VarChar(128)
+  deviceId         String        @map("device_id") @db.VarChar(128)
+  productId        String        @map("product_id") @db.VarChar(128)
+  productVersion   String        @map("product_version") @db.VarChar(128)
+  actionId         String        @map("action_id") @db.VarChar(128)
+  status           RequestStatus @default(CONFIRMED)
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  device Device        @relation(fields: [deviceId], references: [id], onDelete: Restrict)
+  job    ExecutionJob?
+
+  @@index([deviceId, createdAt])
+  @@index([correlationId])
+  @@map("support_requests")
+}
+
+model ExecutionJob {
+  id            String    @id @db.Uuid
+  requestId     String    @unique @map("request_id") @db.Uuid
+  actionId      String    @map("action_id") @db.VarChar(128)
+  targetId      String    @map("target_id") @db.VarChar(128)
+  targetVersion String    @map("target_version") @db.VarChar(128)
+  status        JobStatus @default(QUEUED)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  request SupportRequest @relation(fields: [requestId], references: [id], onDelete: Restrict)
+
+  @@index([status, createdAt])
+  @@map("execution_jobs")
+}
+
+model AuditEvent {
+  id            String   @id @db.Uuid
+  correlationId String   @map("correlation_id") @db.VarChar(100)
+  actorSubject  String   @map("actor_subject") @db.VarChar(128)
+  eventType     String   @map("event_type") @db.VarChar(128)
+  entityType    String   @map("entity_type") @db.VarChar(64)
+  entityId      String   @map("entity_id") @db.VarChar(128)
+  payload       Json
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([entityType, entityId, createdAt])
+  @@index([correlationId])
+  @@map("audit_events")
+}
+
+model OutboxEvent {
+  id            String       @id @db.Uuid
+  aggregateType String       @map("aggregate_type") @db.VarChar(64)
+  aggregateId   String       @map("aggregate_id") @db.VarChar(128)
+  eventType     String       @map("event_type") @db.VarChar(128)
+  payload       Json
+  status        OutboxStatus @default(PENDING)
+  attemptCount  Int          @default(0) @map("attempt_count")
+  availableAt   DateTime     @default(now()) @map("available_at") @db.Timestamptz(6)
+  claimedAt     DateTime?    @map("claimed_at") @db.Timestamptz(6)
+  claimedBy     String?      @map("claimed_by") @db.VarChar(128)
+  completedAt   DateTime?    @map("completed_at") @db.Timestamptz(6)
+  lastErrorCode String?      @map("last_error_code") @db.VarChar(64)
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  syntheticEffect SyntheticOutboxEffect?
+
+  @@index([status, availableAt, createdAt])
+  @@index([aggregateType, aggregateId])
+  @@map("outbox_events")
+}
+
+model SyntheticOutboxEffect {
+  id            String   @id @db.Uuid
+  outboxEventId String   @unique @map("outbox_event_id") @db.Uuid
+  effectType    String   @map("effect_type") @db.VarChar(128)
+  payload       Json
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  outboxEvent OutboxEvent @relation(fields: [outboxEventId], references: [id], onDelete: Restrict)
+
+  @@map("synthetic_outbox_effects")
+}

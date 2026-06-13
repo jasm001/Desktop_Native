@@ -1,10 +1,43 @@
 {
   "name": "@it-support-native/admin-web",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
-    "lint": "node ../../scripts/validate-workspace.mjs",
-    "test": "node ../../scripts/validate-workspace.mjs",
-    "build": "node ../../scripts/validate-workspace.mjs"
+    "dev": "next dev",
+    "lint": "prisma generate && eslint . && tsc --noEmit",
+    "test": "prisma generate && vitest run --exclude tests/integration/**",
+    "test:integration:direct": "prisma generate && vitest run tests/integration",
+    "build": "prisma generate && node scripts/build.mjs",
+    "start": "next start",
+    "prisma:validate": "prisma validate",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "db:seed:development": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@it-support-native/control-plane-contracts": "workspace:*",
+    "@prisma/adapter-pg": "7.8.0",
+    "@prisma/client": "7.8.0",
+    "dotenv": "17.4.2",
+    "next": "16.2.9",
+    "pg": "8.21.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.2",
+    "@types/pg": "8.20.0",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.9",
+    "prisma": "7.8.0",
+    "tsx": "4.22.4",
+    "typescript": "5.9.3",
+    "vitest": "4.1.8"
   }
 }

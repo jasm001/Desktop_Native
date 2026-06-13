@@ -1,10 +1,32 @@
 {
   "name": "@it-support-native/worker",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
-    "lint": "node ../../scripts/validate-workspace.mjs",
-    "test": "node ../../scripts/validate-workspace.mjs",
-    "build": "node ../../scripts/validate-workspace.mjs"
+    "lint": "eslint src tests && tsc --noEmit",
+    "test": "vitest run --config vitest.config.ts --exclude tests/integration/**",
+    "test:integration:direct": "vitest run --config vitest.config.ts tests/integration",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "start:once": "node dist/main.js --once"
+  },
+  "dependencies": {
+    "@it-support-native/control-plane-contracts": "workspace:*",
+    "pg": "8.21.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.4",
+    "@types/node": "24.13.2",
+    "@types/pg": "8.20.0",
+    "eslint": "9.39.4",
+    "tsx": "4.22.4",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.61.0",
+    "vitest": "4.1.8"
   }
 }

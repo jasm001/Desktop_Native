@@ -7,8 +7,9 @@ the Block 2 synthetic catalog domain, and the Block 3 deterministic
 conversation flow. Block 4 adds a simulated device agent with typed local IPC
 and durable synthetic jobs. Block 5 adds bounded read-only device diagnostics
 with partial typed results. Block 6 adds one closed 7-Zip MSI adapter validated
-only in a disposable Windows 11 VM. No production integration or administrative
-portal behavior is implemented.
+only in a disposable Windows 11 VM. Block 7 is in progress with the first
+shared control-plane and PostgreSQL persistence increment. No production
+integration or administrative portal behavior is implemented.
 
 ## Current Status
 
@@ -22,7 +23,8 @@ portal behavior is implemented.
 - Block 5: bounded read-only diagnostics and typed action prerequisites
   completed.
 - Block 6: closed 7-Zip 26.01 x64 adapter and disposable VM matrix completed.
-- Next block: shared API and persistence; it remains pending.
+- Block 7: shared API and persistence in progress; the first control-plane,
+  transactional outbox, and durable worker increment is implemented locally.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes/RAG. This
   profile is not a corporate pilot.
@@ -58,6 +60,8 @@ stopper before implementation.
 - .NET SDK 10.0.301 or a compatible 10.0 feature band.
 - Node.js 24 LTS.
 - Corepack.
+- PostgreSQL 18 for the Block 7 integration gate. `DATABASE_URL` must target a
+  non-production database and the role must have `CREATEDB`.
 - Gitleaks 8.x for local secret scanning.
 - Visual Studio Community 2026 version 18.0 or later for interactive WinUI
   development.
@@ -79,8 +83,8 @@ src/
   DeviceAgent/      Restricted Windows worker and testable simulated agent core
   Contracts/        Versioned shared IPC and HTTP contracts
   BuildingBlocks/   Dependency-light shared primitives
-  AdminWeb/         Reserved until Block 11
-  Worker/           Reserved durable Node.js worker boundary
+  AdminWeb/         Next.js control plane API and PostgreSQL infrastructure
+  Worker/           Separate durable Node.js outbox worker
 tests/
   Unit/
   Architecture/
@@ -113,10 +117,14 @@ dotnet test ITSupportNative.slnx --configuration Release --no-build -m:1 `
   --artifacts-path .artifacts/validate --disable-build-servers
 corepack pnpm@11.5.3 install --frozen-lockfile
 corepack pnpm@11.5.3 run check
+corepack pnpm@11.5.3 run test:integration
 .\scripts\Test-Secrets.ps1
 ```
 
-GitHub Actions repeats build, test, format, workspace, and secret-scan gates on
+The integration command creates a random PostgreSQL database, applies
+`prisma migrate deploy`, seeds synthetic development data, runs AdminWeb and
+worker integration tests, and removes the database. GitHub Actions repeats the
+build, test, format, PostgreSQL integration, workspace, and secret-scan gates on
 `main` and pull requests.
 
 Run the native shell after a Release build:

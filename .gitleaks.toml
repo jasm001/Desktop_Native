@@ -11,5 +11,5 @@ paths = [
   '''(^|/)\.git/''',
   '''(^|/)\.packages/''',
   '''(^|/)\.tools/''',
-  '''(^|/)(bin|node_modules|obj)/''',
+  '''(^|/)(\.next|bin|dist|generated|node_modules|obj)/''',
 ]

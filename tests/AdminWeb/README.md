@@ -1,4 +1,9 @@
 # Admin Web Tests
 
-Reserved for portal component and end-to-end tests. The portal is implemented
-in Block 11.
+The Block 7 control-plane tests live with the Node packages:
+
+- `src/Contracts/Web/tests` for HTTP and outbox contracts;
+- `src/AdminWeb/tests` for unit and PostgreSQL integration tests;
+- `src/Worker/tests` for worker unit and PostgreSQL integration tests.
+
+Portal component and Playwright role tests remain reserved for Block 11.

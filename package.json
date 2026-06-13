@@ -11,6 +11,10 @@
     "lint": "corepack pnpm@11.5.3 --recursive lint",
     "test": "corepack pnpm@11.5.3 --recursive test",
     "build": "corepack pnpm@11.5.3 --recursive build",
-    "check": "node scripts/check-text-format.mjs && corepack pnpm@11.5.3 --recursive lint && corepack pnpm@11.5.3 --recursive test && corepack pnpm@11.5.3 --recursive build"
+    "check": "node scripts/check-text-format.mjs && corepack pnpm@11.5.3 --recursive lint && corepack pnpm@11.5.3 --recursive test && corepack pnpm@11.5.3 --recursive build",
+    "test:integration": "node scripts/run-control-plane-integration.mjs"
+  },
+  "devDependencies": {
+    "pg": "8.21.0"
   }
 }

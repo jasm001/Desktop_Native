@@ -3,12 +3,12 @@
 ## Estado
 
 - Fase actual: capacidades locales controladas para Windows 11.
-- Bloque activo: ninguno. Bloque 6 `completed`; Bloque 7 `pending`.
-- Ultimo resultado funcional: adaptador cerrado para 7-Zip 26.01 x64 MSI,
-  publicado en `f808425`, validado en una VM Windows 11 x64 con checkpoint y
-  restauracion.
-- Resultado publicado: cierre documental del Bloque 6 en `bfb4a35`. No existe
-  trabajo principal activo; el Bloque 7 requiere una tarea separada.
+- Bloque activo: Bloque 7 `in_progress`. Bloque 6 permanece `completed`.
+- Ultimo resultado funcional: primer incremento del control plane del Bloque 7
+  validado localmente con Next.js, Prisma/PostgreSQL y worker outbox separado.
+- Ultimo resultado publicado: cierre documental del Bloque 6 en `bfb4a35`. El
+  incremento del Bloque 7 permanece solo en el working tree y esta documentado
+  en `docs/modules/control-plane-foundation.md`.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.
@@ -33,6 +33,17 @@
 - Las pruebas del adaptador usan dobles y no ejecutan el MSI en el host.
 - Named Pipe real: correcto fuera del sandbox con ACL del usuario actual.
 - `corepack pnpm@11.5.3 run check`: correcto.
+- Contratos/Node: 8 pruebas unitarias y de contrato; lint, TypeScript estricto y
+  builds de Contracts, AdminWeb y Worker correctos.
+- Next.js `16.2.9`: build standalone correcto con webpack; rutas HTTP v1 de
+  catalogo, creacion confirmada y estado incluidas.
+- PostgreSQL 18 real efimero: migracion
+  `20260613074457_control_plane_foundation` aplicada con `migrate deploy`.
+- Integracion del Bloque 7: 7 pruebas AdminWeb y 3 pruebas Worker correctas;
+  idempotencia, transaccion, auditoria append-only, timestamps de base, consultas
+  sin mutacion, claim/retry y efecto sintetico cubiertos.
+- `corepack pnpm@11.5.3 audit --prod --audit-level high`: correcto, sin
+  vulnerabilidades conocidas.
 - `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
 - `scripts/Validate.ps1`: correcto.
 - Lockfiles sin cambios; Desktop/WindowsUi conservan unicamente `win-x64`.
@@ -112,7 +123,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 4. Agente simulado e IPC | completed | Contrato v1, Named Pipe con ACL de usuario actual, allowlist exacta, maquina de estados, cancelacion, evidencia saneada, SQLite, recuperacion e IPC real cubiertos por 18 pruebas nuevas; `b56bfcb`. |
 | 5. Diagnostico de solo lectura | completed | Snapshot IPC efimero, colectores Windows de solo lectura, prerrequisitos tipados, fallos parciales saneados y pruebas de frontera; `e3a0b8d`. |
 | 6. Primer adaptador en VM | completed | Adaptador 7-Zip 26.01 x64 y 110 pruebas publicados en `f808425`; matriz real de instalacion, idempotencia, desinstalacion, fallos de mirror/hash y restauracion de checkpoint validada el 2026-06-13. |
-| 7. API compartida y persistencia | pending | |
+| 7. API compartida y persistencia | in_progress | Primer incremento validado localmente: contratos HTTP v1, identidad de desarrollo, migracion PostgreSQL/Prisma, mutacion transaccional idempotente, auditoria append-only, outbox y worker separado; aun no publicado. |
 | 8. Casos, tickets y OpenText fake | pending | |
 | 9. Canal Teams existente | pending | |
 | 10. Endurecimiento para piloto | pending | |

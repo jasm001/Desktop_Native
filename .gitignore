@@ -62,6 +62,7 @@ yarn-error.log*
 *.sqlite
 *.sqlite3
 prisma/dev.db*
+src/AdminWeb/src/generated/prisma/
 
 # Secrets and local configuration
 .env

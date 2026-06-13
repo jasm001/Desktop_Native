@@ -1,0 +1,25 @@
+:root {
+  color-scheme: light dark;
+  font-family:
+    "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: Canvas;
+  color: CanvasText;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+code {
+  font-family: "Cascadia Code", "Consolas", monospace;
+}

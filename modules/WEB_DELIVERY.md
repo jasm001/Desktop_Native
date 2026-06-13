@@ -5,6 +5,10 @@
 Portal administrativo y plano de control con Next.js. Mantiene experiencia Fluent
 inspirada en el mockup, sin simular Windows ni copiar el frontend Vite existente.
 
+El primer incremento del Bloque 7 activa solo la API, persistencia y estructura
+modular de `src/AdminWeb`. La interfaz administrativa, Fluent UI, Playwright y
+telemetria permanecen fuera de ese incremento y no se consideran implementados.
+
 ## Stack
 
 - Next.js App Router y TypeScript estricto.

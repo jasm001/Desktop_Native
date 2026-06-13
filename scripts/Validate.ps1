@@ -43,6 +43,9 @@ try {
     corepack pnpm@11.5.3 run check
     if ($LASTEXITCODE -ne 0) { throw 'pnpm checks failed.' }
 
+    corepack pnpm@11.5.3 run test:integration
+    if ($LASTEXITCODE -ne 0) { throw 'PostgreSQL integration tests failed.' }
+
     & (Join-Path $PSScriptRoot 'Test-Secrets.ps1')
 }
 finally {

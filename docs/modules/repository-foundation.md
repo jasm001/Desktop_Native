@@ -13,8 +13,10 @@ implementing product behavior.
   simulated jobs without privileged actions.
 - `src/Contracts`: versioned cross-process and HTTP contracts.
 - `src/BuildingBlocks`: shared primitives with no executable dependencies.
-- `src/AdminWeb`: reserved portal boundary; implementation starts in Block 11.
-- `src/Worker`: reserved durable Node.js worker boundary.
+- `src/AdminWeb`: boundary reserved by Block 0 and activated in Block 7 for the
+  shared API and persistence; portal UI remains deferred to Block 11.
+- `src/Worker`: boundary reserved by Block 0 and activated in Block 7 as a
+  separate durable Node.js process.
 
 ## Quality Controls
 

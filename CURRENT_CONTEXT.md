@@ -4,15 +4,14 @@ Fecha de ultima actualizacion: 2026-06-13.
 
 ## Objetivo inmediato
 
-El Bloque 6 esta completado. El adaptador cerrado de 7-Zip 26.01 x64 MSI,
-publicado en `f808425`, paso la matriz real en una VM Windows 11 x64 desechable
-con checkpoint y el estado inicial fue restaurado. No hay otro bloque principal
-activo; el Bloque 7 permanece `pending` y no se inicia dentro de este cierre.
+El Bloque 6 permanece `completed`. El Bloque 7 es el unico bloque principal
+`in_progress`; su primer incremento establece el control plane compartido,
+persistencia PostgreSQL y worker outbox sin construir el portal administrativo
+ni conectar WinUI, DeviceAgent o servicios externos.
 
-El incremento puede usar un mirror local simulado con software libre
-redistribuible. Hermes/RAG, Windows Service, Salud real, API local y modo
-degradado forman parte del MVP local acordado, pero se implementan como unidades
-separadas y no se mezclan dentro del primer adaptador.
+El incremento esta implementado y validado en el working tree, pero todavia no
+esta publicado. El alcance y los limites viven en
+`docs/modules/control-plane-foundation.md`.
 
 ## Estado del repositorio
 
@@ -29,6 +28,17 @@ separadas y no se mezclan dentro del primer adaptador.
 - Cierre documental y evidencia VM del Bloque 6 publicados en `bfb4a35`.
 - Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
+- `src/AdminWeb` es una aplicacion Next.js App Router con TypeScript estricto,
+  contratos HTTP v1 y modulos iniciales del control plane; no contiene portal.
+- Identidad sintetica determinista habilitable solo en desarrollo.
+- Prisma/PostgreSQL con migracion versionada, timestamps gobernados por la base,
+  auditoria append-only y outbox transaccional.
+- La mutacion confirmada crea solicitud, trabajo, auditoria y outbox en una
+  transaccion, con idempotencia por clave y hash del payload.
+- `src/Worker` es un proceso Node separado con claim `SKIP LOCKED`, lease,
+  reintentos acotados y efecto sintetico idempotente.
+- El gate crea una base PostgreSQL efimera real, aplica migraciones, ejecuta
+  pruebas de AdminWeb/worker y elimina la base.
 - Nullable, analyzers, warnings como errores y paquetes centralizados activos.
 - Pruebas unitarias, de contratos y de arquitectura iniciales activas.
 - Shell WinUI con cinco vistas, tema claro/oscuro, navegacion por teclado,
@@ -88,12 +98,11 @@ separadas y no se mezclan dentro del primer adaptador.
 
 ## Siguiente reanudacion
 
-1. Inspeccionar `git status --short --branch` y confirmar `bfb4a35` en `main`.
-2. Confirmar que el Bloque 6 permanece `completed` y que no existe otro bloque
-   principal `in_progress`.
-3. Iniciar el Bloque 7 solo mediante una tarea separada, leyendo sus documentos
-   propietarios y sin mezclar Windows Service, Hermes/RAG o WinUI-DeviceAgent
-   dentro del cierre del adaptador.
+1. Inspeccionar el working tree y conservar el incremento local del Bloque 7.
+2. Confirmar que el Bloque 6 permanece `completed` y el Bloque 7 es el unico
+   bloque principal `in_progress`.
+3. Continuar el Bloque 7 en otra unidad acotada, sin adelantar portal, tickets,
+   Teams, Hermes/RAG, Windows Service ni conexiones WinUI-DeviceAgent.
 
 ## Alcance local acordado
 
