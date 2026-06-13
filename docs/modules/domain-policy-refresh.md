@@ -57,7 +57,9 @@ campanas.
 
 UEMS puede ser una fuente alternativa de la campana si ofrece correlacion,
 vigencia, auditoria e idempotencia equivalentes. La eleccion final se realiza
-cuando exista el backend del Bloque 7 y se conozca la capacidad corporativa.
+despues del Bloque 8 y solo cuando se conozca la capacidad corporativa. El
+backend del Bloque 7 ya existe, pero no autoriza campanas, UEMS ni conectividad
+de dominio.
 
 ## Seguridad
 

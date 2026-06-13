@@ -25,6 +25,8 @@ production integration or administrative portal behavior is implemented.
 - Block 6: closed 7-Zip 26.01 x64 adapter and disposable VM matrix completed.
 - Block 7: shared API, PostgreSQL persistence, transactional outbox, durable
   worker, and local WinUI-to-simulated-agent flow completed.
+- Next block: Block 8, internal cases, escalation, 72-hour closure policy, and
+  a deterministic fake `ITicketingProvider`; real OpenText remains disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes/RAG. This
   profile is not a corporate pilot.

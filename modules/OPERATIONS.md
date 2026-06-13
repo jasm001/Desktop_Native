@@ -1,5 +1,11 @@
 # Operacion del MVP
 
+## Estado
+
+Documento transversal de referencia; no es un bloque activo. Durante el
+Bloque 8 solo protege fronteras de escalamiento y ticketing fake. No autoriza
+OpenText, UEMS, Rescue, Power Automate ni operaciones productivas reales.
+
 ## Topologia recomendada
 
 - Portal, API y worker en Azure.

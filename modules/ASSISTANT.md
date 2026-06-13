@@ -47,8 +47,10 @@ la sesion. Incluye producto, version, tipo, referencia e idempotency key.
 
 Este registro demuestra la transicion y la deduplicacion, pero no es una
 `SupportRequest` durable ni una solicitud corporativa. No crea ticket, trabajo,
-instalacion o evidencia operativa. La persistencia PostgreSQL y la solicitud
-real pertenecen al Bloque 7.
+instalacion o evidencia operativa por si mismo. El adaptador WinUI del Bloque 7
+puede persistir una `SupportRequest` sintetica confirmada en PostgreSQL. La
+creacion de `BotCase`, escalamiento y ticket fake pertenece al siguiente
+Bloque 8.
 
 ## Idempotencia
 

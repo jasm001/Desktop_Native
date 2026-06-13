@@ -8,10 +8,10 @@ Los Bloques 6 y 7 permanecen `completed`. No hay otro bloque principal activo.
 El recorrido local del Bloque 7 conecta WinUI, API, PostgreSQL, worker y agente
 simulado sin construir el portal administrativo ni conectar servicios externos.
 
-El primer incremento fue publicado en `2b89a6b`. El incremento de cierre esta
-implementado y validado en el working tree, pero todavia no esta publicado. El
+El primer incremento fue publicado en `2b89a6b` y el cierre en `ed4789e`. El
 alcance y los limites viven en `docs/modules/control-plane-foundation.md` y
-`docs/modules/control-plane-local-flow.md`.
+`docs/modules/control-plane-local-flow.md`. El Bloque 8 es el siguiente bloque
+desbloqueado y permanece `pending`.
 
 ## Estado del repositorio
 
@@ -27,6 +27,7 @@ alcance y los limites viven en `docs/modules/control-plane-foundation.md` y
 - Incremento automatizado del Bloque 6 publicado en `f808425`.
 - Cierre documental y evidencia VM del Bloque 6 publicados en `bfb4a35`.
 - Fundacion del control plane del Bloque 7 publicada en `2b89a6b`.
+- Cierre del recorrido local del Bloque 7 publicado en `ed4789e`.
 - Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
 - `src/AdminWeb` es una aplicacion Next.js App Router con TypeScript estricto,
@@ -106,10 +107,10 @@ alcance y los limites viven en `docs/modules/control-plane-foundation.md` y
 
 ## Siguiente reanudacion
 
-1. Inspeccionar y publicar por separado el incremento de cierre del Bloque 7.
-2. Confirmar que los Bloques 6 y 7 permanecen `completed` y que no hay otro
+1. Confirmar que los Bloques 6 y 7 permanecen `completed` y que no hay otro
    bloque principal activo.
-3. Iniciar el Bloque 8 solo en una nueva unidad acotada, sin adelantar Teams,
+2. Definir y documentar el alcance exacto del primer incremento del Bloque 8.
+3. Iniciar el Bloque 8 solo en esa nueva unidad acotada, sin adelantar Teams,
    portal, Hermes/RAG, Windows Service, UEMS real ni integraciones corporativas.
 
 ## Alcance local acordado

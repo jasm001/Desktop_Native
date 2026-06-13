@@ -39,6 +39,10 @@ sesion.
 - trabajos, IPC o DeviceAgent;
 - autenticacion, autorizacion o ejecucion.
 
+El adaptador WinUI del Bloque 7 puede persistir una solicitud sintetica
+confirmada sin cambiar este dominio puro. El siguiente Bloque 8 agregara casos y
+ticketing fake fuera de `src/Conversation`.
+
 ## Pruebas
 
 `tests/Unit/ConversationServiceTests.cs` cubre todos los estados, decisiones de

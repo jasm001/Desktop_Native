@@ -168,6 +168,10 @@ Implementar `BotCase`, escalamiento, SLA de 72 horas e `ITicketingProvider` fake
 Gate: consultas no crean caso operativo; confirmaciones crean una sola solicitud;
 fallos generan escalamiento detallado sin secretos.
 
+Estado: `pending` y siguiente bloque desbloqueado. Su primer incremento debe
+definirse antes de editar y no puede conectar OpenText real ni adelantar Teams o
+el portal administrativo.
+
 ## Bloque 9: canal Teams existente
 
 Definir y probar el adaptador para que el bot corporativo existente consuma la

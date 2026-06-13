@@ -44,8 +44,9 @@ Las reglas vigentes del incremento son:
 | Adquisicion de producto prohibido | `Reject` |
 
 Una propuesta sigue siendo solo una decision de catalogo. No crea solicitud,
-ticket, trabajo ni instalacion. Esas transiciones pertenecen a bloques
-posteriores.
+ticket, trabajo ni instalacion. El Bloque 7 implemento la solicitud y el trabajo
+sinteticos confirmados; el siguiente Bloque 8 modelara `BotCase`, escalamiento y
+ticketing fake sin cambiar estas reglas de catalogo.
 
 ## Regla
 

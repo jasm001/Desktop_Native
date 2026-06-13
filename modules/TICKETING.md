@@ -1,5 +1,14 @@
 # Arquitectura de tickets y metricas
 
+## Estado
+
+Documento propietario del siguiente bloque desbloqueado: Bloque 8 `pending`.
+Antes de implementarlo se debe definir un primer incremento acotado.
+
+El Bloque 8 usa `ITicketingProvider` fake y datos sinteticos. No conecta
+OpenText real, no usa endpoints corporativos y no implementa Teams ni el portal
+administrativo.
+
 ## Principio
 
 No mezclar dos objetivos distintos:
@@ -9,6 +18,10 @@ No mezclar dos objetivos distintos:
 
 Toda interaccion operativa crea un `BotCase` interno. Solo algunas crean un
 `ExternalTicket` en OpenText.
+
+Durante el Bloque 8, `ExternalTicket` es una representacion sintetica producida
+por el provider fake. Las referencias a estados, campos y flujos de OpenText en
+este documento definen el contrato futuro; no autorizan una conexion real.
 
 ## Modelo recomendado
 

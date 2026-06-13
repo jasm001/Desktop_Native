@@ -64,8 +64,9 @@ el usuario.
 completo dentro de una transaccion. El store usa conexiones cortas sin pooling
 para permitir cierre limpio, pruebas aisladas y recuperacion tras reinicio.
 
-La persistencia es una cola tecnica local. PostgreSQL, outbox y auditoria central
-siguen reservados para el Bloque 7.
+La persistencia SQLite sigue siendo una cola tecnica local del agente. El
+Bloque 7 agrego PostgreSQL, outbox y auditoria central sin reemplazar este store
+ni abrir una conexion entrante desde el backend.
 
 El snapshot diagnostico nunca se persiste en esta base.
 

@@ -32,7 +32,10 @@ implementing product behavior.
 This block adds no shell execution surface, privileged action, external
 integration, production endpoint, credential, or corporate data.
 
-## Next Gate
+## Historical Next Gate
 
 Block 1 may replace the desktop placeholder with the WinUI 3 shell while
 preserving the project boundary and quality controls.
+
+This was the next gate when Block 0 closed. Blocks 1 through 7 are now complete;
+the current next block is Block 8.

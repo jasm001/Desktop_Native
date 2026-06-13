@@ -125,9 +125,10 @@ No permitido:
 
 ## Limite de avance
 
-El Bloque 6 ya valido su adaptador en laboratorio. Los Bloques 7-11 pueden
-preparar sus dominios, UI, persistencia y adaptadores locales/fake. Ninguno puede
-declararse corporativamente validado mientras falten:
+Los Bloques 6 y 7 ya cerraron sus gates locales. El Bloque 8 es el siguiente y
+los Bloques 8-11 pueden preparar sus dominios, UI, persistencia y adaptadores
+locales/fake. Ninguno puede declararse corporativamente validado mientras
+falten:
 
 - UEMS y proceso de distribucion/retiro;
 - cuenta e identidad restringida del servicio;

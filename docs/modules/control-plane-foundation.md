@@ -112,3 +112,9 @@ PostgreSQL 18 local, `DATABASE_URL` conecta correctamente y el rol tiene
 - No se han definido todavia retencion, observabilidad productiva, despliegue,
   autenticacion corporativa ni escalado horizontal de produccion.
 - El portal administrativo continua reservado para el Bloque 11.
+
+## Siguiente bloque
+
+El Bloque 8 esta desbloqueado y permanece `pending`. Debe agregar casos,
+escalamiento y `ITicketingProvider` fake sobre estas fronteras sin conectar
+OpenText real.

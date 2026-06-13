@@ -155,4 +155,5 @@ Validacion local del 2026-06-13:
   secretos.
 
 La matriz VM y la restauracion estan completas. El Bloque 6 queda `completed`;
-esto no promueve el adaptador fuera de `local-demo` ni inicia el Bloque 7.
+esto no promueve el adaptador fuera de `local-demo`. El Bloque 7 se completo
+posteriormente y el siguiente bloque del roadmap es el Bloque 8.

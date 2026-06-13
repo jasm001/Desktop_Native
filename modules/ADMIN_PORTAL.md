@@ -1,5 +1,10 @@
 # Portal administrativo web
 
+## Estado
+
+Reservado para el Bloque 11. No es el siguiente bloque y no debe ampliarse
+durante el Bloque 8.
+
 ## Responsabilidad
 
 Es el plano de control del producto. Se usa para gestionar identidades, equipos,
