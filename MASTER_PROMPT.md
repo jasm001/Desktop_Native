@@ -23,6 +23,7 @@ Estado confirmado:
 - Bloque 6 esta `completed`; no hay otro bloque principal activo.
 - El incremento automatizado del Bloque 6 fue publicado en `f808425`.
 - El cierre documental y la evidencia VM fueron publicados en `bfb4a35`.
+- La alineacion modular posterior del Bloque 6 fue publicada en `7fd18b6`.
 - La shell WinUI usa catalogo y conversacion sinteticos; no crea tickets,
   solicitudes corporativas ni instalaciones reales.
 - El DeviceAgent expone un protocolo IPC v1 tipado mediante Named Pipe y usa
@@ -68,21 +69,41 @@ Antes de editar:
 4. lee `core/SCOPE.md`, `core/STACK.md`, `core/ARCHITECTURE.md`,
    `core/SECURITY.md` y `core/DECISIONS.md`;
 5. lee `standards/CODING_STANDARDS.md` y `standards/DELIVERY.md`;
-6. para el Bloque 6, lee `modules/DEVICE_AGENT.md`,
-   `modules/EXECUTION_ADAPTERS.md`, `modules/CATALOG.md`,
-   `docs/modules/device-agent-ipc.md`,
-   `docs/modules/read-only-device-diagnostics.md` y
+6. para el Bloque 7, lee `modules/WEB_DELIVERY.md`, `modules/CATALOG.md`,
+   `modules/ASSISTANT.md`, `modules/DEVICE_AGENT.md` y
    `docs/modules/local-mvp-lab.md`;
-7. lee `docs/modules/seven-zip-adapter.md` y el manifiesto
-   `deploy/local-demo/manifests/seven-zip-26.01-x64.json`;
-8. inspecciona `src/Contracts/Agent`, `src/DeviceAgent/Core`,
-   `src/DeviceAgent` y sus pruebas antes de crear contratos o abstracciones;
-9. consulta `docs/modules/desktop-shell.md` solo si conectas estados del
-   adaptador con WinUI.
+7. lee `docs/modules/software-catalog.md`,
+   `docs/modules/deterministic-conversation.md`,
+   `docs/modules/device-agent-ipc.md` y
+   `docs/modules/repository-foundation.md`;
+8. inspecciona `src/AdminWeb`, `src/Worker`, `src/Contracts`, `src/Catalog`,
+   `src/Conversation`, sus pruebas, `package.json`, `pnpm-workspace.yaml` y
+   `pnpm-lock.yaml` antes de crear contratos, dominios o infraestructura;
+9. consulta `modules/TICKETING.md`, `modules/ADMIN_PORTAL.md` y
+   `docs/modules/desktop-shell.md` solo para proteger fronteras; no implementes
+   todavia los Bloques 8, 9 u 11.
 
 Reglas no negociables:
 - no cambies stack, alcance, arquitectura, persistencia o fronteras de seguridad
   sin registrar un stopper en `WORKFLOW.md`;
+- el control plane del Bloque 7 es un monolito modular Next.js con TypeScript
+  estricto, Prisma y PostgreSQL; no agregues otro backend ASP.NET;
+- el worker Node es un proceso durable separado; no lo implementes dentro de
+  funciones serverless ni del proceso web;
+- Prisma pertenece solo a infraestructura server-side; los contratos HTTP no
+  exponen entidades de persistencia;
+- usa migraciones versionadas y un PostgreSQL real efimero para pruebas de
+  integracion; no sustituyas PostgreSQL por SQLite ni uses `db push` como
+  migracion;
+- la auditoria es append-only y el outbox se escribe en la misma transaccion que
+  el cambio de negocio;
+- la identidad local es sintetica, explicita y exclusiva de desarrollo; no
+  inventes login corporativo, Entra, MFA, roles productivos ni secretos;
+- las consultas HTTP no crean solicitudes, trabajos, tickets ni acciones;
+  cualquier mutacion exige contrato tipado, confirmacion explicita e
+  idempotencia;
+- el backend no ejecuta comandos ni se conecta directamente a procesos
+  privilegiados; solo modela trabajos tipados para adaptadores posteriores;
 - WinUI, Teams y la IA nunca ejecutan comandos privilegiados;
 - el DeviceAgent nunca acepta shell, PowerShell libre, rutas arbitrarias ni
   argumentos generados;
@@ -90,14 +111,12 @@ Reglas no negociables:
 - no explores archivos personales ni construyas inventario corporativo general;
 - consultar nunca crea ticket, solicitud, instalacion o accion correctiva;
 - no uses secretos, credenciales, datos corporativos ni endpoints productivos;
-- usa contratos tipados, DI, nullable, async, `CancellationToken`, limites y
-  resultados saneados;
-- no ejecutes el primer adaptador real en la PC principal; usa una VM Windows 11
-  desechable con snapshot/checkpoint;
-- no descargues ni ejecutes un paquete hasta documentar origen oficial, version,
-  arquitectura, licencia, hash o firma disponible y modo unattended soportado;
-- para el mirror local, confirma que la licencia permite redistribucion y
-  reempaquetado cuando aplique; no guardes instaladores en Git;
+- usa contratos tipados, validacion por esquema, limites, paginacion y errores
+  saneados;
+- fija dependencias y lockfile; verifica versiones estables soportadas en fuentes
+  oficiales antes de introducir Next.js, Prisma o librerias nuevas;
+- los secretos y URLs locales viven fuera del repositorio; versiona solo
+  ejemplos sin valores sensibles;
 - no uses datos corporativos con Hermes o su API externa; claves y configuracion
   sensible viven fuera del repositorio;
 - sin conexion, no inventes autorizaciones ni descargues artefactos ausentes;
@@ -108,14 +127,55 @@ Reglas no negociables:
 - corrige causas, no parches aislados, y actualiza pruebas y documentacion;
 - no declares terminado un cambio sin build y pruebas aplicables.
 
-Tarea de reanudacion:
-1. inspecciona `git status --short --branch` y conserva los cambios existentes;
-2. confirma que `bfb4a35` esta presente y que el Bloque 6 sigue `completed`;
-3. no repitas la matriz VM ni ejecutes el MSI salvo una solicitud explicita de
-   regresion;
-4. no inicies el Bloque 7 automaticamente; requiere una tarea separada;
-5. para iniciar el Bloque 7, reemplaza esta tarea por un handoff especifico que
-   lea sus documentos propietarios y defina un solo incremento.
+Tarea:
+Inicia el Bloque 7 con un primer incremento coherente de fundacion del control
+plane y persistencia. No intentes completar todo el bloque en un solo cambio.
+
+Implementa:
+- proyecto real `src/AdminWeb` con Next.js App Router y TypeScript estricto,
+  conservando `src/Worker` como proceso Node durable separado;
+- estructura modular inicial para identidad de desarrollo, dispositivos,
+  solicitudes/trabajos, auditoria y outbox, sin construir el portal
+  administrativo;
+- contratos HTTP v1 tipados y validados, con respuestas y errores saneados;
+- identidad local sintetica y determinista, deshabilitable fuera de desarrollo;
+- Prisma sobre PostgreSQL con la primera migracion versionada;
+- modelo minimo que preserve idempotencia, correlacion, auditoria append-only y
+  outbox transaccional;
+- worker capaz de reclamar y completar de forma idempotente un evento/outbox
+  sintetico sin llamar OpenText, Teams, UEMS, DeviceAgent real ni servicios
+  externos;
+- pruebas unitarias, de contrato e integracion contra PostgreSQL real efimero;
+- documentacion propietaria del nuevo control plane y actualizacion de
+  `WORKFLOW.md`/`CURRENT_CONTEXT.md`.
+
+Antes de implementar, define y documenta el alcance exacto del primer incremento.
+Si el entorno no dispone de Docker o PostgreSQL utilizable para el gate de
+integracion, investiga las opciones locales existentes y registra un stopper; no
+degrades silenciosamente a SQLite o mocks como evidencia final.
+
+Criterio de aceptacion del primer incremento:
+- Bloque 6 permanece `completed` y sin cambios funcionales;
+- Bloque 7 pasa de `pending` a `in_progress`; ningun otro bloque principal queda
+  activo;
+- `src/AdminWeb` y `src/Worker` dejan de ser placeholders, compilan y respetan
+  sus fronteras;
+- una migracion Prisma crea el esquema minimo en PostgreSQL;
+- una mutacion sintetica confirmada e idempotente persiste su estado, un evento
+  de auditoria y un outbox en una sola transaccion;
+- repetir la misma idempotency key no duplica solicitud, trabajo, auditoria ni
+  outbox; reutilizarla con otro payload falla con error tipado;
+- una consulta de catalogo/estado no crea ninguna mutacion;
+- el worker procesa el outbox sintetico con claim/retry acotado y sin duplicar
+  efectos;
+- no se conecta todavia WinUI al backend ni el backend al DeviceAgent;
+- no se implementan tickets/OpenText, Teams, portal administrativo, Hermes/RAG,
+  Windows Service, UEMS real, telemetria productiva ni el Bloque 8;
+- no hay secretos, datos corporativos ni endpoints productivos;
+- build, lint, typecheck, pruebas, migracion de integracion, workspace y escaneo
+  de secretos pasan;
+- se informa el incremento completado, archivos, migracion, contratos, pruebas,
+  riesgos residuales, estado documental y Conventional Commit sugerido.
 
 Gate base:
 .\scripts\Validate.ps1
@@ -132,6 +192,9 @@ dotnet test ITSupportNative.slnx --configuration Release --no-build -m:1 `
 corepack pnpm@11.5.3 install --frozen-lockfile
 corepack pnpm@11.5.3 run check
 .\scripts\Test-Secrets.ps1
+
+Agrega los comandos de Prisma/PostgreSQL e integracion que resulten necesarios
+al gate del Bloque 7 y mantenlos reproducibles desde el repositorio.
 
 Si detectas una contradiccion, aplica la precedencia de `README.md`, registra la
 evidencia y no decidas silenciosamente.
