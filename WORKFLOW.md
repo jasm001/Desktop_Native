@@ -4,10 +4,11 @@
 
 - Fase actual: capacidades locales controladas para Windows 11.
 - Bloque activo: 6. Primer adaptador en VM (`in_progress`).
-- Ultimo resultado: diagnostico local de solo lectura con snapshot efimero,
-  fallos parciales tipados y prerrequisitos allowlisted.
-- Resultado en curso: adaptador cerrado para 7-Zip 26.01 x64 MSI, con
-  validacion automatizada local y matriz pendiente en VM Windows 11.
+- Ultimo resultado: adaptador cerrado para 7-Zip 26.01 x64 MSI publicado en
+  `f808425`, con manifiesto, integridad, autorizacion y pruebas automatizadas.
+- Resultado en curso: renovar el token de Windows despues de agregar al usuario
+  a `Administradores de Hyper-V`, verificar VM/checkpoint y completar la matriz
+  real del adaptador.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.
@@ -35,8 +36,11 @@
 - `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
 - `scripts/Validate.ps1`: correcto.
 - Lockfiles sin cambios; Desktop/WindowsUi conservan unicamente `win-x64`.
-- Matriz VM: pendiente porque la sesion no tiene permisos Hyper-V. El MSI no se
-  ha ejecutado en la PC principal y el Bloque 6 sigue `in_progress`.
+- Matriz VM: pendiente. El usuario agrego `DESKTOP-LDK3DDJ\ruruu` al grupo
+  localizado `Administradores de Hyper-V`; falta reiniciar o cerrar sesion,
+  abrir una sesion nueva y verificar que el SID `S-1-5-32-578` este habilitado.
+- El MSI no se ha ejecutado en la PC principal y el Bloque 6 sigue
+  `in_progress`.
 
 Validacion anterior de fundacion:
 
@@ -96,7 +100,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 3. Conversacion determinista | completed | Cinco estados, intenciones fijas, solicitud sintetica idempotente, 13 pruebas unitarias y 3 pruebas del adaptador WinUI; `b09f07a`. |
 | 4. Agente simulado e IPC | completed | Contrato v1, Named Pipe con ACL de usuario actual, allowlist exacta, maquina de estados, cancelacion, evidencia saneada, SQLite, recuperacion e IPC real cubiertos por 18 pruebas nuevas; `b56bfcb`. |
 | 5. Diagnostico de solo lectura | completed | Snapshot IPC efimero, colectores Windows de solo lectura, prerrequisitos tipados, fallos parciales saneados y pruebas de frontera; `e3a0b8d`. |
-| 6. Primer adaptador en VM | in_progress | 7-Zip 26.01 x64 MSI seleccionado; evidencia oficial y bloqueo de acceso a Hyper-V registrados en `docs/modules/seven-zip-adapter.md`. |
+| 6. Primer adaptador en VM | in_progress | Adaptador 7-Zip 26.01 x64, manifiesto y 110 pruebas publicados en `f808425`; acceso Hyper-V agregado, pendiente renovar token y completar matriz VM. |
 | 7. API compartida y persistencia | pending | |
 | 8. Casos, tickets y OpenText fake | pending | |
 | 9. Canal Teams existente | pending | |
@@ -129,7 +133,8 @@ Pendiente para piloto:
 ## Stoppers futuros no bloqueantes
 
 Estos stoppers condicionan solo la mejora posterior de refresco administrado de
-politicas. No cambian el estado `pending` del Bloque 6 ni bloquean el MVP actual.
+politicas. No cambian el estado `in_progress` del Bloque 6 ni bloquean la matriz
+local del adaptador.
 
 ```text
 Fecha: 2026-06-12
@@ -185,27 +190,31 @@ Recomendacion: Mantener contratos neutrales y posponer el borrado hasta validar
 Owner: Product Owner / Security / Endpoint Management.
 ```
 
-## Bloqueo activo del Bloque 6
+## Prerrequisito operativo pendiente del Bloque 6
 
 ```text
 Fecha: 2026-06-13
 Modulo: DeviceAgent / primer adaptador real
-Decision requerida: Habilitar a la sesion de desarrollo para consultar y
-  operar la VM Windows 11 de laboratorio y su checkpoint, o ejecutar la matriz
-  documentada desde una sesion con permisos equivalentes.
+Accion pendiente: Reiniciar el host o cerrar completamente la sesion de Windows,
+  volver a iniciar sesion y abrir un chat nuevo para renovar el token del
+  usuario.
 Evidencia: `Get-VM` y `Get-VM | Get-VMSnapshot` devuelven que el usuario no
   dispone del permiso necesario sobre la directiva de autorizacion Hyper-V del
-  host `DESKTOP-LDK3DDJ`, incluso fuera del sandbox.
-Alternativas: Agregar temporalmente al usuario al grupo local
-  `Hyper-V Administrators` y reiniciar sesion; ejecutar la matriz manualmente
-  desde Hyper-V Manager con una cuenta autorizada; proporcionar evidencia
-  saneada de una VM y checkpoint equivalentes.
+  host `DESKTOP-LDK3DDJ` en la sesion anterior. El usuario confirmo despues que
+  agrego `DESKTOP-LDK3DDJ\ruruu` al grupo local
+  `Administradores de Hyper-V` (`S-1-5-32-578`).
+Verificacion al reanudar: Confirmar que `whoami /groups` muestra
+  `S-1-5-32-578` habilitado; consultar `Get-VM`; consultar
+  `Get-VM | Get-VMSnapshot`; identificar una VM Windows 11 desechable y un
+  checkpoint inicial antes de copiar o ejecutar el MSI.
 Impacto: Se puede implementar y validar el adaptador con dobles de proceso y
   artefacto, pero el Bloque 6 no puede marcarse `completed` ni el MSI puede
   ejecutarse hasta completar instalacion, repeticion, verificacion,
   desinstalacion, fallos de mirror/hash y restauracion de checkpoint en la VM.
-Recomendacion: Mantener el bloque `in_progress`, no ejecutar el paquete en el
-  host y cerrar la matriz en una VM desechable antes de publicar el cambio.
+Recomendacion: Reiniciar el equipo, verificar acceso en una sesion nueva y
+  mantener el bloque `in_progress` hasta cerrar la matriz. No desactivar UAC,
+  no ejecutar Codex permanentemente elevado y no ejecutar el paquete en el
+  host.
 Owner: Desarrollo / administrador local de Hyper-V.
 ```
 

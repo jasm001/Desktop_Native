@@ -141,9 +141,11 @@ cancelarse en cola; durante MSI devuelve `JobNotCancellable`. Timeout, fallo de
 inicio, hash, longitud, mirror, exit code y verificacion producen `Failed` con
 evidencia fija.
 
-La sesion actual no tiene autorizacion Hyper-V para validar el checkpoint. Por
-eso el Bloque 6 permanece `in_progress` y ningun instalador se ha ejecutado en
-la PC principal.
+La sesion anterior no tenia autorizacion Hyper-V para validar el checkpoint. El
+usuario agrego `DESKTOP-LDK3DDJ\ruruu` a `Administradores de Hyper-V`; falta
+reiniciar o renovar la sesion y verificar el SID `S-1-5-32-578`, la VM y el
+checkpoint. Por eso el Bloque 6 permanece `in_progress` y ningun instalador se
+ha ejecutado en la PC principal.
 
 ## Fuera del alcance durante el Bloque 6
 

@@ -1,12 +1,14 @@
 # Contexto actual
 
-Fecha de ultima actualizacion: 2026-06-12.
+Fecha de ultima actualizacion: 2026-06-13.
 
 ## Objetivo inmediato
 
 Completar el Bloque 6: adaptador cerrado de 7-Zip 26.01 x64 MSI, ya implementado
-y probado con dobles, pendiente de ejecutar la matriz en una VM Windows 11 con
-checkpoint. El paquete no se ejecuta en la PC principal.
+y publicado en `f808425`, pendiente de ejecutar la matriz en una VM Windows 11
+con checkpoint. El usuario agrego su cuenta a `Administradores de Hyper-V`;
+falta reiniciar o renovar la sesion y verificar el acceso. El paquete no se
+ejecuta en la PC principal.
 
 El incremento puede usar un mirror local simulado con software libre
 redistribuible. Hermes/RAG, Windows Service, Salud real, API local y modo
@@ -24,6 +26,7 @@ separadas y no se mezclan dentro del primer adaptador.
 - Bloque 3 publicado en `b09f07a`.
 - Bloque 4 publicado en `b56bfcb`.
 - Bloque 5 publicado en `e3a0b8d`.
+- Incremento automatizado del Bloque 6 publicado en `f808425`.
 - Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
 - Nullable, analyzers, warnings como errores y paquetes centralizados activos.
@@ -71,8 +74,30 @@ separadas y no se mezclan dentro del primer adaptador.
   con idempotencia, timeout de cinco minutos, codigos MSI tipados, verificacion
   posterior y evidencia saneada.
 - La accion sintetica existente permanece disponible.
-- La sesion actual no tiene permisos para consultar Hyper-V; la matriz VM y la
-  restauracion del checkpoint siguen pendientes y el bloque no esta completed.
+- La sesion anterior no tenia permisos para consultar Hyper-V. El usuario
+  agrego `DESKTOP-LDK3DDJ\ruruu` a `Administradores de Hyper-V`
+  (`S-1-5-32-578`); falta reiniciar o cerrar sesion y verificar el token nuevo.
+- La matriz VM y la restauracion del checkpoint siguen pendientes; el bloque no
+  esta `completed`.
+
+## Reanudacion inmediata despues del reinicio
+
+1. Inspeccionar `git status --short --branch` y `git log -5 --oneline`.
+2. Confirmar que `whoami /groups` muestra `S-1-5-32-578` habilitado.
+3. Ejecutar `Get-LocalGroupMember -Group 'Administradores de Hyper-V'`.
+4. Ejecutar `Get-VM` y `Get-VM | Get-VMSnapshot`.
+5. Identificar por evidencia una VM Windows 11 x64 desechable y su checkpoint
+   inicial. No crear, restaurar o eliminar checkpoints de otra VM.
+6. Verificar que `.artifacts/block6/7z2601-x64.msi` conserva el SHA-256
+   allowlisted; si no existe, descargarlo otra vez solo desde el origen oficial.
+7. Preparar el mirror fuera de Git, configurar `ExecutionProfile=local-demo`
+   solo dentro de la VM y ejecutar la matriz de
+   `docs/modules/seven-zip-adapter.md`.
+8. Usar credenciales administrativas exclusivas de laboratorio introducidas de
+   forma interactiva. No escribirlas en el chat, repositorio, scripts o logs.
+9. Registrar resultados saneados y restaurar el checkpoint inicial.
+10. Solo despues actualizar Bloque 6 a `completed`, ejecutar
+    `scripts/Validate.ps1` y proponer el commit documental de cierre.
 
 ## Alcance local acordado
 

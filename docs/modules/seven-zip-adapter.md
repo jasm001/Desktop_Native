@@ -3,9 +3,13 @@
 ## Estado
 
 Incremento del Bloque 6 seleccionado el 2026-06-13. El adaptador y sus pruebas
-automatizadas pueden construirse en el host, pero la ejecucion del paquete queda
-prohibida hasta disponer de una VM Windows 11 desechable con checkpoint
-verificable.
+automatizadas se publicaron en `f808425`. La ejecucion del paquete queda
+prohibida hasta verificar una VM Windows 11 desechable con checkpoint.
+
+El usuario agrego `DESKTOP-LDK3DDJ\ruruu` al grupo localizado
+`Administradores de Hyper-V` (`S-1-5-32-578`). La pertenencia requiere reiniciar
+el host o cerrar completamente la sesion de Windows antes de que un chat nuevo
+pueda verificar y usar el token actualizado.
 
 ## Paquete fijado
 
@@ -98,17 +102,41 @@ IPC, WinUI, backend, Hermes o IA.
 
 ## Matriz VM pendiente
 
-1. Confirmar Windows 11 x64 limpio y checkpoint inicial.
-2. Confirmar ausencia mediante `Detect`.
-3. Servir MSI y licencia desde el mirror local.
-4. Ejecutar `Preflight`, `Install` y `Verify`.
-5. Repetir `Install` y confirmar idempotencia sin nueva ejecucion.
-6. Ejecutar `Uninstall` y verificar ausencia.
-7. Repetir `Uninstall` y confirmar idempotencia.
-8. Probar mirror ausente.
-9. Probar copia con SHA-256 incorrecto.
-10. Probar timeout/fallo controlado sin cambiar argumentos.
-11. Restaurar el checkpoint y confirmar el estado inicial.
+1. Confirmar que `whoami /groups` muestra `S-1-5-32-578` habilitado.
+2. Consultar `Get-VM` y `Get-VM | Get-VMSnapshot`.
+3. Confirmar Windows 11 x64 limpio y checkpoint inicial.
+4. Registrar nombre logico saneado, estado, generacion y fecha del checkpoint.
+5. Confirmar ausencia mediante `Detect`.
+6. Servir MSI y licencia desde el mirror local.
+7. Ejecutar `Preflight`, `Install` y `Verify`.
+8. Repetir `Install` y confirmar idempotencia sin nueva ejecucion.
+9. Ejecutar `Uninstall` y verificar ausencia.
+10. Repetir `Uninstall` y confirmar idempotencia.
+11. Probar mirror ausente.
+12. Probar copia con SHA-256 incorrecto.
+13. Probar timeout/fallo controlado sin cambiar argumentos.
+14. Restaurar el checkpoint y confirmar el estado inicial.
+
+La automatizacion puede usar PowerShell Direct si la VM es local y compatible.
+Las credenciales se introducen interactivamente con `Get-Credential`; no se
+guardan en Git, configuracion, historial del chat o scripts. No se usan una
+cuenta corporativa, datos corporativos ni conectividad administrativa para esta
+prueba.
+
+Antes de ejecutar:
+
+```powershell
+whoami /groups
+Get-LocalGroupMember -Group 'Administradores de Hyper-V'
+Get-VM
+Get-VM | Get-VMSnapshot
+Get-FileHash .\.artifacts\block6\7z2601-x64.msi -Algorithm SHA256
+```
+
+El hash esperado es
+`A47EA8DCF8BC08E6DE474CAE77C828E031FA22CB528F6095DEFFFEBF11CD02F2`.
+No ejecutar si la VM, el checkpoint, el sistema Windows 11 x64 o el hash no
+coinciden con el incremento.
 
 Los resultados, tiempos, codigos de salida y evidencia saneada se agregaran a
 este documento. Hasta entonces el Bloque 6 permanece `in_progress`.
@@ -129,4 +157,5 @@ Validacion local del 2026-06-13:
 - `scripts/Validate.ps1`: correcto, incluidos workspace pnpm y escaneo de
   secretos.
 
-La matriz VM sigue pendiente por permisos Hyper-V.
+La matriz VM sigue pendiente hasta reiniciar la sesion y verificar el acceso
+Hyper-V. La configuracion del grupo ya fue realizada por el usuario.

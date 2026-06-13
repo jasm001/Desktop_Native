@@ -12,9 +12,10 @@ seven-zip.msi.v1
   uninstall: software.uninstall.7zip.v1 / seven-zip / 26.01
 ```
 
-La implementacion, manifiesto y pruebas automatizadas existen, pero el bloque no
-esta completado porque la sesion actual no tiene permisos para consultar u
-operar la VM Hyper-V y su checkpoint. El MSI no se ha ejecutado en el host.
+La implementacion, manifiesto y pruebas automatizadas se publicaron en
+`f808425`, pero el bloque no esta completado. El usuario agrego su cuenta a
+`Administradores de Hyper-V`; falta reiniciar o renovar la sesion, verificar la
+VM y su checkpoint y ejecutar la matriz. El MSI no se ha ejecutado en el host.
 
 ## Adaptador 7-Zip 26.01
 
