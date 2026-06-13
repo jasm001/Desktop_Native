@@ -6,8 +6,9 @@ repository currently contains the Block 0 foundation, the Block 1 native shell,
 the Block 2 synthetic catalog domain, and the Block 3 deterministic
 conversation flow. Block 4 adds a simulated device agent with typed local IPC
 and durable synthetic jobs. Block 5 adds bounded read-only device diagnostics
-with partial typed results. No privileged action, production integration, or
-administrative portal behavior is implemented.
+with partial typed results. Block 6 adds one closed 7-Zip MSI adapter validated
+only in a disposable Windows 11 VM. No production integration or administrative
+portal behavior is implemented.
 
 ## Current Status
 
@@ -20,7 +21,8 @@ administrative portal behavior is implemented.
   authorization completed.
 - Block 5: bounded read-only diagnostics and typed action prerequisites
   completed.
-- Next block: first real adapter validated in a Windows 11 VM.
+- Block 6: closed 7-Zip 26.01 x64 adapter and disposable VM matrix completed.
+- Next block: shared API and persistence; it remains pending.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes/RAG. This
   profile is not a corporate pilot.

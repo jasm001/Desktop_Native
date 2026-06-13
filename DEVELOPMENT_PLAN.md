@@ -136,6 +136,11 @@ version, arquitectura y SHA-256. Esto no crea un repositorio productivo.
 
 Gate: instalacion, repeticion idempotente, desinstalacion y fallo controlado.
 
+Estado: `completed` el 2026-06-13. La matriz paso en una VM Windows 11 x64
+desechable con checkpoint: instalacion y desinstalacion reales, repeticion
+idempotente, verificacion, mirror ausente, hash corrupto y restauracion al estado
+inicial. El MSI no se ejecuto en el host.
+
 ## Bloque 7: API compartida y persistencia
 
 Crear monolito modular Next.js sin portal administrativo completo:

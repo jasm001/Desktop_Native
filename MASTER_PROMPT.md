@@ -16,11 +16,12 @@ Repositorio:
   existente.
 
 Estado confirmado:
-- Bloques 0 a 5 completados y publicados en `main`.
+- Bloques 0 a 6 completados; el cierre documental del Bloque 6 esta pendiente
+  de commit/publicacion por el usuario.
 - Bloque 3 publicado en `b09f07a`.
 - Bloque 4 publicado en `b56bfcb`.
 - Bloque 5 publicado en `e3a0b8d`.
-- Bloque 6 esta `in_progress`; no hay otro bloque principal activo.
+- Bloque 6 esta `completed`; no hay otro bloque principal activo.
 - El incremento automatizado del Bloque 6 fue publicado en `f808425`.
 - La shell WinUI usa catalogo y conversacion sinteticos; no crea tickets,
   solicitudes corporativas ni instalaciones reales.
@@ -38,14 +39,12 @@ Estado confirmado:
   `{23170F69-40C1-2702-2601-000001000000}` y SHA-256
   `A47EA8DCF8BC08E6DE474CAE77C828E031FA22CB528F6095DEFFFEBF11CD02F2`.
 - La shell todavia no invoca el DeviceAgent.
-- Existe una VM Windows 11 personal sin datos ni credenciales corporativas para
-  pruebas de laboratorio.
-- En la sesion anterior `Get-VM` fallo por permisos. El usuario ya agrego
-  `DESKTOP-LDK3DDJ\ruruu` al grupo localizado
-  `Administradores de Hyper-V` (`S-1-5-32-578`) y reiniciara el equipo.
-- Al reanudar hay que verificar el token nuevo, la VM Windows 11 x64 y su
-  checkpoint antes de copiar o ejecutar el MSI. No asumir que el acceso quedo
-  activo solo por la pertenencia al grupo.
+- La matriz real paso en una VM Windows 11 Pro Education build 26200 x64,
+  generacion 2, con checkpoint estandar y credencial local interactiva.
+- Instalacion y desinstalacion devolvieron codigo MSI `0`; las repeticiones
+  fueron idempotentes; mirror ausente y hash corrupto fallaron cerrados.
+- El checkpoint fue restaurado y se confirmaron producto y artefactos de
+  laboratorio ausentes. El MSI no se ejecuto en el host.
 - El perfil `local-demo` permite un mirror local simulado solo para software
   libre redistribuible, con manifiesto y SHA-256; no es storage productivo.
 - El roadmap local posterior contempla Windows Service, Salud real por IPC,
@@ -109,64 +108,16 @@ Reglas no negociables:
 - corrige causas, no parches aislados, y actualiza pruebas y documentacion;
 - no declares terminado un cambio sin build y pruebas aplicables.
 
-Tarea:
-Termina la seccion pendiente del Bloque 6 de `DEVELOPMENT_PLAN.md`: verificar
-acceso Hyper-V despues del reinicio y ejecutar la matriz del adaptador
-`seven-zip.msi.v1` en una VM Windows 11 desechable con checkpoint.
-
-No redisenes ni reimplementes el adaptador salvo que una prueba real revele una
-causa tecnica. La implementacion y las pruebas automatizadas ya estan
-publicadas. No avances al Bloque 7.
-
-Criterio de aceptacion:
-- ya cubierto en `f808425`: paquete y version fijados, evidencia oficial,
-  licencia, manifiesto y SHA-256;
-- ya cubierto: adaptador cerrado con `Detect`, `Preflight`, `Install`, `Verify`
-  y `Uninstall`;
-- ya cubierto: timeout, codigos MSI, retry declarado, reinicio, argumentos
-  fijos, saneamiento, autorizacion deny-by-default, idempotencia y cancelacion
-  segura;
-- ya cubierto: 110 pruebas automatizadas y `scripts/Validate.ps1` completo;
-- pendiente: confirmar acceso Hyper-V con el token renovado;
-- validar en una VM Windows 11 con snapshot inicial, instalacion, repeticion,
-  verificacion, desinstalacion, fallo del mirror/hash y restauracion del
-  snapshot;
-- pendiente: registrar evidencia VM saneada y actualizar
-  `docs/modules/seven-zip-adapter.md`, `modules/EXECUTION_ADAPTERS.md`,
-  `modules/DEVICE_AGENT.md`, `CURRENT_CONTEXT.md` y `WORKFLOW.md`;
-- mantener la accion sintetica existente y no cambiar el contrato IPC;
-- no marcar el Bloque 6 `completed` antes de terminar la matriz y restaurar el
-  checkpoint;
-- no implementar todavia backend, tickets, portal, UEMS real, telemetria
-  productiva, inventario general, remediaciones generales ni el Bloque 7;
-- no mezclar Hermes/RAG, conexion WinUI-DeviceAgent o instalacion del Windows
-  Service dentro del Bloque 6 salvo que se definan y validen como incrementos
-  separados despues del gate del adaptador.
-
-Forma de trabajo:
-1. confirma que el Bloque 6 sigue `in_progress` y que `f808425` esta presente;
-2. ejecuta `whoami /groups` y confirma que `S-1-5-32-578` esta habilitado;
-3. ejecuta
-   `Get-LocalGroupMember -Group 'Administradores de Hyper-V'`;
-4. ejecuta `Get-VM` y `Get-VM | Get-VMSnapshot`; identifica una unica VM
-   Windows 11 x64 desechable y su checkpoint inicial sin modificar otras VMs;
-5. si el acceso sigue denegado despues del reinicio, registra la evidencia y no
-   ejecutes el paquete en el host;
-6. verifica el SHA-256 del MSI ignorado bajo `.artifacts/block6`; si falta,
-   descargalo otra vez solo desde la URL oficial del manifiesto;
-7. introduce cualquier credencial administrativa de laboratorio de forma
-   interactiva; no la escribas en chat, Git, configuracion o scripts;
-8. configura el mirror y `ExecutionProfile=local-demo` solo dentro de la VM;
-9. ejecuta la matriz de `docs/modules/seven-zip-adapter.md`: estado inicial,
-   preflight, instalacion, verificacion, repeticion idempotente, desinstalacion,
-   repeticion, mirror ausente, hash corrupto, fallo controlado y restauracion;
-10. registra evidencia saneada, tiempos y codigos tipados sin copiar rutas,
-    stdout, stderr, nombres internos, usuario, host o secretos;
-11. ejecuta `scripts/Validate.ps1`;
-12. solo si toda la matriz y la restauracion pasan, marca el Bloque 6
-    `completed`, actualiza documentos y propone el commit de cierre;
-13. informa archivos, comandos, resultados, evidencia de VM, riesgos
-    residuales, estado documental y mensaje de commit sugerido.
+Tarea de reanudacion:
+1. inspecciona `git status --short --branch` y conserva los cambios existentes;
+2. confirma que los documentos de cierre del Bloque 6 siguen sin publicar o
+   registra el commit cuando el usuario ya lo haya creado;
+3. no repitas la matriz VM ni ejecutes el MSI salvo una solicitud explicita de
+   regresion;
+4. no inicies el Bloque 7 automaticamente; requiere una tarea separada;
+5. si solo falta publicar este cierre, revisa el diff, confirma
+   `scripts/Validate.ps1` y sugiere
+   `docs(device-agent): close block 6 VM validation`.
 
 Gate base:
 .\scripts\Validate.ps1

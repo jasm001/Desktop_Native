@@ -4,7 +4,7 @@ Los Bloques 4 y 5 no implementaron adaptadores reales. La accion
 `software.install.simulated.v1` se conserva para probar IPC, autorizacion,
 estado y recuperacion sin llamar procesos hijos.
 
-El Bloque 6 esta `in_progress` con el primer adaptador cerrado:
+El Bloque 6 esta `completed` con el primer adaptador cerrado:
 
 ```text
 seven-zip.msi.v1
@@ -13,9 +13,9 @@ seven-zip.msi.v1
 ```
 
 La implementacion, manifiesto y pruebas automatizadas se publicaron en
-`f808425`, pero el bloque no esta completado. El usuario agrego su cuenta a
-`Administradores de Hyper-V`; falta reiniciar o renovar la sesion, verificar la
-VM y su checkpoint y ejecutar la matriz. El MSI no se ha ejecutado en el host.
+`f808425`. El 2026-06-13 se valido la matriz real en una VM Windows 11 x64
+desechable con checkpoint y el estado inicial se restauro. El MSI no se ejecuto
+en el host.
 
 ## Adaptador 7-Zip 26.01
 
@@ -92,6 +92,20 @@ La matriz de laboratorio cubre:
 
 La cobertura automatizada usa dobles de artefacto, deteccion y proceso; nunca
 ejecuta `msiexec`. La ejecucion real sigue reservada a la VM.
+
+La matriz real del 2026-06-13 confirmo:
+
+- `Detect` inicial y final `Absent`;
+- `Preflight` `Ready`;
+- instalacion y desinstalacion con codigo MSI `0`;
+- `Verify` `Detected`;
+- repeticiones `AlreadyInDesiredState` sin nuevo proceso;
+- mirror ausente `ArtifactUnavailable`;
+- hash corrupto `ArtifactHashMismatch`;
+- restauracion del checkpoint con producto y artefactos de laboratorio ausentes.
+
+Timeout, `1618`, `1641` y `3010` permanecen cubiertos por pruebas automatizadas;
+no se indujeron artificialmente en la VM.
 
 Un paquete reempaquetado se conserva solo si su licencia permite modificacion y
 redistribucion. El resultado no se promueve fuera del laboratorio sin revision

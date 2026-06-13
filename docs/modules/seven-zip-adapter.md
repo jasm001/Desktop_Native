@@ -3,13 +3,12 @@
 ## Estado
 
 Incremento del Bloque 6 seleccionado el 2026-06-13. El adaptador y sus pruebas
-automatizadas se publicaron en `f808425`. La ejecucion del paquete queda
-prohibida hasta verificar una VM Windows 11 desechable con checkpoint.
+automatizadas se publicaron en `f808425`. La matriz real se completo el
+2026-06-13 en una VM Windows 11 x64 desechable con checkpoint restaurado.
 
-El usuario agrego `DESKTOP-LDK3DDJ\ruruu` al grupo localizado
-`Administradores de Hyper-V` (`S-1-5-32-578`). La pertenencia requiere reiniciar
-el host o cerrar completamente la sesion de Windows antes de que un chat nuevo
-pueda verificar y usar el token actualizado.
+El token renovado mostro `S-1-5-32-578` habilitado. Hyper-V expuso una sola VM y
+un checkpoint estandar antes de copiar el mirror. El MSI nunca se ejecuto en el
+host.
 
 ## Paquete fijado
 
@@ -100,46 +99,44 @@ IPC, WinUI, backend, Hermes o IA.
   stdout, stderr, exit code, rutas, nombres internos, hash, ProductCode,
   payloads ni excepciones.
 
-## Matriz VM pendiente
+## Matriz VM completada
 
-1. Confirmar que `whoami /groups` muestra `S-1-5-32-578` habilitado.
-2. Consultar `Get-VM` y `Get-VM | Get-VMSnapshot`.
-3. Confirmar Windows 11 x64 limpio y checkpoint inicial.
-4. Registrar nombre logico saneado, estado, generacion y fecha del checkpoint.
-5. Confirmar ausencia mediante `Detect`.
-6. Servir MSI y licencia desde el mirror local.
-7. Ejecutar `Preflight`, `Install` y `Verify`.
-8. Repetir `Install` y confirmar idempotencia sin nueva ejecucion.
-9. Ejecutar `Uninstall` y verificar ausencia.
-10. Repetir `Uninstall` y confirmar idempotencia.
-11. Probar mirror ausente.
-12. Probar copia con SHA-256 incorrecto.
-13. Probar timeout/fallo controlado sin cambiar argumentos.
-14. Restaurar el checkpoint y confirmar el estado inicial.
+Entorno saneado:
 
-La automatizacion puede usar PowerShell Direct si la VM es local y compatible.
-Las credenciales se introducen interactivamente con `Get-Credential`; no se
-guardan en Git, configuracion, historial del chat o scripts. No se usan una
-cuenta corporativa, datos corporativos ni conectividad administrativa para esta
-prueba.
+- una VM Windows 11 Pro Education build 26200 x64;
+- generacion 2 y checkpoint estandar previo a la copia;
+- credencial administrativa local introducida mediante `Get-Credential` y
+  conservada solo en memoria;
+- PowerShell Direct para copiar y ejecutar el runner temporal;
+- perfil `local-demo` creado solo dentro del proceso de laboratorio;
+- MSI de 2,002,432 bytes y licencia con SHA-256 correctos en host y VM;
+- binarios, runner y resultado detallado fuera de Git.
 
-Antes de ejecutar:
+Resultados:
 
-```powershell
-whoami /groups
-Get-LocalGroupMember -Group 'Administradores de Hyper-V'
-Get-VM
-Get-VM | Get-VMSnapshot
-Get-FileHash .\.artifacts\block6\7z2601-x64.msi -Algorithm SHA256
-```
+| Fase | Resultado | Tiempo |
+| --- | --- | --- |
+| `Detect` inicial | `Absent` | 1 ms |
+| `Preflight` valido | `Ready` | 21 ms |
+| `Install` | `Succeeded`, codigo MSI `0` | 5.850 s |
+| `Verify` | `Detected` | < 1 ms |
+| `Install` repetido | `AlreadyInDesiredState`, sin proceso | < 1 ms |
+| `Uninstall` | `Succeeded`, codigo MSI `0` | 1.738 s |
+| `Detect` posterior | `Absent` | < 1 ms |
+| `Uninstall` repetido | `AlreadyInDesiredState`, sin proceso | < 1 ms |
+| Mirror ausente | `ArtifactUnavailable` en preflight e install | < 1 ms |
+| Hash corrupto | `ArtifactHashMismatch` en preflight e install | 9 ms / 3 ms |
+| Estado final | `Ready` y `Absent` | 8 ms / < 1 ms |
 
-El hash esperado es
-`A47EA8DCF8BC08E6DE474CAE77C828E031FA22CB528F6095DEFFFEBF11CD02F2`.
-No ejecutar si la VM, el checkpoint, el sistema Windows 11 x64 o el hash no
-coinciden con el incremento.
+Los fallos de mirror y hash se produjeron antes de iniciar `msiexec` y sin
+cambiar argumentos. El checkpoint se restauro despues de la matriz; PowerShell
+Direct confirmo nuevamente ausencia del producto y ausencia de los artefactos
+de laboratorio.
 
-Los resultados, tiempos, codigos de salida y evidencia saneada se agregaran a
-este documento. Hasta entonces el Bloque 6 permanece `in_progress`.
+Timeout, `1618`, `1641` y `3010` no se indujeron artificialmente en la VM.
+Permanecen cubiertos por pruebas automatizadas con dobles porque forzar esas
+condiciones no era necesario para el gate real de instalacion, idempotencia,
+desinstalacion y fallo controlado.
 
 ## Evidencia automatizada
 
@@ -157,5 +154,5 @@ Validacion local del 2026-06-13:
 - `scripts/Validate.ps1`: correcto, incluidos workspace pnpm y escaneo de
   secretos.
 
-La matriz VM sigue pendiente hasta reiniciar la sesion y verificar el acceso
-Hyper-V. La configuracion del grupo ya fue realizada por el usuario.
+La matriz VM y la restauracion estan completas. El Bloque 6 queda `completed`;
+esto no promueve el adaptador fuera de `local-demo` ni inicia el Bloque 7.

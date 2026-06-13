@@ -3,12 +3,11 @@
 ## Estado
 
 - Fase actual: capacidades locales controladas para Windows 11.
-- Bloque activo: 6. Primer adaptador en VM (`in_progress`).
-- Ultimo resultado: adaptador cerrado para 7-Zip 26.01 x64 MSI publicado en
-  `f808425`, con manifiesto, integridad, autorizacion y pruebas automatizadas.
-- Resultado en curso: renovar el token de Windows despues de agregar al usuario
-  a `Administradores de Hyper-V`, verificar VM/checkpoint y completar la matriz
-  real del adaptador.
+- Bloque activo: ninguno. Bloque 6 `completed`; Bloque 7 `pending`.
+- Ultimo resultado: adaptador cerrado para 7-Zip 26.01 x64 MSI, publicado en
+  `f808425`, validado en una VM Windows 11 x64 con checkpoint y restauracion.
+- Resultado en curso: cierre documental y gate completo del Bloque 6. No se
+  inicia el Bloque 7 en esta unidad.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.
@@ -36,11 +35,22 @@
 - `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
 - `scripts/Validate.ps1`: correcto.
 - Lockfiles sin cambios; Desktop/WindowsUi conservan unicamente `win-x64`.
-- Matriz VM: pendiente. El usuario agrego `DESKTOP-LDK3DDJ\ruruu` al grupo
-  localizado `Administradores de Hyper-V`; falta reiniciar o cerrar sesion,
-  abrir una sesion nueva y verificar que el SID `S-1-5-32-578` este habilitado.
-- El MSI no se ha ejecutado en la PC principal y el Bloque 6 sigue
-  `in_progress`.
+- Token Hyper-V: `S-1-5-32-578` habilitado; grupo local y acceso de lectura a
+  VM/checkpoint confirmados.
+- Matriz VM: correcta en Windows 11 Pro Education build 26200 x64, generacion 2,
+  con checkpoint estandar y credencial local introducida interactivamente.
+- Integridad: MSI de 2,002,432 bytes y licencia conservaron sus SHA-256 fijados
+  en host y VM.
+- Instalacion: `Succeeded`, codigo MSI `0`, 5.850 s; `Verify` `Detected`.
+- Repeticion de instalacion: `AlreadyInDesiredState`, sin nuevo proceso.
+- Desinstalacion: `Succeeded`, codigo MSI `0`, 1.738 s; deteccion `Absent`.
+- Repeticion de desinstalacion: `AlreadyInDesiredState`, sin nuevo proceso.
+- Fallos controlados: mirror ausente `ArtifactUnavailable`; hash corrupto
+  `ArtifactHashMismatch`; ambos fallaron cerrados antes de iniciar MSI.
+- Restauracion: correcta; producto y artefactos de laboratorio ausentes.
+- Timeout, `1618`, `1641` y `3010` no se indujeron en la VM; permanecen cubiertos
+  por pruebas automatizadas.
+- El MSI no se ejecuto en la PC principal y el Bloque 6 esta `completed`.
 
 Validacion anterior de fundacion:
 
@@ -100,7 +110,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 3. Conversacion determinista | completed | Cinco estados, intenciones fijas, solicitud sintetica idempotente, 13 pruebas unitarias y 3 pruebas del adaptador WinUI; `b09f07a`. |
 | 4. Agente simulado e IPC | completed | Contrato v1, Named Pipe con ACL de usuario actual, allowlist exacta, maquina de estados, cancelacion, evidencia saneada, SQLite, recuperacion e IPC real cubiertos por 18 pruebas nuevas; `b56bfcb`. |
 | 5. Diagnostico de solo lectura | completed | Snapshot IPC efimero, colectores Windows de solo lectura, prerrequisitos tipados, fallos parciales saneados y pruebas de frontera; `e3a0b8d`. |
-| 6. Primer adaptador en VM | in_progress | Adaptador 7-Zip 26.01 x64, manifiesto y 110 pruebas publicados en `f808425`; acceso Hyper-V agregado, pendiente renovar token y completar matriz VM. |
+| 6. Primer adaptador en VM | completed | Adaptador 7-Zip 26.01 x64 y 110 pruebas publicados en `f808425`; matriz real de instalacion, idempotencia, desinstalacion, fallos de mirror/hash y restauracion de checkpoint validada el 2026-06-13. |
 | 7. API compartida y persistencia | pending | |
 | 8. Casos, tickets y OpenText fake | pending | |
 | 9. Canal Teams existente | pending | |
@@ -133,8 +143,8 @@ Pendiente para piloto:
 ## Stoppers futuros no bloqueantes
 
 Estos stoppers condicionan solo la mejora posterior de refresco administrado de
-politicas. No cambian el estado `in_progress` del Bloque 6 ni bloquean la matriz
-local del adaptador.
+politicas. No cambian el estado `completed` del Bloque 6 ni el gate local ya
+validado.
 
 ```text
 Fecha: 2026-06-12
@@ -190,31 +200,27 @@ Recomendacion: Mantener contratos neutrales y posponer el borrado hasta validar
 Owner: Product Owner / Security / Endpoint Management.
 ```
 
-## Prerrequisito operativo pendiente del Bloque 6
+## Gate operativo cerrado del Bloque 6
 
 ```text
 Fecha: 2026-06-13
 Modulo: DeviceAgent / primer adaptador real
-Accion pendiente: Reiniciar el host o cerrar completamente la sesion de Windows,
-  volver a iniciar sesion y abrir un chat nuevo para renovar el token del
-  usuario.
-Evidencia: `Get-VM` y `Get-VM | Get-VMSnapshot` devuelven que el usuario no
-  dispone del permiso necesario sobre la directiva de autorizacion Hyper-V del
-  host `DESKTOP-LDK3DDJ` en la sesion anterior. El usuario confirmo despues que
-  agrego `DESKTOP-LDK3DDJ\ruruu` al grupo local
-  `Administradores de Hyper-V` (`S-1-5-32-578`).
-Verificacion al reanudar: Confirmar que `whoami /groups` muestra
-  `S-1-5-32-578` habilitado; consultar `Get-VM`; consultar
-  `Get-VM | Get-VMSnapshot`; identificar una VM Windows 11 desechable y un
-  checkpoint inicial antes de copiar o ejecutar el MSI.
-Impacto: Se puede implementar y validar el adaptador con dobles de proceso y
-  artefacto, pero el Bloque 6 no puede marcarse `completed` ni el MSI puede
-  ejecutarse hasta completar instalacion, repeticion, verificacion,
-  desinstalacion, fallos de mirror/hash y restauracion de checkpoint en la VM.
-Recomendacion: Reiniciar el equipo, verificar acceso en una sesion nueva y
-  mantener el bloque `in_progress` hasta cerrar la matriz. No desactivar UAC,
-  no ejecutar Codex permanentemente elevado y no ejecutar el paquete en el
-  host.
+Accion completada: Renovar el token, verificar Hyper-V, ejecutar la matriz real
+  y restaurar el checkpoint.
+Evidencia: `whoami /groups` mostro `S-1-5-32-578` habilitado. Fuera del sandbox,
+  Hyper-V expuso una sola VM Windows 11 x64 de generacion 2 y un checkpoint
+  estandar. PowerShell Direct uso una credencial local introducida
+  interactivamente y no persistida.
+Resultado: `Detect` inicial/final `Absent`; `Preflight` `Ready`; instalacion y
+  desinstalacion `Succeeded` con codigo `0`; `Verify` `Detected`; repeticiones
+  `AlreadyInDesiredState`; mirror ausente `ArtifactUnavailable`; hash corrupto
+  `ArtifactHashMismatch`.
+Restauracion: Checkpoint restaurado; producto y artefactos de laboratorio
+  ausentes. El MSI no se ejecuto en el host.
+Impacto: El gate del Bloque 6 esta cerrado. Esta evidencia no autoriza promocion
+  fuera de `local-demo` ni sustituye los gates de piloto.
+Recomendacion: Mantener el adaptador y su politica sin cambios hasta una tarea
+  separada; iniciar el Bloque 7 solo como nueva unidad.
 Owner: Desarrollo / administrador local de Hyper-V.
 ```
 

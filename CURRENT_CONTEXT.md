@@ -4,11 +4,10 @@ Fecha de ultima actualizacion: 2026-06-13.
 
 ## Objetivo inmediato
 
-Completar el Bloque 6: adaptador cerrado de 7-Zip 26.01 x64 MSI, ya implementado
-y publicado en `f808425`, pendiente de ejecutar la matriz en una VM Windows 11
-con checkpoint. El usuario agrego su cuenta a `Administradores de Hyper-V`;
-falta reiniciar o renovar la sesion y verificar el acceso. El paquete no se
-ejecuta en la PC principal.
+El Bloque 6 esta completado. El adaptador cerrado de 7-Zip 26.01 x64 MSI,
+publicado en `f808425`, paso la matriz real en una VM Windows 11 x64 desechable
+con checkpoint y el estado inicial fue restaurado. No hay otro bloque principal
+activo; el Bloque 7 permanece `pending` y no se inicia dentro de este cierre.
 
 El incremento puede usar un mirror local simulado con software libre
 redistribuible. Hermes/RAG, Windows Service, Salud real, API local y modo
@@ -64,9 +63,9 @@ separadas y no se mezclan dentro del primer adaptador.
 - Gitleaks y CI de GitHub configurados.
 - Build Release y 110 pruebas pasan; la validacion completa del repositorio se
   registra en `WORKFLOW.md`.
-- No existen acciones privilegiadas, secretos, datos corporativos ni
-  integraciones productivas.
-- Bloque 6 `in_progress` con manifiesto versionado para 7-Zip 26.01 x64 MSI,
+- No existen secretos, datos corporativos ni integraciones productivas. La unica
+  accion privilegiada real permanece cerrada al perfil exacto `local-demo`.
+- Bloque 6 `completed` con manifiesto versionado para 7-Zip 26.01 x64 MSI,
   SHA-256 obligatorio y perfil `local-demo` deshabilitado por defecto.
 - Acciones reales exactas de instalacion y desinstalacion seleccionan
   `seven-zip.msi.v1`; IPC no acepta rutas, comandos, switches ni argumentos.
@@ -74,30 +73,27 @@ separadas y no se mezclan dentro del primer adaptador.
   con idempotencia, timeout de cinco minutos, codigos MSI tipados, verificacion
   posterior y evidencia saneada.
 - La accion sintetica existente permanece disponible.
-- La sesion anterior no tenia permisos para consultar Hyper-V. El usuario
-  agrego `DESKTOP-LDK3DDJ\ruruu` a `Administradores de Hyper-V`
-  (`S-1-5-32-578`); falta reiniciar o cerrar sesion y verificar el token nuevo.
-- La matriz VM y la restauracion del checkpoint siguen pendientes; el bloque no
-  esta `completed`.
+- El token renovado mostro `S-1-5-32-578` habilitado y Hyper-V expuso una sola
+  VM de laboratorio con un checkpoint estandar.
+- La VM validada fue Windows 11 Pro Education build 26200 x64, generacion 2.
+- El MSI y `license.txt` conservaron longitud y SHA-256 fijados antes y dentro
+  de la VM.
+- Instalacion y desinstalacion reales terminaron con codigo MSI `0`; `Verify`
+  detecto la version exacta y las repeticiones fueron idempotentes.
+- Mirror ausente y hash corrupto fallaron cerrados con `ArtifactUnavailable` y
+  `ArtifactHashMismatch`.
+- El checkpoint fue restaurado y se confirmaron producto y artefactos de
+  laboratorio ausentes. El MSI nunca se ejecuto en la PC principal.
 
-## Reanudacion inmediata despues del reinicio
+## Siguiente reanudacion
 
-1. Inspeccionar `git status --short --branch` y `git log -5 --oneline`.
-2. Confirmar que `whoami /groups` muestra `S-1-5-32-578` habilitado.
-3. Ejecutar `Get-LocalGroupMember -Group 'Administradores de Hyper-V'`.
-4. Ejecutar `Get-VM` y `Get-VM | Get-VMSnapshot`.
-5. Identificar por evidencia una VM Windows 11 x64 desechable y su checkpoint
-   inicial. No crear, restaurar o eliminar checkpoints de otra VM.
-6. Verificar que `.artifacts/block6/7z2601-x64.msi` conserva el SHA-256
-   allowlisted; si no existe, descargarlo otra vez solo desde el origen oficial.
-7. Preparar el mirror fuera de Git, configurar `ExecutionProfile=local-demo`
-   solo dentro de la VM y ejecutar la matriz de
-   `docs/modules/seven-zip-adapter.md`.
-8. Usar credenciales administrativas exclusivas de laboratorio introducidas de
-   forma interactiva. No escribirlas en el chat, repositorio, scripts o logs.
-9. Registrar resultados saneados y restaurar el checkpoint inicial.
-10. Solo despues actualizar Bloque 6 a `completed`, ejecutar
-    `scripts/Validate.ps1` y proponer el commit documental de cierre.
+1. Inspeccionar `git status --short --branch` y el commit de cierre cuando se
+   publique.
+2. Confirmar que el Bloque 6 permanece `completed` y que no existe otro bloque
+   principal `in_progress`.
+3. Iniciar el Bloque 7 solo mediante una tarea separada, leyendo sus documentos
+   propietarios y sin mezclar Windows Service, Hermes/RAG o WinUI-DeviceAgent
+   dentro del cierre del adaptador.
 
 ## Alcance local acordado
 

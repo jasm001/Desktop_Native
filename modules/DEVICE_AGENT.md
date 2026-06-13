@@ -128,7 +128,7 @@ La ACL no sustituye la autorizacion del mensaje. El agente tambien valida:
 - idempotency key;
 - estado valido para cancelacion.
 
-## Adaptador real en curso
+## Primer adaptador real validado
 
 El DeviceAgent puede resolver el manifiesto fijo de 7-Zip 26.01 x64 desde un
 mirror local, validar longitud y SHA-256 y ejecutar `msiexec` con argumentos
@@ -141,11 +141,13 @@ cancelarse en cola; durante MSI devuelve `JobNotCancellable`. Timeout, fallo de
 inicio, hash, longitud, mirror, exit code y verificacion producen `Failed` con
 evidencia fija.
 
-La sesion anterior no tenia autorizacion Hyper-V para validar el checkpoint. El
-usuario agrego `DESKTOP-LDK3DDJ\ruruu` a `Administradores de Hyper-V`; falta
-reiniciar o renovar la sesion y verificar el SID `S-1-5-32-578`, la VM y el
-checkpoint. Por eso el Bloque 6 permanece `in_progress` y ningun instalador se
-ha ejecutado en la PC principal.
+El 2026-06-13 se confirmo el SID `S-1-5-32-578` habilitado y el acceso Hyper-V
+con el token renovado. La matriz se ejecuto mediante PowerShell Direct en una
+unica VM Windows 11 Pro Education build 26200 x64, generacion 2, con checkpoint
+estandar. Instalacion, verificacion, repeticiones idempotentes, desinstalacion,
+mirror ausente y hash corrupto devolvieron los resultados tipados esperados.
+El checkpoint se restauro y se confirmaron ausencia del producto y de los
+artefactos de laboratorio. El MSI no se ejecuto en la PC principal.
 
 ## Fuera del alcance durante el Bloque 6
 
@@ -158,8 +160,8 @@ ha ejecutado en la PC principal.
 - sincronizacion de evidencia con API o tickets;
 - conexion de la shell a una solicitud real.
 
-El primer adaptador no se promueve fuera de `local-demo` hasta completar la
-matriz en una VM Windows 11 y cerrar los gates posteriores de piloto.
+El primer adaptador no se promueve fuera de `local-demo`; la matriz VM cierra
+solo el Bloque 6. Los gates posteriores de piloto siguen pendientes.
 
 ## Perfil local posterior
 
