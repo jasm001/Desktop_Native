@@ -222,6 +222,10 @@ inicial. Para excepciones sin template:
 2. el usuario descarga desde URL oficial y el agente valida/ejecuta;
 3. se escala si ninguna opcion es aprobada.
 
+Un mirror local usado dentro de una VM personal para software libre
+redistribuible es una herramienta de laboratorio, no una solicitud de
+infraestructura ni un repositorio corporativo. No cambia este entregable.
+
 Entregable: perfil de hosting permitido y presupuesto.
 
 ## IA

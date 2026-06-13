@@ -1,5 +1,34 @@
 # Alcance
 
+## MVP local demostrable
+
+Mientras se resuelve la aprobacion corporativa, el repositorio puede avanzar en
+una demostracion local de extremo a extremo sobre una VM Windows 11 personal,
+sin datos ni credenciales corporativas.
+
+Este perfil `local-demo` puede incluir:
+
+- DeviceAgent instalado como Windows Service de laboratorio;
+- diagnosticos reales del equipo mostrados en WinUI mediante IPC;
+- adaptadores cerrados para software libre y redistribuible, probados solo en
+  la VM;
+- un origen local de artefactos que simula un mirror mediante HTTP o filesystem
+  controlado, con manifiestos, versiones y SHA-256;
+- API, PostgreSQL, worker, portal y tickets fake ejecutados localmente;
+- Hermes como proveedor opcional del chat, ejecutado localmente y consumiendo
+  una API externa solo con contenido publico o sintetico;
+- RAG local con documentos curados, versionados y sin datos corporativos;
+- modo degradado sin conexion basado en catalogo, conocimiento, politicas,
+  autorizaciones y artefactos ya disponibles localmente.
+
+El perfil local no equivale a piloto ni produccion. No usa UEMS, OpenText,
+Entra, Teams corporativo, PKI corporativa, paquetes comerciales, datos reales ni
+endpoints internos. Las integraciones no disponibles se mantienen detras de
+adaptadores fake o contratos reemplazables.
+
+La falta de aprobacion corporativa no obliga a reescribir el dominio. Cambia los
+proveedores de identidad, artefactos, IA, tickets, despliegue y hosting.
+
 ## MVP productivo
 
 ### Experiencia nativa
@@ -88,6 +117,10 @@
 - Considerar una sesion abierta de Teams/Windows como unica prueba de identidad.
 - Crear un proveedor de credenciales o reemplazar el login de Windows.
 - Usar Power Automate Desktop como ejecutor privilegiado principal.
+- Promover el perfil `local-demo` directamente a endpoints corporativos.
+- Redistribuir o reempaquetar software cuya licencia no lo permita.
+- Considerar Hermes con API externa como inferencia offline.
+- Autorizar acciones nuevas sin una politica local o remota valida.
 
 ## Fase 2
 

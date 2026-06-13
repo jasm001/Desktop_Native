@@ -73,3 +73,30 @@ La vista Asistente ofrece opciones fijas para:
 `AssistantViewModel` traduce estados y codigos a texto de presentacion y
 habilita comandos. No evalua licencia, estado, alternativas ni transiciones.
 El campo de texto libre permanece deshabilitado.
+
+## Evolucion para el MVP local
+
+El perfil `local-demo` puede habilitar texto libre mediante un
+`IAssistantProvider` reemplazable. La primera evaluacion usa Hermes ejecutado
+localmente con:
+
+- API externa opcional para inferencia;
+- RAG, documentos e indice almacenados localmente;
+- contenido exclusivamente publico, sintetico o curado;
+- salida estructurada validada antes de entrar a la maquina de estados;
+- citas a fuente y version del conocimiento recuperado;
+- limites de contexto, timeout, costo y cancelacion.
+
+Hermes no llama al DeviceAgent, no construye comandos y no autoriza acciones. Su
+salida solo puede mapearse a intenciones y opciones conocidas.
+
+Cuando no hay conexion o el proveedor falla, el asistente conserva:
+
+- busqueda local del catalogo;
+- respuestas curadas del conocimiento local;
+- opciones fijas;
+- la maquina de estados determinista;
+- diagnosticos y acciones offline que el DeviceAgent ya tenga autorizados y
+  disponibles.
+
+La ausencia de API degrada el lenguaje natural, no la operacion local permitida.

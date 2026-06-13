@@ -7,6 +7,11 @@ Fecha de ultima actualizacion: 2026-06-12.
 Preparar el Bloque 6: primer adaptador real en una VM Windows 11, sin adelantar
 la seleccion del paquete ni ejecutar cambios en la PC principal.
 
+El incremento puede usar un mirror local simulado con software libre
+redistribuible. Hermes/RAG, Windows Service, Salud real, API local y modo
+degradado forman parte del MVP local acordado, pero se implementan como unidades
+separadas y no se mezclan dentro del primer adaptador.
+
 ## Estado del repositorio
 
 - Repositorio independiente inicializado en `main`.
@@ -57,6 +62,28 @@ la seleccion del paquete ni ejecutar cambios en la PC principal.
   registra en `WORKFLOW.md`.
 - No existen acciones privilegiadas, secretos, datos corporativos ni
   integraciones productivas.
+
+## Alcance local acordado
+
+Puede avanzarse hasta una demostracion local de extremo a extremo en una VM
+Windows 11 personal:
+
+- DeviceAgent instalado como Windows Service de laboratorio;
+- WinUI mostrando diagnosticos reales por IPC;
+- primer adaptador real para software libre y redistribuible;
+- mirror local simulado con manifiesto y SHA-256;
+- API, PostgreSQL, worker, portal e identidad locales;
+- Hermes ejecutado localmente con API externa opcional y datos
+  publicos/sinteticos;
+- RAG, documentos e indice locales;
+- fallback determinista y operacion offline con politicas, autorizaciones,
+  acciones y artefactos ya disponibles;
+- UEMS, OpenText, Entra y Teams mediante adaptadores fake mientras no exista
+  aprobacion o acceso.
+
+Este alcance demuestra viabilidad tecnica. No equivale a piloto corporativo y
+no autoriza usar datos, credenciales, paquetes, mirrors o endpoints internos.
+Los limites tecnicos completos viven en `docs/modules/local-mvp-lab.md`.
 
 ## Producto
 

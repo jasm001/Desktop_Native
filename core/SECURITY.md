@@ -36,6 +36,11 @@
 - En MVP, origen oficial/UEMS, version y parametros validados antes de instalar.
 - Hash/firma del tercero se registra cuando UEMS/fabricante lo exponga; un mirror
   propio con verificacion estricta queda para despues.
+- Excepcion de laboratorio: `local-demo` puede simular un mirror fuera del
+  repositorio Git con software libre cuya licencia permita redistribucion. Exige
+  version fijada, manifiesto, SHA-256, origen documentado y uso exclusivo en VM.
+- Una politica local de desarrollo puede autorizar acciones cerradas solo en la
+  VM `local-demo`; no se copia ni promociona a piloto o produccion.
 - Timeout, limites de recursos y salida saneada.
 - Rollback definido por paquete cuando sea viable.
 - El agente no usa una cuenta administrativa humana compartida.
@@ -66,6 +71,9 @@
 - Hermes local no cambia la clasificacion de datos si llama MiniMax/OpenRouter:
   proveedores externos no reciben prompts/tickets corporativos sin aprobacion
   explicita de AI Governance y Security.
+- El RAG local de demostracion solo indexa contenido publico, sintetico o
+  expresamente curado. La clave API vive fuera del repositorio y los prompts no
+  incluyen diagnosticos, identidades o datos corporativos.
 - El asistente no solicita, procesa ni conserva contrasenas de correo, dominio,
   VPN o Windows.
 - La recuperacion de identidad delega en `recovery.softtek.com` o en el

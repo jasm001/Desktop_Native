@@ -21,12 +21,16 @@ administrative portal behavior is implemented.
 - Block 5: bounded read-only diagnostics and typed action prerequisites
   completed.
 - Next block: first real adapter validated in a Windows 11 VM.
+- Local demonstration profile: Windows 11 VM, public/synthetic data, local or
+  fake providers, a development artifact mirror, and optional Hermes/RAG. This
+  profile is not a corporate pilot.
 - Data policy: synthetic data and deterministic fakes only.
 - Remote: `https://github.com/jasm001/Desktop_Native.git`.
 
 The implementation sequence and gates are defined in
 [`DEVELOPMENT_PLAN.md`](DEVELOPMENT_PLAN.md). Current execution state is recorded
-in [`WORKFLOW.md`](WORKFLOW.md).
+in [`WORKFLOW.md`](WORKFLOW.md). The bounded local demonstration is defined in
+[`docs/modules/local-mvp-lab.md`](docs/modules/local-mvp-lab.md).
 
 ## Documentation Precedence
 

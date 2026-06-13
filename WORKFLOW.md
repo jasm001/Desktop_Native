@@ -7,6 +7,9 @@
 - Ultimo resultado: diagnostico local de solo lectura con snapshot efimero,
   fallos parciales tipados y prerrequisitos allowlisted.
 - Siguiente resultado: primer adaptador real validado en VM Windows 11.
+- Ruta local aprobada para desarrollo: mirror local de software libre, servicios
+  locales/fake, Hermes con API externa opcional, RAG local y continuidad
+  degradada; no equivale a piloto corporativo.
 
 ## Ultima validacion
 
@@ -94,6 +97,29 @@ Solo un bloque principal puede estar `in_progress`.
 | 9. Canal Teams existente | pending | |
 | 10. Endurecimiento para piloto | pending | |
 | 11. Portal administrativo web | pending | |
+
+## Alcance del MVP local
+
+El desarrollo puede continuar por los Bloques 6-11 con proveedores locales o
+fake, respetando el orden y los gates de cada unidad. La referencia tecnica es
+`docs/modules/local-mvp-lab.md`.
+
+Permitido antes de la decision corporativa:
+
+- VM Windows 11 personal sin datos ni credenciales corporativas;
+- Windows Service de laboratorio y Salud real por IPC;
+- software libre redistribuible desde mirror local con SHA-256;
+- backend, persistencia, portal e identidad de desarrollo;
+- Hermes local con API externa usando contenido publico/sintetico;
+- RAG e indice locales;
+- operacion offline cerrada con politica y artefactos ya disponibles.
+
+Pendiente para piloto:
+
+- UEMS, Entra, OpenText y bot de Teams reales;
+- Security/Sophos, PKI, firma y confianza de publicador;
+- identidad restringida y despliegue corporativo del servicio;
+- hosting, retencion, conectividad y paquetes corporativos aprobados.
 
 ## Stoppers futuros no bloqueantes
 

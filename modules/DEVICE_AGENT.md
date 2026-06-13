@@ -125,6 +125,18 @@ La ACL no sustituye la autorizacion del mensaje. El agente tambien valida:
 Los adaptadores reales empiezan en el Bloque 6 y solo despues de validar el
 paquete en una VM Windows 11.
 
+## Perfil local posterior
+
+En `local-demo`, el host puede instalarse como Windows Service de laboratorio en
+la VM y consumir una politica de desarrollo cerrada. WinUI puede leer
+diagnosticos reales mediante IPC, pero no obtiene capacidad de ejecutar comandos
+ni de modificar la allowlist.
+
+Sin conexion, el agente solo usa acciones, autorizaciones y artefactos ya
+disponibles. La politica local requiere confirmacion explicita y no se promueve a
+piloto. El mirror, Hermes/RAG y el recorrido completo se gobiernan en
+`../docs/modules/local-mvp-lab.md`.
+
 ## Capacidad posterior condicionada
 
 Un flujo futuro puede recibir campanas explicitas para refrescar politicas de

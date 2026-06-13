@@ -7,6 +7,32 @@ WinGet, MSI, MSIX, PowerShell ni procesos hijos.
 El Bloque 6 es la primera unidad que puede agregar un adaptador real, siempre
 validado primero en una VM Windows 11 desechable con snapshot.
 
+## Laboratorio local
+
+El primer adaptador puede consumir un artefacto desde un mirror local simulado
+para probar el recorrido completo sin UEMS. El mirror vive fuera del repositorio
+y sirve solo software libre con redistribucion permitida.
+
+El adaptador no recibe URL, ruta, ejecutable o switches desde WinUI, Hermes,
+backend o IPC. Resuelve internamente un `artifactId` versionado contra un
+manifiesto allowlisted y verifica SHA-256 antes de ejecutar.
+
+La matriz de laboratorio cubre:
+
+- mirror disponible y artefacto valido;
+- mirror ausente o timeout;
+- hash corrupto;
+- `Detect` antes y despues;
+- `Preflight`;
+- `Install` y repeticion idempotente;
+- `Verify`;
+- `Uninstall`;
+- restauracion del snapshot de VM.
+
+Un paquete reempaquetado se conserva solo si su licencia permite modificacion y
+redistribucion. El resultado no se promueve fuera del laboratorio sin revision
+de licencia, seguridad, firma y proceso de distribucion.
+
 ## Objetivo
 
 Automatizar instalaciones configurables sin dar al modelo control libre del

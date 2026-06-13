@@ -86,6 +86,20 @@ dispositivo, expiracion y revocacion.
 - Las reparaciones offline proceden unicamente de bundles firmados y allowlisted.
 - La base local de conocimiento explica resultados, pero no genera scripts.
 
+En `local-demo`, "sin conexion" significa que no existe acceso al backend,
+mirror o API de IA. El agente puede:
+
+- obtener diagnosticos locales;
+- mostrar catalogo y conocimiento cacheados;
+- continuar un trabajo previamente autorizado cuyo artefacto ya esta validado;
+- ejecutar una accion incluida en la politica local de desarrollo, con
+  confirmacion explicita, solo dentro de la VM;
+- conservar progreso y evidencia en SQLite;
+- sincronizar idempotentemente cuando regresa la conexion.
+
+No puede descargar un artefacto ausente, inventar una autorizacion, ampliar la
+allowlist ni generar comandos desde conocimiento local.
+
 ## Mantenimiento y experiencia del usuario
 
 - Agrupar instalaciones, politicas y actualizaciones compatibles para reducir
@@ -258,3 +272,19 @@ La taxonomia y reglas operativas observadas se detallan en `TICKETING.md`.
 - Comparar costo de tokens contra VM/GPU, operacion, disponibilidad y licencias.
 - Soluciones humanas se redactan, revisan, prueban y publican como conocimiento.
 - No hacer fine-tuning continuo con tickets sin clasificacion y consentimiento.
+
+Para el MVP local:
+
+- Hermes se ejecuta localmente como adaptador de conversacion;
+- la inferencia puede consumir una API externa con clave personal de prueba;
+- solo se envian datos publicos o sinteticos;
+- documentos, chunks, metadatos e indice RAG permanecen locales;
+- cada respuesta recuperada conserva fuente y version;
+- si la API falla, WinUI vuelve a busqueda local, respuestas curadas y la
+  maquina de estados determinista;
+- el proveedor de IA propone intenciones o acciones conocidas, pero nunca
+  autoriza ni produce contenido ejecutable.
+
+Esta configuracion no es inferencia offline. Un modelo con pesos locales seria
+otro proveedor y requeriria evaluacion separada de hardware, licencia y
+seguridad.

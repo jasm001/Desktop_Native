@@ -30,6 +30,25 @@ politicas, conocimiento, solicitudes y tickets. Teams no envia comandos al
 equipo: solicita una accion al backend y este solo crea un trabajo si la
 identidad, dispositivo y politica son validos.
 
+### Perfil local de demostracion
+
+El perfil `local-demo` conserva las mismas fronteras mediante proveedores
+reemplazables:
+
+```text
+WinUI -> API local/fake -> DeviceAgent en VM
+  |          |                 |
+  |          +-- SQLite/PostgreSQL local
+  +-- Hermes provider -> API externa opcional
+  +-- RAG e indice local
+DeviceAgent -> origen local de artefactos con manifiesto y SHA-256
+```
+
+La politica de desarrollo se instala explicitamente en la VM y solo contiene
+acciones allowlisted. No se deriva una autorizacion desde el texto del chat. El
+perfil no contiene endpoints, identidades, software ni credenciales
+corporativas.
+
 ## Fronteras
 
 ### Cliente WinUI
@@ -349,6 +368,11 @@ correcciones se registran con nuevos eventos, no sobrescribiendo evidencia.
 - Integraciones externas desacopladas mediante outbox y workers.
 - Instalacion descargada y autorizada puede continuar sin IA y sin backend.
 - Un trabajo que aun no tenga artefacto o autorizacion no empieza offline.
+- El conocimiento local y los flujos deterministas permanecen disponibles sin
+  el proveedor de IA.
+- En `local-demo`, una politica de desarrollo instalada puede ser la autoridad
+  local para acciones cerradas dentro de la VM. En piloto, esa autoridad se
+  reemplaza por politica corporativa firmada y autorizacion del backend.
 
 ## Aislamiento y rollback
 

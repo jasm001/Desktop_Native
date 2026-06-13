@@ -7,6 +7,28 @@ ejecucion controlada, luego backend e integraciones, y al final administracion.
 Cada bloque debe producir algo demostrable sin depender de servicios
 corporativos aun no aprobados.
 
+## Ruta de demostracion local
+
+Mientras se resuelve la aprobacion corporativa, los Bloques 6-11 pueden avanzar
+en una VM Windows 11 y servicios locales usando datos publicos/sinteticos,
+identidad de desarrollo y adaptadores fake.
+
+La demostracion local puede incluir:
+
+- DeviceAgent como Windows Service de laboratorio y diagnosticos reales en
+  WinUI;
+- mirror local simulado para software libre redistribuible;
+- API, PostgreSQL, worker y portal locales;
+- Hermes local con API externa opcional y RAG local curado;
+- continuidad sin conexion mediante conocimiento, politicas, autorizaciones,
+  acciones y artefactos ya disponibles.
+
+El orden de bloques no cambia. Cada capacidad se implementa y valida como unidad
+separada. Los gates corporativos de UEMS, Security, Entra, OpenText, Teams, PKI,
+hosting y conectividad permanecen pendientes y se cierran antes del piloto.
+
+El detalle vive en `docs/modules/local-mvp-lab.md`.
+
 ## Bloque 0: fundacion del repositorio
 
 Crear la solucion y workspace descritos en `standards/DELIVERY.md`.
@@ -107,6 +129,10 @@ Elegir un paquete libre, aprobado, silencioso y de bajo riesgo. Implementar:
 
 Primero se valida en VM Windows 11 con snapshot. No usar la PC principal como
 primer endpoint privilegiado.
+
+Para el perfil `local-demo`, el artefacto puede servirse desde un mirror local
+simulado si la licencia permite redistribucion y el manifiesto fija origen,
+version, arquitectura y SHA-256. Esto no crea un repositorio productivo.
 
 Gate: instalacion, repeticion idempotente, desinstalacion y fallo controlado.
 

@@ -69,6 +69,11 @@
 | D-065 | El producto conserva asset tag y configuracion permitida, pero nunca deriva, almacena o muestra PIN o recovery password de BitLocker. |
 | D-066 | Hermes/RAG puede explicar o seleccionar acciones conocidas; el agente nunca ejecuta scripts o argumentos generados por IA. |
 | D-067 | La direccion corporativa o producto independiente se decide despues sin detener el MVP; los niveles local, personal/pro y equipos pequenos son opciones posteriores. |
+| D-068 | Mientras se decide la aprobacion corporativa, puede construirse un perfil `local-demo` completo en una VM Windows 11 personal, usando solo datos publicos/sinteticos y proveedores locales o fake. |
+| D-069 | El mirror local de laboratorio es un proveedor de desarrollo para software libre con redistribucion permitida, manifiesto e integridad obligatoria; no sustituye ni contradice la decision productiva de usar UEMS/URLs oficiales. |
+| D-070 | Hermes puede ejecutarse localmente con RAG e indice locales y consumir una API externa para inferencia. Sin conexion, el producto conserva busqueda/conocimiento local y flujos deterministas; no se presenta esa configuracion como LLM offline. |
+| D-071 | El agente puede operar sin conexion solo con politicas, autorizaciones, acciones y artefactos ya disponibles. En `local-demo`, una politica de desarrollo instalada y confirmacion local pueden autorizar acciones allowlisted; esa politica no se promueve a piloto. |
+| D-072 | Los Bloques 6-11 pueden preparar un MVP local mediante proveedores reemplazables. Los gates corporativos de UEMS, Entra, OpenText, Teams, PKI, Security y conectividad permanecen pendientes y separados. |
 
 ## Supuestos de trabajo por validar
 

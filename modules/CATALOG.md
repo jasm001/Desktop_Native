@@ -106,6 +106,30 @@ Orden preferente:
 Sus paquetes historicos locales se consideran no confiables hasta revalidar
 version, EOL, origen, switches, hash y deteccion.
 
+### Origen local de laboratorio
+
+El perfil `local-demo` puede usar `LocalDevelopmentArtifactSource` para simular
+un mirror sin solicitar infraestructura corporativa. Puede ser un servidor HTTP
+local o una carpeta controlada montada en la VM.
+
+Solo admite software libre cuando la licencia permita redistribucion y, si
+aplica, modificacion o reempaquetado. Cada artefacto declara:
+
+- producto, version y arquitectura;
+- URL oficial y fecha de obtencion;
+- licencia y evidencia de redistribucion permitida;
+- nombre logico, tamano y SHA-256;
+- firma/editor cuando exista;
+- adaptador y version compatibles;
+- estado `development-only`.
+
+Los binarios no se guardan en Git. El manifiesto puede versionarse, pero el
+almacen local permanece ignorado y reemplazable. Corrupcion, hash incorrecto,
+version no esperada o ausencia del mirror fallan cerrado.
+
+Este proveedor no altera el orden productivo anterior ni convierte un paquete de
+laboratorio en software aprobado para endpoints corporativos.
+
 ## Interseccion de catalogos
 
 Un template UEMS no significa que Softtek autorice el programa. Una entrada del
