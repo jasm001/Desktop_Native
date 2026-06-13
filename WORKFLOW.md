@@ -4,10 +4,11 @@
 
 - Fase actual: capacidades locales controladas para Windows 11.
 - Bloque activo: ninguno. Bloque 6 `completed`; Bloque 7 `pending`.
-- Ultimo resultado: adaptador cerrado para 7-Zip 26.01 x64 MSI, publicado en
-  `f808425`, validado en una VM Windows 11 x64 con checkpoint y restauracion.
-- Resultado en curso: cierre documental y gate completo del Bloque 6. No se
-  inicia el Bloque 7 en esta unidad.
+- Ultimo resultado funcional: adaptador cerrado para 7-Zip 26.01 x64 MSI,
+  publicado en `f808425`, validado en una VM Windows 11 x64 con checkpoint y
+  restauracion.
+- Resultado publicado: cierre documental del Bloque 6 en `bfb4a35`. No existe
+  trabajo principal activo; el Bloque 7 requiere una tarea separada.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.

@@ -16,13 +16,13 @@ Repositorio:
   existente.
 
 Estado confirmado:
-- Bloques 0 a 6 completados; el cierre documental del Bloque 6 esta pendiente
-  de commit/publicacion por el usuario.
+- Bloques 0 a 6 completados y publicados en `main`.
 - Bloque 3 publicado en `b09f07a`.
 - Bloque 4 publicado en `b56bfcb`.
 - Bloque 5 publicado en `e3a0b8d`.
 - Bloque 6 esta `completed`; no hay otro bloque principal activo.
 - El incremento automatizado del Bloque 6 fue publicado en `f808425`.
+- El cierre documental y la evidencia VM fueron publicados en `bfb4a35`.
 - La shell WinUI usa catalogo y conversacion sinteticos; no crea tickets,
   solicitudes corporativas ni instalaciones reales.
 - El DeviceAgent expone un protocolo IPC v1 tipado mediante Named Pipe y usa
@@ -110,14 +110,12 @@ Reglas no negociables:
 
 Tarea de reanudacion:
 1. inspecciona `git status --short --branch` y conserva los cambios existentes;
-2. confirma que los documentos de cierre del Bloque 6 siguen sin publicar o
-   registra el commit cuando el usuario ya lo haya creado;
+2. confirma que `bfb4a35` esta presente y que el Bloque 6 sigue `completed`;
 3. no repitas la matriz VM ni ejecutes el MSI salvo una solicitud explicita de
    regresion;
 4. no inicies el Bloque 7 automaticamente; requiere una tarea separada;
-5. si solo falta publicar este cierre, revisa el diff, confirma
-   `scripts/Validate.ps1` y sugiere
-   `docs(device-agent): close block 6 VM validation`.
+5. para iniciar el Bloque 7, reemplaza esta tarea por un handoff especifico que
+   lea sus documentos propietarios y defina un solo incremento.
 
 Gate base:
 .\scripts\Validate.ps1

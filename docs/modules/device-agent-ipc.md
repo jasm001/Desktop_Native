@@ -1,10 +1,12 @@
-# DeviceAgent simulado e IPC
+# DeviceAgent e IPC local
 
 ## Responsabilidad
 
-Los Bloques 4 y 5 demuestran que un proceso separado puede recibir mensajes
+Los Bloques 4 y 5 demostraron que un proceso separado puede recibir mensajes
 locales tipados, rechazarlos por defecto, conservar trabajos durables y devolver
-diagnosticos efimeros sin ejecutar acciones sobre el dispositivo.
+diagnosticos efimeros. El Bloque 6 mantuvo el mismo contrato IPC v1 y agrego dos
+acciones reales cerradas de 7-Zip, autorizadas solo en `local-demo` y validadas
+en una VM Windows 11 desechable.
 
 ## Protocolo
 
@@ -109,3 +111,4 @@ sandbox bloquea la conexion local aun cuando servidor y cliente comparten
 usuario.
 
 El detalle del snapshot vive en `read-only-device-diagnostics.md`.
+El adaptador real y su matriz VM viven en `seven-zip-adapter.md`.

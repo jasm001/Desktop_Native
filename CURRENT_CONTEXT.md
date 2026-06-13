@@ -26,6 +26,7 @@ separadas y no se mezclan dentro del primer adaptador.
 - Bloque 4 publicado en `b56bfcb`.
 - Bloque 5 publicado en `e3a0b8d`.
 - Incremento automatizado del Bloque 6 publicado en `f808425`.
+- Cierre documental y evidencia VM del Bloque 6 publicados en `bfb4a35`.
 - Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
 - Nullable, analyzers, warnings como errores y paquetes centralizados activos.
@@ -87,8 +88,7 @@ separadas y no se mezclan dentro del primer adaptador.
 
 ## Siguiente reanudacion
 
-1. Inspeccionar `git status --short --branch` y el commit de cierre cuando se
-   publique.
+1. Inspeccionar `git status --short --branch` y confirmar `bfb4a35` en `main`.
 2. Confirmar que el Bloque 6 permanece `completed` y que no existe otro bloque
    principal `in_progress`.
 3. Iniciar el Bloque 7 solo mediante una tarea separada, leyendo sus documentos

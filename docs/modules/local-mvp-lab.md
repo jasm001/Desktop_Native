@@ -9,6 +9,20 @@ credenciales, paquetes ni endpoints corporativos.
 El laboratorio demuestra arquitectura y comportamiento. No acredita despliegue,
 seguridad, licenciamiento ni operacion corporativa.
 
+## Estado actual
+
+El primer incremento real del laboratorio esta completado:
+
+- `seven-zip.msi.v1` para 7-Zip 26.01 x64;
+- mirror filesystem temporal con manifiesto y SHA-256;
+- instalacion, verificacion, idempotencia y desinstalacion en VM Windows 11;
+- fallos cerrados por mirror ausente y hash corrupto;
+- restauracion del checkpoint y confirmacion del estado inicial.
+
+El Windows Service, la conexion WinUI-DeviceAgent, la API local, Hermes/RAG y el
+recorrido completo descrito abajo siguen siendo componentes previstos. No forman
+parte del gate cerrado del Bloque 6.
+
 ## Perfil `local-demo`
 
 Componentes previstos:
@@ -109,8 +123,9 @@ No permitido:
 
 ## Limite de avance
 
-Los Bloques 6-11 pueden preparar sus dominios, UI, persistencia y adaptadores
-locales/fake. No pueden declararse corporativamente validados mientras falten:
+El Bloque 6 ya valido su adaptador en laboratorio. Los Bloques 7-11 pueden
+preparar sus dominios, UI, persistencia y adaptadores locales/fake. Ninguno puede
+declararse corporativamente validado mientras falten:
 
 - UEMS y proceso de distribucion/retiro;
 - cuenta e identidad restringida del servicio;

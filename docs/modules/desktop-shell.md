@@ -83,6 +83,7 @@ con la matriz real de monitores.
 ## Estado posterior
 
 Los Bloques 4 y 5 agregaron IPC tipado, trabajos simulados y diagnosticos de solo
-lectura en el DeviceAgent. El Bloque 6 valida el primer adaptador real en una VM
-Windows 11. La shell seguira sin ejecutar acciones privilegiadas y no se conecta
-al agente hasta que exista un incremento especifico para esa integracion.
+lectura en el DeviceAgent. El Bloque 6 valido el primer adaptador real en una VM
+Windows 11 y restauro su checkpoint. La shell sigue sin ejecutar acciones
+privilegiadas y no se conecta al agente hasta que exista un incremento
+especifico para esa integracion.
