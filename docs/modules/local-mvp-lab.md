@@ -11,17 +11,19 @@ seguridad, licenciamiento ni operacion corporativa.
 
 ## Estado actual
 
-El primer incremento real del laboratorio esta completado:
+Los incrementos de adaptador y control plane del laboratorio estan completados:
 
 - `seven-zip.msi.v1` para 7-Zip 26.01 x64;
 - mirror filesystem temporal con manifiesto y SHA-256;
 - instalacion, verificacion, idempotencia y desinstalacion en VM Windows 11;
 - fallos cerrados por mirror ausente y hash corrupto;
 - restauracion del checkpoint y confirmacion del estado inicial.
+- API Next.js, PostgreSQL y worker locales;
+- recorrido WinUI -> API -> agente simulado -> evidencia validado.
 
-El Windows Service, la conexion WinUI-DeviceAgent, la API local, Hermes/RAG y el
-recorrido completo descrito abajo siguen siendo componentes previstos. No forman
-parte del gate cerrado del Bloque 6.
+El Windows Service instalado, la conexion IPC de Salud desde WinUI, Hermes/RAG y
+el portal siguen siendo componentes previstos. No forman parte de los gates
+cerrados de los Bloques 6 y 7.
 
 ## Perfil `local-demo`
 

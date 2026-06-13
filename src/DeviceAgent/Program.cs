@@ -1,4 +1,5 @@
 using ITSupportNative.DeviceAgent.Configuration;
+using ITSupportNative.DeviceAgent.ControlPlane;
 using ITSupportNative.DeviceAgent.Diagnostics;
 using ITSupportNative.DeviceAgent.Diagnostics.Infrastructure;
 using ITSupportNative.DeviceAgent.Execution;
@@ -55,9 +56,14 @@ builder.Services
     .AddSingleton<INetworkDiagnosticCollector, NetworkDiagnosticCollector>()
     .AddSingleton<IAgentVersionDiagnosticCollector, AgentVersionDiagnosticCollector>()
     .AddSingleton<AgentDiagnosticsService>()
-    .AddSingleton<AgentRequestDispatcher>()
+    .AddSingleton<AgentRequestDispatcher>();
+
+builder.Services
+    .AddSingleton<ControlPlaneAgentSyncService>()
     .AddHostedService<AgentJobWorker>()
+    .AddHostedService<ControlPlaneAgentWorker>()
     .AddHostedService<NamedPipeAgentWorker>();
+builder.Services.AddHttpClient<IControlPlaneAgentClient, HttpControlPlaneAgentClient>();
 
 var host = builder.Build();
 await host.RunAsync();

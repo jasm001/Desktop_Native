@@ -4,8 +4,9 @@
 
 `src/Desktop` contiene el cliente Windows 11 sin privilegios. Presenta la shell
 navegable y consume los dominios sinteticos de catalogo y conversacion como
-adaptador de presentacion. No ejecuta comandos, no crea solicitudes reales y no
-se conecta al DeviceAgent, backend o integraciones corporativas.
+adaptador de presentacion. En desarrollo puede persistir una confirmacion
+sintetica mediante el control plane local. No ejecuta comandos ni se conecta al
+DeviceAgent o a integraciones corporativas.
 
 ## Experiencia
 
@@ -37,6 +38,8 @@ demostracion.
   autorizacion, escalamiento o rechazo.
 - `AssistantViewModel` traduce estados y codigos a texto y comandos MVVM; no
   decide transiciones ni reglas de catalogo.
+- `IControlPlaneRequestClient` mantiene tipada la integracion HTTP opcional y
+  falla cerrada fuera del perfil exacto de desarrollo.
 - `ShellRouteCatalog` mantiene las rutas permitidas del bloque.
 - Los recursos visuales viven en `Themes`.
 - Cada destino mantiene su XAML y code-behind de enlace por separado.
@@ -69,6 +72,7 @@ con la matriz real de monitores.
 - las referencias de solicitud son sinteticas;
 - el DeviceAgent ya implementa diagnosticos de solo lectura, pero la vista Salud
   del equipo conserva fixtures y no abre IPC;
+- la confirmacion local solo modela la accion sintetica allowlisted;
 - instalaciones reales, tickets e IA permanecen fuera de la shell actual;
 - el contenido identifica explicitamente el modo local y sintetico.
 
@@ -84,6 +88,6 @@ con la matriz real de monitores.
 
 Los Bloques 4 y 5 agregaron IPC tipado, trabajos simulados y diagnosticos de solo
 lectura en el DeviceAgent. El Bloque 6 valido el primer adaptador real en una VM
-Windows 11 y restauro su checkpoint. La shell sigue sin ejecutar acciones
-privilegiadas y no se conecta al agente hasta que exista un incremento
-especifico para esa integracion.
+Windows 11 y restauro su checkpoint. El Bloque 7 conecto solo la confirmacion y
+consulta sinteticas al control plane local. La shell sigue sin ejecutar acciones
+privilegiadas ni conectarse directamente al agente.

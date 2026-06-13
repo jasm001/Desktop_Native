@@ -4,14 +4,14 @@ Fecha de ultima actualizacion: 2026-06-13.
 
 ## Objetivo inmediato
 
-El Bloque 6 permanece `completed`. El Bloque 7 es el unico bloque principal
-`in_progress`; su primer incremento establece el control plane compartido,
-persistencia PostgreSQL y worker outbox sin construir el portal administrativo
-ni conectar WinUI, DeviceAgent o servicios externos.
+Los Bloques 6 y 7 permanecen `completed`. No hay otro bloque principal activo.
+El recorrido local del Bloque 7 conecta WinUI, API, PostgreSQL, worker y agente
+simulado sin construir el portal administrativo ni conectar servicios externos.
 
-El incremento esta implementado y validado en el working tree, pero todavia no
-esta publicado. El alcance y los limites viven en
-`docs/modules/control-plane-foundation.md`.
+El primer incremento fue publicado en `2b89a6b`. El incremento de cierre esta
+implementado y validado en el working tree, pero todavia no esta publicado. El
+alcance y los limites viven en `docs/modules/control-plane-foundation.md` y
+`docs/modules/control-plane-local-flow.md`.
 
 ## Estado del repositorio
 
@@ -26,19 +26,26 @@ esta publicado. El alcance y los limites viven en
 - Bloque 5 publicado en `e3a0b8d`.
 - Incremento automatizado del Bloque 6 publicado en `f808425`.
 - Cierre documental y evidencia VM del Bloque 6 publicados en `bfb4a35`.
+- Fundacion del control plane del Bloque 7 publicada en `2b89a6b`.
 - Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
 - `src/AdminWeb` es una aplicacion Next.js App Router con TypeScript estricto,
   contratos HTTP v1 y modulos iniciales del control plane; no contiene portal.
 - Identidad sintetica determinista habilitable solo en desarrollo.
-- Prisma/PostgreSQL con migracion versionada, timestamps gobernados por la base,
-  auditoria append-only y outbox transaccional.
+- Prisma/PostgreSQL con dos migraciones versionadas, timestamps gobernados por
+  la base, auditoria append-only y outbox transaccional.
 - La mutacion confirmada crea solicitud, trabajo, auditoria y outbox en una
   transaccion, con idempotencia por clave y hash del payload.
-- `src/Worker` es un proceso Node separado con claim `SKIP LOCKED`, lease,
-  reintentos acotados y efecto sintetico idempotente.
+- `src/Worker` es un proceso Node separado y ejecutable con claim `SKIP LOCKED`,
+  lease, reintentos acotados y efectos sinteticos idempotentes.
 - El gate crea una base PostgreSQL efimera real, aplica migraciones, ejecuta
-  pruebas de AdminWeb/worker y elimina la base.
+  pruebas de AdminWeb/worker, levanta los procesos reales y elimina la base.
+- WinUI dispone de un cliente HTTP local, tipado y deshabilitado fuera del
+  perfil exacto de desarrollo.
+- El DeviceAgent inicia HTTP saliente hacia loopback, reclama solo trabajos
+  sinteticos allowlisted y reporta evidencia saneada.
+- El E2E verifica solicitud, despacho, simulacion, resultado y consulta final
+  con tres evidencias, sin ejecutar instalaciones reales.
 - Nullable, analyzers, warnings como errores y paquetes centralizados activos.
 - Pruebas unitarias, de contratos y de arquitectura iniciales activas.
 - Shell WinUI con cinco vistas, tema claro/oscuro, navegacion por teclado,
@@ -50,8 +57,9 @@ esta publicado. El alcance y los limites viven en
   autorizacion.
 - Conversacion determinista con cinco estados, intenciones fijas, confirmacion
   explicita, cancelacion e idempotencia por comando.
-- La referencia `SyntheticRequest` vive solo en la sesion local; no es una
-  solicitud corporativa persistida.
+- La referencia `SyntheticRequest` permanece local; en el perfil de desarrollo
+  la confirmacion tambien crea una solicitud sintetica del control plane, nunca
+  una solicitud corporativa.
 - La vista Asistente consume la maquina de estados mediante DI y mantiene el
   texto libre deshabilitado.
 - Contrato IPC v1 con mensajes tipados para iniciar, consultar y cancelar
@@ -72,7 +80,7 @@ esta publicado. El alcance y los limites viven en
 - La CLI compila y ejecuta la shell. La depuracion en IDE requiere Visual Studio
   2026 version 18.0 o posterior; Visual Studio 2022 no admite `net10.0`.
 - Gitleaks y CI de GitHub configurados.
-- Build Release y 110 pruebas pasan; la validacion completa del repositorio se
+- Build Release y 113 pruebas pasan; la validacion completa del repositorio se
   registra en `WORKFLOW.md`.
 - No existen secretos, datos corporativos ni integraciones productivas. La unica
   accion privilegiada real permanece cerrada al perfil exacto `local-demo`.
@@ -98,11 +106,11 @@ esta publicado. El alcance y los limites viven en
 
 ## Siguiente reanudacion
 
-1. Inspeccionar el working tree y conservar el incremento local del Bloque 7.
-2. Confirmar que el Bloque 6 permanece `completed` y el Bloque 7 es el unico
-   bloque principal `in_progress`.
-3. Continuar el Bloque 7 en otra unidad acotada, sin adelantar portal, tickets,
-   Teams, Hermes/RAG, Windows Service ni conexiones WinUI-DeviceAgent.
+1. Inspeccionar y publicar por separado el incremento de cierre del Bloque 7.
+2. Confirmar que los Bloques 6 y 7 permanecen `completed` y que no hay otro
+   bloque principal activo.
+3. Iniciar el Bloque 8 solo en una nueva unidad acotada, sin adelantar Teams,
+   portal, Hermes/RAG, Windows Service, UEMS real ni integraciones corporativas.
 
 ## Alcance local acordado
 
@@ -163,9 +171,10 @@ El primer recorrido vertical usa datos sinteticos:
 7. mostrar progreso y resultado;
 8. registrar evidencia local saneada.
 
-No instala software real durante este recorrido. El agente ya puede crear
-trabajos simulados y obtener diagnosticos locales tipados por IPC, pero la shell
-actual no los invoca y tampoco crea solicitudes o tickets corporativos.
+No instala software real durante este recorrido. WinUI crea y consulta una
+solicitud sintetica por HTTP; el agente la reclama de forma saliente y ejecuta
+solo la simulacion allowlisted. La shell no abre IPC para este flujo y no crea
+tickets ni solicitudes corporativas.
 
 ## Pendientes que no bloquean el esqueleto
 

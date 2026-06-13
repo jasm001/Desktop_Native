@@ -10,7 +10,7 @@
     "lint": "eslint src tests && tsc --noEmit",
     "test": "vitest run --config vitest.config.ts --exclude tests/integration/**",
     "test:integration:direct": "vitest run --config vitest.config.ts tests/integration",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "node scripts/build.mjs",
     "start": "node dist/main.js",
     "start:once": "node dist/main.js --once"
   },
@@ -23,6 +23,7 @@
     "@eslint/js": "9.39.4",
     "@types/node": "24.13.2",
     "@types/pg": "8.20.0",
+    "esbuild": "0.28.1",
     "eslint": "9.39.4",
     "tsx": "4.22.4",
     "typescript": "5.9.3",

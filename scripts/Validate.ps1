@@ -43,8 +43,20 @@ try {
     corepack pnpm@11.5.3 run check
     if ($LASTEXITCODE -ne 0) { throw 'pnpm checks failed.' }
 
-    corepack pnpm@11.5.3 run test:integration
-    if ($LASTEXITCODE -ne 0) { throw 'PostgreSQL integration tests failed.' }
+    $previousPrebuilt = $env:IT_SUPPORT_CONTROL_PLANE_PREBUILT
+    try {
+        $env:IT_SUPPORT_CONTROL_PLANE_PREBUILT = 'true'
+        corepack pnpm@11.5.3 run test:integration
+        if ($LASTEXITCODE -ne 0) { throw 'PostgreSQL integration tests failed.' }
+    }
+    finally {
+        if ($null -eq $previousPrebuilt) {
+            Remove-Item Env:IT_SUPPORT_CONTROL_PLANE_PREBUILT -ErrorAction SilentlyContinue
+        }
+        else {
+            $env:IT_SUPPORT_CONTROL_PLANE_PREBUILT = $previousPrebuilt
+        }
+    }
 
     & (Join-Path $PSScriptRoot 'Test-Secrets.ps1')
 }

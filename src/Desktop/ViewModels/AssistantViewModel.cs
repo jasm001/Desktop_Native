@@ -1,8 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ITSupportNative.Catalog.Application;
+using ITSupportNative.Contracts.ControlPlane;
 using ITSupportNative.Conversation.Application;
 using ITSupportNative.Conversation.Domain;
+using ITSupportNative.Desktop.ControlPlane;
 using ITSupportNative.Desktop.Models;
 
 namespace ITSupportNative.Desktop.ViewModels;
@@ -10,6 +12,7 @@ namespace ITSupportNative.Desktop.ViewModels;
 public sealed class AssistantViewModel : ObservableObject
 {
     private readonly ConversationService _conversationService;
+    private readonly IControlPlaneRequestClient _controlPlane;
     private ConversationSession _session;
     private int _commandSequence;
     private int _conversationSequence;
@@ -17,22 +20,25 @@ public sealed class AssistantViewModel : ObservableObject
     private string _response = "Elige una intención fija para iniciar la demostración.";
     private string _requestReference = "Sin solicitud creada";
 
-    public AssistantViewModel(ConversationService conversationService)
+    public AssistantViewModel(
+        ConversationService conversationService,
+        IControlPlaneRequestClient controlPlane)
     {
         _conversationService = conversationService;
+        _controlPlane = controlPlane;
         _session = ConversationSession.Start("desktop-demo-0");
 
         QueryApprovedCommand = new RelayCommand(
             () => StartScenario(ConversationIntent.QueryCatalog, "aurora-code"));
         RequestApprovedCommand = new RelayCommand(
-            () => StartScenario(ConversationIntent.RequestSoftware, "aurora-code"));
+            () => StartScenario(ConversationIntent.RequestSoftware, "secure-transfer"));
         RequestProhibitedCommand = new RelayCommand(
             () => StartScenario(ConversationIntent.RequestSoftware, "share-anywhere"));
         ContinueCommand = new RelayCommand(
             ContinueProposal,
             () => _session.State == ConversationState.Proposal);
-        ConfirmCommand = new RelayCommand(
-            ConfirmRequest,
+        ConfirmCommand = new AsyncRelayCommand(
+            ConfirmRequestAsync,
             () => _session.State == ConversationState.ConfirmationRequired);
         CancelCommand = new RelayCommand(
             CancelRequest,
@@ -69,7 +75,7 @@ public sealed class AssistantViewModel : ObservableObject
 
     public IRelayCommand ContinueCommand { get; }
 
-    public IRelayCommand ConfirmCommand { get; }
+    public IAsyncRelayCommand ConfirmCommand { get; }
 
     public IRelayCommand CancelCommand { get; }
 
@@ -115,14 +121,51 @@ public sealed class AssistantViewModel : ObservableObject
                     ConversationIntent.ContinueProposal)));
     }
 
-    private void ConfirmRequest()
+    private async Task ConfirmRequestAsync()
     {
-        Apply(
-            _conversationService.Handle(
-                _session,
-                new ConversationCommand(
-                    NextCommandId(),
-                    ConversationIntent.Confirm)));
+        ConversationTurn turn = _conversationService.Handle(
+            _session,
+            new ConversationCommand(
+                NextCommandId(),
+                ConversationIntent.Confirm));
+        Apply(turn);
+
+        SyntheticRequest? request = turn.Session.Request;
+        if (turn.Code != ConversationResultCode.RequestCreated
+            || request is null
+            || request.Kind != ConversationRequestKind.SoftwareAcquisition)
+        {
+            return;
+        }
+
+        try
+        {
+            CreateSoftwareInstallationData? created =
+                await _controlPlane.CreateSoftwareInstallationAsync(
+                    request.IdempotencyKey,
+                    request.ProductReference,
+                    request.ProductVersion,
+                    CancellationToken.None);
+            if (created is null)
+            {
+                return;
+            }
+
+            RequestReference = $"Referencia local: {created.Request.Reference}";
+            Response = created.Replayed
+                ? "La API reutilizÃ³ la solicitud local existente sin duplicarla."
+                : "La API persistiÃ³ la solicitud local; el agente simulado la procesarÃ¡ por el flujo tipado.";
+        }
+        catch (HttpRequestException)
+        {
+            Response =
+                "La solicitud sintÃ©tica se conservÃ³, pero el control plane local no estÃ¡ disponible.";
+        }
+        catch (InvalidDataException)
+        {
+            Response =
+                "La solicitud sintÃ©tica se conservÃ³, pero la respuesta local no fue vÃ¡lida.";
+        }
     }
 
     private void CancelRequest()

@@ -7,9 +7,9 @@ the Block 2 synthetic catalog domain, and the Block 3 deterministic
 conversation flow. Block 4 adds a simulated device agent with typed local IPC
 and durable synthetic jobs. Block 5 adds bounded read-only device diagnostics
 with partial typed results. Block 6 adds one closed 7-Zip MSI adapter validated
-only in a disposable Windows 11 VM. Block 7 is in progress with the first
-shared control-plane and PostgreSQL persistence increment. No production
-integration or administrative portal behavior is implemented.
+only in a disposable Windows 11 VM. Block 7 completes the shared control plane,
+PostgreSQL persistence, durable worker, and local simulated-agent flow. No
+production integration or administrative portal behavior is implemented.
 
 ## Current Status
 
@@ -23,8 +23,8 @@ integration or administrative portal behavior is implemented.
 - Block 5: bounded read-only diagnostics and typed action prerequisites
   completed.
 - Block 6: closed 7-Zip 26.01 x64 adapter and disposable VM matrix completed.
-- Block 7: shared API and persistence in progress; the first control-plane,
-  transactional outbox, and durable worker increment is implemented locally.
+- Block 7: shared API, PostgreSQL persistence, transactional outbox, durable
+  worker, and local WinUI-to-simulated-agent flow completed.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes/RAG. This
   profile is not a corporate pilot.

@@ -156,6 +156,11 @@ Crear monolito modular Next.js sin portal administrativo completo:
 
 Gate: recorrido WinUI -> API -> agente simulado -> evidencia funciona localmente.
 
+Estado: `completed` el 2026-06-13. El recorrido local usa PostgreSQL real
+efimero, worker Node separado, cliente HTTP de WinUI y comunicaciones salientes
+del DeviceAgent para ejecutar solo la accion sintetica allowlisted. No conecta
+servicios externos ni ejecuta instalaciones reales.
+
 ## Bloque 8: casos, tickets y OpenText fake
 
 Implementar `BotCase`, escalamiento, SLA de 72 horas e `ITicketingProvider` fake.

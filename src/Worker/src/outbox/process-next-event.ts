@@ -1,14 +1,16 @@
 import {
+  executionJobResultRecordedEventType,
+  executionJobResultRecordedEventV1Schema,
   supportRequestConfirmedEventType,
   supportRequestConfirmedEventV1Schema,
 } from "@it-support-native/control-plane-contracts";
 import type { Pool } from "pg";
 import {
   claimNextOutboxEvent,
-  completeSyntheticEvent,
+  completeOutboxEvent,
   recordOutboxFailure,
   type ClaimedOutboxEvent,
-} from "./outbox-store";
+} from "./outbox-store.js";
 
 export type ProcessNextEventResult =
   | { readonly kind: "idle" }
@@ -25,23 +27,20 @@ export async function processNextOutboxEvent(
     return { kind: "idle" };
   }
 
-  if (event.eventType !== supportRequestConfirmedEventType) {
-    return handleFailure(pool, event, "unsupported_event");
-  }
-
-  const parsed = supportRequestConfirmedEventV1Schema.safeParse(event.payload);
-  if (!parsed.success) {
+  const effect = parseEffect(event);
+  if (effect === null) {
     return handleFailure(pool, event, "invalid_payload");
   }
 
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    await completeSyntheticEvent(client, event, {
-      requestId: parsed.data.requestId,
-      jobId: parsed.data.jobId,
-      result: "synthetic_completed",
-    });
+    await completeOutboxEvent(
+      client,
+      event,
+      effect.effectType,
+      effect.payload,
+    );
     await client.query("COMMIT");
     return { kind: "completed", eventId: event.id };
   } catch {
@@ -50,6 +49,38 @@ export async function processNextOutboxEvent(
   } finally {
     client.release();
   }
+}
+
+function parseEffect(
+  event: ClaimedOutboxEvent,
+): { readonly effectType: string; readonly payload: unknown } | null {
+  if (event.eventType === supportRequestConfirmedEventType) {
+    const parsed = supportRequestConfirmedEventV1Schema.safeParse(event.payload);
+    return parsed.success
+      ? {
+          effectType: "support-request.dispatch-ready.v1",
+          payload: {
+            requestId: parsed.data.requestId,
+            jobId: parsed.data.jobId,
+            result: "dispatch_ready",
+          },
+        }
+      : null;
+  }
+
+  if (event.eventType === executionJobResultRecordedEventType) {
+    const parsed = executionJobResultRecordedEventV1Schema.safeParse(
+      event.payload,
+    );
+    return parsed.success
+      ? {
+          effectType: "execution-job.result-recorded.v1",
+          payload: parsed.data,
+        }
+      : null;
+  }
+
+  return null;
 }
 
 async function handleFailure(

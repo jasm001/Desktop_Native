@@ -1,6 +1,9 @@
+import { randomUUID } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
+  claimAgentJobRequestSchema,
   createSoftwareInstallationRequestSchema,
+  reportAgentJobResultRequestSchema,
   supportRequestConfirmedEventV1Schema,
 } from "../src";
 
@@ -33,8 +36,8 @@ describe("HTTP v1 contracts", () => {
   it("requires the fixed synthetic outbox payload", () => {
     const result = supportRequestConfirmedEventV1Schema.safeParse({
       version: 1,
-      requestId: "afae27b0-8bb6-4c4b-97d7-035fa9bddf48",
-      jobId: "84bf6dda-1e73-4ea9-a17f-12523048785b",
+      requestId: randomUUID(),
+      jobId: randomUUID(),
       correlationId: "correlation-1",
       actorSubject: "development-user-001",
       deviceId: "local-device-001",
@@ -44,5 +47,27 @@ describe("HTTP v1 contracts", () => {
     });
 
     expect(result.success).toBe(true);
+  });
+
+  it("rejects executable fields in agent claim and result contracts", () => {
+    expect(
+      claimAgentJobRequestSchema.safeParse({
+        deviceId: "local-device-001",
+        command: "powershell.exe",
+      }).success,
+    ).toBe(false);
+    expect(
+      reportAgentJobResultRequestSchema.safeParse({
+        claimToken: randomUUID(),
+        result: "succeeded",
+        evidence: [
+          {
+            code: "job.simulation.verified",
+            recordedAt: "2026-06-13T18:30:00.000Z",
+            summary: "untrusted free text",
+          },
+        ],
+      }).success,
+    ).toBe(false);
   });
 });

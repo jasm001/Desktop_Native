@@ -25,4 +25,14 @@ public sealed class DeviceAgentOptions
         "ITSupportNative",
         "DeviceAgent",
         "artifacts");
+
+    public bool ControlPlaneSyncEnabled { get; set; }
+
+    public string ControlPlaneBaseUrl { get; set; } = "http://127.0.0.1:3000";
+
+    public string ControlPlaneDeviceId { get; set; } = "local-device-001";
+
+    public string ControlPlaneAgentId { get; set; } = "local-agent-001";
+
+    public int ControlPlanePollingIntervalMilliseconds { get; set; } = 1000;
 }

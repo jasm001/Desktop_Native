@@ -3,12 +3,12 @@
 ## Estado
 
 - Fase actual: capacidades locales controladas para Windows 11.
-- Bloque activo: Bloque 7 `in_progress`. Bloque 6 permanece `completed`.
-- Ultimo resultado funcional: primer incremento del control plane del Bloque 7
-  validado localmente con Next.js, Prisma/PostgreSQL y worker outbox separado.
-- Ultimo resultado publicado: cierre documental del Bloque 6 en `bfb4a35`. El
-  incremento del Bloque 7 permanece solo en el working tree y esta documentado
-  en `docs/modules/control-plane-foundation.md`.
+- Bloque activo: ninguno. Los Bloques 6 y 7 permanecen `completed`.
+- Ultimo resultado funcional: recorrido local WinUI -> API -> worker/outbox ->
+  agente simulado -> evidencia validado con PostgreSQL real efimero.
+- Ultimo resultado publicado: fundacion del control plane del Bloque 7 en
+  `2b89a6b`. El incremento de cierre permanece en el working tree y esta
+  documentado en `docs/modules/control-plane-local-flow.md`.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.
@@ -25,7 +25,7 @@
 - `dotnet build ITSupportNative.slnx --configuration Release --no-restore`:
   correcto, 0 warnings y 0 errores.
 - `dotnet test ITSupportNative.slnx --configuration Release --no-build`:
-  correcto, 110 pruebas.
+  correcto, 113 pruebas.
 - Pruebas nuevas del Bloque 6: manifiesto versionado, mirror, longitud,
   SHA-256, perfil `local-demo`, plataforma, argumentos fijos, idempotencia,
   timeout, codigos MSI, fallo de inicio, verificacion, desinstalacion,
@@ -37,11 +37,15 @@
   builds de Contracts, AdminWeb y Worker correctos.
 - Next.js `16.2.9`: build standalone correcto con webpack; rutas HTTP v1 de
   catalogo, creacion confirmada y estado incluidas.
-- PostgreSQL 18 real efimero: migracion
-  `20260613074457_control_plane_foundation` aplicada con `migrate deploy`.
-- Integracion del Bloque 7: 7 pruebas AdminWeb y 3 pruebas Worker correctas;
-  idempotencia, transaccion, auditoria append-only, timestamps de base, consultas
-  sin mutacion, claim/retry y efecto sintetico cubiertos.
+- PostgreSQL 18 real efimero: migraciones
+  `20260613074457_control_plane_foundation` y
+  `20260613183000_control_plane_local_flow` aplicadas con `migrate deploy`.
+- Integracion del Bloque 7: 10 pruebas AdminWeb y 3 pruebas Worker correctas;
+  idempotencia, conflicto de payload, transaccion, auditoria append-only,
+  consultas sin mutacion, leases agotados y efectos sinteticos cubiertos.
+- E2E del Bloque 7: build standalone de Next.js, bundle ejecutable del worker,
+  cliente HTTP de WinUI y DeviceAgent saliente completaron una solicitud con
+  tres evidencias saneadas sin ejecutar instalaciones reales.
 - `corepack pnpm@11.5.3 audit --prod --audit-level high`: correcto, sin
   vulnerabilidades conocidas.
 - `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
@@ -123,7 +127,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 4. Agente simulado e IPC | completed | Contrato v1, Named Pipe con ACL de usuario actual, allowlist exacta, maquina de estados, cancelacion, evidencia saneada, SQLite, recuperacion e IPC real cubiertos por 18 pruebas nuevas; `b56bfcb`. |
 | 5. Diagnostico de solo lectura | completed | Snapshot IPC efimero, colectores Windows de solo lectura, prerrequisitos tipados, fallos parciales saneados y pruebas de frontera; `e3a0b8d`. |
 | 6. Primer adaptador en VM | completed | Adaptador 7-Zip 26.01 x64 y 110 pruebas publicados en `f808425`; matriz real de instalacion, idempotencia, desinstalacion, fallos de mirror/hash y restauracion de checkpoint validada el 2026-06-13. |
-| 7. API compartida y persistencia | in_progress | Primer incremento validado localmente: contratos HTTP v1, identidad de desarrollo, migracion PostgreSQL/Prisma, mutacion transaccional idempotente, auditoria append-only, outbox y worker separado; aun no publicado. |
+| 7. API compartida y persistencia | completed | Fundacion publicada en `2b89a6b`; cierre local validado con segunda migracion, WinUI HTTP, worker separado, DeviceAgent saliente y E2E sobre PostgreSQL efimero. |
 | 8. Casos, tickets y OpenText fake | pending | |
 | 9. Canal Teams existente | pending | |
 | 10. Endurecimiento para piloto | pending | |

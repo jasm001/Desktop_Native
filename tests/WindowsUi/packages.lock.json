@@ -210,6 +210,9 @@
       "itsupportnative.catalog": {
         "type": "Project"
       },
+      "itsupportnative.contracts": {
+        "type": "Project"
+      },
       "itsupportnative.conversation": {
         "type": "Project",
         "dependencies": {
@@ -221,6 +224,7 @@
         "dependencies": {
           "CommunityToolkit.Mvvm": "[8.4.2, )",
           "ITSupportNative.Catalog": "[1.0.0, )",
+          "ITSupportNative.Contracts": "[1.0.0, )",
           "ITSupportNative.Conversation": "[1.0.0, )",
           "Microsoft.Extensions.DependencyInjection": "[10.0.9, )",
           "Microsoft.Windows.SDK.BuildTools": "[10.0.26100.8249, )",

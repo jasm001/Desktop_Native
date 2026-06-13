@@ -1,5 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
+  executionJobResultRecordedEventType,
+  type ExecutionJobResultRecordedEventV1,
   supportRequestConfirmedEventType,
   type SupportRequestConfirmedEventV1,
 } from "@it-support-native/control-plane-contracts";
@@ -12,6 +14,7 @@ describe("outbox worker", () => {
   beforeAll(async () => {
     await pool.query("DELETE FROM synthetic_outbox_effects");
     await pool.query("DELETE FROM outbox_events");
+    await pool.query("DELETE FROM execution_evidence");
     await pool.query("DELETE FROM execution_jobs");
     await pool.query("DELETE FROM support_requests");
 
@@ -209,9 +212,15 @@ describe("outbox worker", () => {
     expect(completed.rows[0]?.count).toBe("1");
     expect(states.rows).toEqual([
       {
-        request_status: "COMPLETED",
-        job_status: "COMPLETED",
+        request_status: "CONFIRMED",
+        job_status: "QUEUED",
       },
+    ]);
+    const effect = await pool.query<{ effect_type: string }>(
+      "SELECT effect_type FROM synthetic_outbox_effects",
+    );
+    expect(effect.rows).toEqual([
+      { effect_type: "support-request.dispatch-ready.v1" },
     ]);
   });
 
@@ -269,18 +278,15 @@ describe("outbox worker", () => {
     ]);
   });
 
-  it("rolls back the effect when a valid event references missing records", async () => {
-    const orphanEventId = crypto.randomUUID();
-    const orphanEvent: SupportRequestConfirmedEventV1 = {
+  it("processes a typed result event without duplicating its effect", async () => {
+    const resultEventId = crypto.randomUUID();
+    const resultEvent: ExecutionJobResultRecordedEventV1 = {
       version: 1,
       requestId: crypto.randomUUID(),
       jobId: crypto.randomUUID(),
-      correlationId: "worker-orphan-correlation",
-      actorSubject: "development-user-001",
+      correlationId: "worker-result-correlation",
       deviceId: "local-device-001",
-      actionId: "software.install.simulated.v1",
-      productId: "secure-transfer",
-      productVersion: "6.5",
+      result: "succeeded",
     };
     await pool.query(
       `
@@ -295,47 +301,38 @@ describe("outbox worker", () => {
           available_at,
           created_at
         )
-        VALUES ($1, 'support-request', $2, $3, $4::jsonb, 'PENDING', 0, now(), now())
+        VALUES ($1, 'execution-job', $2, $3, $4::jsonb, 'PENDING', 0, now(), now())
       `,
       [
-        orphanEventId,
-        orphanEvent.requestId,
-        supportRequestConfirmedEventType,
-        JSON.stringify(orphanEvent),
+        resultEventId,
+        resultEvent.jobId,
+        executionJobResultRecordedEventType,
+        JSON.stringify(resultEvent),
       ],
     );
 
-    const result = await processNextOutboxEvent(pool, "worker-orphan-test");
-    const outbox = await pool.query<{
-      status: string;
-      attempt_count: number;
-      last_error_code: string;
+    const first = await processNextOutboxEvent(pool, "worker-result-test");
+    const second = await processNextOutboxEvent(pool, "worker-result-test");
+    const effects = await pool.query<{
+      count: string;
+      effect_type: string;
     }>(
       `
-        SELECT status::text, attempt_count, last_error_code
-        FROM outbox_events
-        WHERE id = $1
-      `,
-      [orphanEventId],
-    );
-    const effects = await pool.query<{ count: string }>(
-      `
-        SELECT count(*)::text AS count
+        SELECT count(*)::text AS count, max(effect_type) AS effect_type
         FROM synthetic_outbox_effects
         WHERE outbox_event_id = $1
       `,
-      [orphanEventId],
+      [resultEventId],
     );
 
-    expect(result.kind).toBe("retry_scheduled");
-    expect(outbox.rows).toEqual([
+    expect(first.kind).toBe("completed");
+    expect(second.kind).toBe("idle");
+    expect(effects.rows).toEqual([
       {
-        status: "PENDING",
-        attempt_count: 1,
-        last_error_code: "processing_failed",
+        count: "1",
+        effect_type: "execution-job.result-recorded.v1",
       },
     ]);
-    expect(effects.rows[0]?.count).toBe("0");
   });
 
   async function makeAvailable(eventId: string): Promise<void> {

@@ -14,10 +14,7 @@ import type {
   CreatedSupportRequest,
 } from "../domain/support-request";
 import type { SupportRequestRepository } from "../application/support-request-repository";
-
-type RequestWithJob = Prisma.SupportRequestGetPayload<{
-  include: { job: true };
-}>;
+import { mapSupportRequest } from "./support-request-mapper";
 
 export class PrismaSupportRequestRepository
   implements SupportRequestRepository
@@ -39,7 +36,7 @@ export class PrismaSupportRequestRepository
 
         const existing = await transaction.supportRequest.findUnique({
           where: { idempotencyKey: command.idempotencyKey },
-          include: { job: true },
+          include: { job: { include: { evidence: true } } },
         });
 
         if (existing !== null) {
@@ -52,7 +49,7 @@ export class PrismaSupportRequestRepository
           }
 
           return {
-            request: mapRequest(existing),
+            request: mapSupportRequest(existing),
             replayed: true,
           };
         }
@@ -107,7 +104,7 @@ export class PrismaSupportRequestRepository
               },
             },
           },
-          include: { job: true },
+          include: { job: { include: { evidence: true } } },
         });
 
         await transaction.auditEvent.create({
@@ -155,7 +152,7 @@ export class PrismaSupportRequestRepository
         `;
 
         return {
-          request: mapRequest(created),
+          request: mapSupportRequest(created),
           replayed: false,
         };
       },
@@ -170,43 +167,9 @@ export class PrismaSupportRequestRepository
   public async findById(requestId: string): Promise<SupportRequestView | null> {
     const request = await this.prisma.supportRequest.findUnique({
       where: { id: requestId },
-      include: { job: true },
+      include: { job: { include: { evidence: true } } },
     });
 
-    return request === null ? null : mapRequest(request);
+    return request === null ? null : mapSupportRequest(request);
   }
-}
-
-function mapRequest(request: RequestWithJob): SupportRequestView {
-  if (request.job === null) {
-    throw new Error("support_request_job_missing");
-  }
-
-  return {
-    id: request.id,
-    reference: request.reference,
-    correlationId: request.correlationId,
-    status: mapRequestStatus(request.status),
-    deviceId: request.deviceId,
-    productId: request.productId,
-    productVersion: request.productVersion,
-    actionId: request.actionId,
-    createdAt: request.createdAt.toISOString(),
-    job: {
-      id: request.job.id,
-      status: mapJobStatus(request.job.status),
-    },
-  };
-}
-
-function mapRequestStatus(
-  status: "CONFIRMED" | "COMPLETED" | "FAILED",
-): SupportRequestView["status"] {
-  return status.toLowerCase() as SupportRequestView["status"];
-}
-
-function mapJobStatus(
-  status: "QUEUED" | "COMPLETED" | "FAILED",
-): SupportRequestView["job"]["status"] {
-  return status.toLowerCase() as SupportRequestView["job"]["status"];
 }

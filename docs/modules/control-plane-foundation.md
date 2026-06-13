@@ -2,9 +2,9 @@
 
 ## Estado
 
-Primer incremento del Bloque 7 implementado y validado localmente el
-2026-06-13. El Bloque 7 permanece `in_progress`; este incremento no completa el
-bloque ni ha sido publicado.
+Primer incremento del Bloque 7 implementado, validado y publicado en `2b89a6b`.
+La fundacion se complementa con el recorrido local documentado en
+`control-plane-local-flow.md`, que cierra el Bloque 7.
 
 ## Objetivo acotado
 
@@ -37,6 +37,10 @@ Este incremento incluye:
   `Idempotency-Key`.
 - `GET /api/v1/requests/{requestId}`: consulta el estado persistido de la
   solicitud y su trabajo, sin crear auditoria, outbox ni otras mutaciones.
+- `POST /api/v1/agent/jobs/claim`: entrega un trabajo listo solo a la identidad
+  sintetica exacta del agente de desarrollo.
+- `POST /api/v1/agent/jobs/{jobId}/result`: registra resultado y evidencia
+  allowlisted con lease e idempotencia.
 
 Los contratos no exponen entidades Prisma. Los errores usan codigos fijos,
 mensajes saneados y correlacion. Los identificadores de accion, producto,
@@ -54,18 +58,18 @@ comandos, scripts, rutas o argumentos.
 - `SyntheticOutboxEffect`: recibo unico que demuestra procesamiento
   idempotente sin llamar servicios externos.
 
-La migracion
-`20260613074457_control_plane_foundation` crea el esquema. PostgreSQL gobierna
-los timestamps mediante triggers para evitar que el huso horario del proceso
-Node altere fechas persistidas. La auditoria rechaza `UPDATE` y `DELETE` en la
-base.
+La migracion `20260613074457_control_plane_foundation` crea el esquema base. La
+migracion aditiva `20260613183000_control_plane_local_flow` agrega leases,
+resultado idempotente y evidencia de ejecucion. PostgreSQL gobierna los
+timestamps mediante triggers para evitar que el huso horario del proceso Node
+altere fechas persistidas. La auditoria rechaza `UPDATE` y `DELETE` en la base.
 
 ## Limites
 
 Este incremento no incluye:
 
 - portal administrativo, RBAC productivo, Entra, MFA o login corporativo;
-- WinUI conectado al backend o backend conectado al DeviceAgent;
+- backend conectado directamente al DeviceAgent o a procesos privilegiados;
 - tickets, `BotCase`, OpenText, Teams, UEMS, Rescue o telemetria productiva;
 - Windows Service, Hermes, RAG, artefactos, descargas o ejecucion local;
 - comandos, PowerShell, shell, rutas arbitrarias o parametros generados;
@@ -94,10 +98,11 @@ PostgreSQL 18 local, `DATABASE_URL` conecta correctamente y el rol tiene
 - La repeticion de una clave con el mismo payload reutiliza la solicitud; un
   payload distinto devuelve `idempotency_conflict`.
 - Las consultas HTTP de catalogo y estado no crean mutaciones.
-- El worker valida que conserva el claim, completa solicitud/trabajo y registra
-  un unico efecto; eventos invalidos fallan tras tres intentos.
-- La integracion cubre 7 pruebas de AdminWeb y 3 del worker sobre PostgreSQL
-  efimero real.
+- El worker valida que conserva el claim y publica un efecto de despacho
+  sintetico sin ejecutar el trabajo; el resultado del agente produce un segundo
+  efecto idempotente y los eventos invalidos fallan tras tres intentos.
+- La integracion cubre 10 pruebas de AdminWeb y 3 del worker sobre PostgreSQL
+  efimero real, ademas del recorrido ejecutable de extremo a extremo en Windows.
 - CI dispone de un servicio PostgreSQL 18 separado para este gate.
 
 ## Riesgos residuales

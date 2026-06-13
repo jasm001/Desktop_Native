@@ -26,6 +26,9 @@
   <Folder Name="/tests/Contract/">
     <Project Path="tests/Contract/ITSupportNative.ContractTests.csproj" />
   </Folder>
+  <Folder Name="/tests/EndToEnd/">
+    <Project Path="tests/EndToEnd/ITSupportNative.EndToEnd.csproj" />
+  </Folder>
   <Folder Name="/tests/Integration/">
     <Project Path="tests/Integration/ITSupportNative.IntegrationTests.csproj" />
   </Folder>

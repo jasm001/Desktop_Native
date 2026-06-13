@@ -26,6 +26,8 @@ export const apiErrorCodeSchema = z.enum([
   "device_not_found",
   "request_not_found",
   "idempotency_conflict",
+  "agent_identity_unavailable",
+  "agent_claim_invalid",
   "internal_error",
 ]);
 
@@ -59,9 +61,25 @@ export const supportRequestStatusSchema = z.enum([
 
 export const executionJobStatusSchema = z.enum([
   "queued",
+  "running",
   "completed",
   "failed",
 ]);
+
+export const executionEvidenceCodeSchema = z.enum([
+  "job.accepted",
+  "job.simulation.started",
+  "job.simulation.verified",
+  "job.simulation.failed",
+]);
+
+export const executionEvidenceSchema = z
+  .object({
+    code: executionEvidenceCodeSchema,
+    summary: z.string().min(1).max(200),
+    recordedAt: z.iso.datetime(),
+  })
+  .strict();
 
 export const supportRequestViewSchema = z
   .object({
@@ -78,6 +96,7 @@ export const supportRequestViewSchema = z
       .object({
         id: requestIdSchema,
         status: executionJobStatusSchema,
+        evidence: z.array(executionEvidenceSchema).max(20),
       })
       .strict(),
   })
@@ -135,9 +154,74 @@ export const catalogResponseSchema = z
   })
   .strict();
 
+export const claimAgentJobRequestSchema = z
+  .object({
+    deviceId: boundedIdentifierSchema,
+  })
+  .strict();
+
+export const claimedAgentJobSchema = z
+  .object({
+    jobId: requestIdSchema,
+    requestId: requestIdSchema,
+    idempotencyKey: idempotencyKeySchema,
+    actionId: boundedIdentifierSchema,
+    targetId: boundedIdentifierSchema,
+    targetVersion: boundedIdentifierSchema,
+    claimToken: z.uuid(),
+    leaseExpiresAt: z.iso.datetime(),
+  })
+  .strict();
+
+export const claimAgentJobResponseSchema = z
+  .object({
+    data: z
+      .object({
+        job: claimedAgentJobSchema.nullable(),
+      })
+      .strict(),
+    meta: apiMetaSchema,
+  })
+  .strict();
+
+export const reportAgentJobResultRequestSchema = z
+  .object({
+    claimToken: z.uuid(),
+    result: z.enum(["succeeded", "failed"]),
+    evidence: z
+      .array(
+        z
+          .object({
+            code: executionEvidenceCodeSchema,
+            recordedAt: z.iso.datetime(),
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(20),
+  })
+  .strict();
+
+export const reportAgentJobResultResponseSchema = z
+  .object({
+    data: z
+      .object({
+        request: supportRequestViewSchema,
+        replayed: z.boolean(),
+      })
+      .strict(),
+    meta: apiMetaSchema,
+  })
+  .strict();
+
 export type ApiErrorCode = z.infer<typeof apiErrorCodeSchema>;
 export type CatalogProduct = z.infer<typeof catalogProductSchema>;
 export type CreateSoftwareInstallationRequest = z.infer<
   typeof createSoftwareInstallationRequestSchema
+>;
+export type ClaimAgentJobRequest = z.infer<typeof claimAgentJobRequestSchema>;
+export type ClaimedAgentJob = z.infer<typeof claimedAgentJobSchema>;
+export type ReportAgentJobResultRequest = z.infer<
+  typeof reportAgentJobResultRequestSchema
 >;
 export type SupportRequestView = z.infer<typeof supportRequestViewSchema>;

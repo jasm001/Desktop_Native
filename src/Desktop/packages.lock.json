@@ -151,6 +151,9 @@
       "itsupportnative.catalog": {
         "type": "Project"
       },
+      "itsupportnative.contracts": {
+        "type": "Project"
+      },
       "itsupportnative.conversation": {
         "type": "Project",
         "dependencies": {

@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Catalog\ITSupportNative.Catalog.csproj" />
+    <ProjectReference Include="..\Contracts\ITSupportNative.Contracts.csproj" />
     <ProjectReference Include="..\Conversation\ITSupportNative.Conversation.csproj" />
   </ItemGroup>
 

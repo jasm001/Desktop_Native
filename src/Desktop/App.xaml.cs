@@ -2,6 +2,7 @@ using ITSupportNative.Catalog.Application;
 using ITSupportNative.Catalog.Domain;
 using ITSupportNative.Catalog.Fixtures;
 using ITSupportNative.Conversation.Application;
+using ITSupportNative.Desktop.ControlPlane;
 using ITSupportNative.Desktop.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
@@ -21,6 +22,14 @@ public partial class App : Application
             .AddSingleton<CatalogSearchService>()
             .AddSingleton<CatalogDecisionService>()
             .AddSingleton<ConversationService>()
+            .AddSingleton<IControlPlaneRequestClient>(_ =>
+            {
+                ControlPlaneClientOptions? options =
+                    ControlPlaneClientOptions.FromEnvironment();
+                return options is null
+                    ? new DisabledControlPlaneRequestClient()
+                    : new HttpControlPlaneRequestClient(new HttpClient(), options);
+            })
             .AddSingleton<ShellViewModel>()
             .AddSingleton<HomeViewModel>()
             .AddSingleton<CatalogViewModel>()

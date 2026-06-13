@@ -68,14 +68,11 @@ export async function claimNextOutboxEvent(
       };
 }
 
-export async function completeSyntheticEvent(
+export async function completeOutboxEvent(
   client: PoolClient,
   event: ClaimedOutboxEvent,
-  effectPayload: {
-    readonly requestId: string;
-    readonly jobId: string;
-    readonly result: "synthetic_completed";
-  },
+  effectType: string,
+  effectPayload: unknown,
 ): Promise<void> {
   await client.query(
     `
@@ -92,34 +89,10 @@ export async function completeSyntheticEvent(
     [
       crypto.randomUUID(),
       event.id,
-      "support-request.synthetic-completion.v1",
+      effectType,
       JSON.stringify(effectPayload),
     ],
   );
-
-  const jobUpdate = await client.query(
-    `
-      UPDATE execution_jobs
-      SET status = 'COMPLETED', updated_at = clock_timestamp()
-      WHERE id = $1::uuid
-    `,
-    [effectPayload.jobId],
-  );
-  if (jobUpdate.rowCount !== 1) {
-    throw new Error("execution_job_not_found");
-  }
-
-  const requestUpdate = await client.query(
-    `
-      UPDATE support_requests
-      SET status = 'COMPLETED', updated_at = clock_timestamp()
-      WHERE id = $1::uuid
-    `,
-    [effectPayload.requestId],
-  );
-  if (requestUpdate.rowCount !== 1) {
-    throw new Error("support_request_not_found");
-  }
 
   const result = await client.query(
     `

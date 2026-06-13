@@ -1,6 +1,6 @@
 import { setTimeout as delay } from "node:timers/promises";
-import { closeWorkerPool, getWorkerPool } from "./platform/database";
-import { processNextOutboxEvent } from "./outbox/process-next-event";
+import { closeWorkerPool, getWorkerPool } from "./platform/database.js";
+import { processNextOutboxEvent } from "./outbox/process-next-event.js";
 
 const workerId = `worker-${crypto.randomUUID()}`;
 const runOnce = process.argv.includes("--once");

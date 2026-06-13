@@ -1,9 +1,14 @@
 import { beforeAll, afterAll, describe, expect, it } from "vitest";
 import {
+  apiErrorEnvelopeSchema,
   catalogResponseSchema,
+  claimAgentJobResponseSchema,
   createSoftwareInstallationResponseSchema,
   getSupportRequestResponseSchema,
+  reportAgentJobResultResponseSchema,
 } from "@it-support-native/control-plane-contracts";
+import { POST as claimAgentJobRoute } from "@/app/api/v1/agent/jobs/claim/route";
+import { POST as reportAgentJobResultRoute } from "@/app/api/v1/agent/jobs/[jobId]/result/route";
 import { GET as getCatalog } from "@/app/api/v1/catalog/products/route";
 import { GET as getRequestRoute } from "@/app/api/v1/requests/[requestId]/route";
 import { POST as createRequestRoute } from "@/app/api/v1/requests/software-installations/route";
@@ -38,6 +43,7 @@ describe("control plane persistence", () => {
     await prisma.syntheticOutboxEffect.deleteMany();
     await prisma.outboxEvent.deleteMany();
     await prisma.auditEvent.deleteMany();
+    await prisma.executionEvidence.deleteMany();
     await prisma.executionJob.deleteMany();
     await prisma.supportRequest.deleteMany();
     await prisma.device.upsert({
@@ -241,6 +247,174 @@ describe("control plane persistence", () => {
     await expect(mutationCounts()).resolves.toEqual(countsBefore);
   });
 
+  it("requires worker dispatch before an agent can claim the job", async () => {
+    const response = await claimAgentJobRoute(
+      agentRequest("/api/v1/agent/jobs/claim", {
+        deviceId: input.deviceId,
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(
+      claimAgentJobResponseSchema.parse(await response.json()).data.job,
+    ).toBeNull();
+  });
+
+  it("claims and records an idempotent sanitized agent result", async () => {
+    const outbox = await prisma.outboxEvent.findFirstOrThrow({
+      select: { id: true },
+    });
+    await prisma.syntheticOutboxEffect.create({
+      data: {
+        id: crypto.randomUUID(),
+        outboxEventId: outbox.id,
+        effectType: "support-request.dispatch-ready.v1",
+        payload: { result: "dispatch_ready" },
+      },
+    });
+    await prisma.outboxEvent.update({
+      where: { id: outbox.id },
+      data: {
+        status: "COMPLETED",
+        completedAt: new Date(),
+      },
+    });
+
+    const claimResponse = await claimAgentJobRoute(
+      agentRequest("/api/v1/agent/jobs/claim", {
+        deviceId: input.deviceId,
+      }),
+    );
+    const claim = claimAgentJobResponseSchema.parse(
+      await claimResponse.json(),
+    ).data.job;
+    expect(claimResponse.status).toBe(200);
+    expect(claim).not.toBeNull();
+    if (claim === null) {
+      throw new Error("agent_claim_missing");
+    }
+
+    const recordedAt = new Date().toISOString();
+    const resultBody = {
+      claimToken: claim.claimToken,
+      result: "succeeded",
+      evidence: [
+        { code: "job.accepted", recordedAt },
+        { code: "job.simulation.started", recordedAt },
+        { code: "job.simulation.verified", recordedAt },
+      ],
+    } as const;
+    const resultUrl = `/api/v1/agent/jobs/${claim.jobId}/result`;
+    const firstResponse = await reportAgentJobResultRoute(
+      agentRequest(resultUrl, resultBody, "agent-result-key-1"),
+      { params: Promise.resolve({ jobId: claim.jobId }) },
+    );
+    const replayResponse = await reportAgentJobResultRoute(
+      agentRequest(resultUrl, resultBody, "agent-result-key-1"),
+      { params: Promise.resolve({ jobId: claim.jobId }) },
+    );
+    const conflictResponse = await reportAgentJobResultRoute(
+      agentRequest(
+        resultUrl,
+        {
+          claimToken: claim.claimToken,
+          result: "failed",
+          evidence: [{ code: "job.simulation.failed", recordedAt }],
+        },
+        "agent-result-key-1",
+      ),
+      { params: Promise.resolve({ jobId: claim.jobId }) },
+    );
+    const first = reportAgentJobResultResponseSchema.parse(
+      await firstResponse.json(),
+    );
+    const replay = reportAgentJobResultResponseSchema.parse(
+      await replayResponse.json(),
+    );
+
+    expect(firstResponse.status).toBe(201);
+    expect(first.data.replayed).toBe(false);
+    expect(first.data.request.status).toBe("completed");
+    expect(first.data.request.job.status).toBe("completed");
+    expect(first.data.request.job.evidence).toHaveLength(3);
+    expect(replayResponse.status).toBe(200);
+    expect(replay.data.replayed).toBe(true);
+    expect(conflictResponse.status).toBe(409);
+    expect(
+      apiErrorEnvelopeSchema.parse(await conflictResponse.json()).error.code,
+    ).toBe("idempotency_conflict");
+    await expect(prisma.executionEvidence.count()).resolves.toBe(3);
+    await expect(prisma.outboxEvent.count()).resolves.toBe(2);
+  });
+
+  it("fails a job after three expired agent claims", async () => {
+    const created = await createRequest.execute(
+      input,
+      "integration-key-exhausted-claim",
+      "integration-correlation-exhausted-claim",
+      principal,
+    );
+    const outbox = await prisma.outboxEvent.findFirstOrThrow({
+      where: {
+        aggregateId: created.request.id,
+        eventType: "support-request.confirmed.v1",
+      },
+      select: { id: true },
+    });
+    await prisma.syntheticOutboxEffect.create({
+      data: {
+        id: crypto.randomUUID(),
+        outboxEventId: outbox.id,
+        effectType: "support-request.dispatch-ready.v1",
+        payload: { result: "dispatch_ready" },
+      },
+    });
+    await prisma.outboxEvent.update({
+      where: { id: outbox.id },
+      data: {
+        status: "COMPLETED",
+        completedAt: new Date(),
+      },
+    });
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const response = await claimAgentJobRoute(
+        agentRequest("/api/v1/agent/jobs/claim", {
+          deviceId: input.deviceId,
+        }),
+      );
+      const claimed = claimAgentJobResponseSchema.parse(await response.json())
+        .data.job;
+      expect(claimed).not.toBeNull();
+      if (claimed === null) {
+        throw new Error("agent_claim_missing");
+      }
+
+      await prisma.$executeRaw`
+        UPDATE execution_jobs
+        SET lease_expires_at = clock_timestamp() - interval '1 second'
+        WHERE id = ${claimed.jobId}::uuid
+      `;
+    }
+
+    const exhaustedResponse = await claimAgentJobRoute(
+      agentRequest("/api/v1/agent/jobs/claim", {
+        deviceId: input.deviceId,
+      }),
+    );
+    expect(
+      claimAgentJobResponseSchema.parse(await exhaustedResponse.json()).data
+        .job,
+    ).toBeNull();
+
+    const failed = await getRequest.execute(created.request.id);
+    expect(failed.status).toBe("failed");
+    expect(failed.job.status).toBe("failed");
+    expect(failed.job.evidence).toMatchObject([
+      { code: "job.simulation.failed" },
+    ]);
+  });
+
   async function mutationCounts() {
     const [requests, jobs, audits, outbox] = await Promise.all([
       prisma.supportRequest.count(),
@@ -250,5 +424,26 @@ describe("control plane persistence", () => {
     ]);
 
     return { requests, jobs, audits, outbox };
+  }
+
+  function agentRequest(
+    path: string,
+    body: unknown,
+    idempotencyKey?: string,
+  ): Request {
+    const headers: Record<string, string> = {
+      "content-type": "application/json",
+      "x-correlation-id": "agent-integration-correlation",
+      "x-development-agent-id": "local-agent-001",
+    };
+    if (idempotencyKey !== undefined) {
+      headers["idempotency-key"] = idempotencyKey;
+    }
+
+    return new Request(`http://localhost${path}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+    });
   }
 });

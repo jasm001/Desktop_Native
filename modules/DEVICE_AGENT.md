@@ -6,7 +6,7 @@ El DeviceAgent es la unica frontera que puede ejecutar acciones locales. WinUI,
 Teams, IA y backend solo pueden enviar contratos tipados y autorizados; nunca
 envian shell, PowerShell libre, rutas arbitrarias ni argumentos generados.
 
-## Implementacion local de los Bloques 4 a 6
+## Implementacion local de los Bloques 4 a 7
 
 `src/Contracts/Agent` define el protocolo v1 compartido. Los unicos mensajes de
 entrada son:
@@ -41,6 +41,17 @@ accion, target y version. No expone comando, argumentos ni contenido ejecutable.
 de ejecucion real queda `disabled` por defecto y debe configurarse exactamente
 como `local-demo` dentro de la VM. Fuera de ese perfil las acciones reales no
 forman parte de la politica instalada y se rechazan como `UnauthorizedAction`.
+
+## Control plane local
+
+El Bloque 7 agrega un adaptador HTTP saliente deshabilitado por defecto. Solo se
+activa con el perfil exacto `local-demo`, URL loopback e identidad sintetica
+`local-agent-001`.
+
+El agente reclama identificadores tipados, reutiliza la maquina de estados
+sintetica y reporta un resultado con codigos de evidencia allowlisted. No recibe
+comandos, rutas, scripts, switches ni argumentos. Next.js nunca abre IPC ni
+inicia conexiones hacia el agente.
 
 ## Politica sintetica
 
