@@ -47,8 +47,10 @@ Queued -> Running -> Succeeded
    +---------+-> Cancelled
 ```
 
-`Failed` forma parte del contrato para fallos futuros, pero la simulacion actual
-no invoca ningun componente que pueda producir un fallo operativo real.
+`Failed` ahora se usa para resultados controlados del adaptador real, por
+ejemplo perfil deshabilitado, mirror ausente, integridad incorrecta, timeout,
+exit code rechazado o verificacion fallida. La accion sintetica conserva su
+flujo determinista anterior.
 
 El progreso avanza en pasos deterministas. La evidencia usa codigos y textos
 fijos del agente; no copia payloads, salida de procesos ni valores enviados por
@@ -91,6 +93,10 @@ campos de ejecucion libre en trabajos y diagnosticos.
 - progreso y evidencia saneada;
 - cancelacion segura;
 - recuperacion SQLite tras recrear el servicio;
+- seleccion exacta del adaptador real;
+- rechazo deny-by-default de accion, target y version;
+- cancelacion en cola y rechazo tipado durante MSI;
+- finalizacion real simulada mediante dobles sin ejecutar instaladores;
 - intercambio real por Named Pipe con ACL de usuario actual;
 - ausencia de dependencias del nucleo hacia Desktop o WinUI.
 - snapshot diagnostico por dispatcher y Named Pipe;

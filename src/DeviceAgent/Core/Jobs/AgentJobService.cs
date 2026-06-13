@@ -5,17 +5,31 @@ namespace ITSupportNative.DeviceAgent.Jobs;
 public sealed class AgentJobService(
     IAgentJobStore store,
     AgentActionAuthorizationPolicy authorizationPolicy,
-    TimeProvider timeProvider) : IDisposable
+    TimeProvider timeProvider,
+    IAgentActionExecutor actionExecutor) : IDisposable
 {
     private const string QueuedEvidenceCode = "job.accepted";
     private const string RunningEvidenceCode = "job.simulation.started";
     private const string RecoveredEvidenceCode = "job.recovered";
     private const string CompletedEvidenceCode = "job.simulation.verified";
     private const string CancelledEvidenceCode = "job.cancelled";
+    private const string ExecutionStartedEvidenceCode = "job.execution.started";
 
     private readonly SemaphoreSlim _gate = new(1, 1);
     private readonly Dictionary<string, AgentJobRecord> _jobs = new(StringComparer.Ordinal);
     private bool _initialized;
+
+    public AgentJobService(
+        IAgentJobStore store,
+        AgentActionAuthorizationPolicy authorizationPolicy,
+        TimeProvider timeProvider)
+        : this(
+            store,
+            authorizationPolicy,
+            timeProvider,
+            new DenyAgentActionExecutor())
+    {
+    }
 
     public void Dispose()
     {
@@ -68,7 +82,7 @@ public sealed class AgentJobService(
             string jobId = $"job-{Guid.NewGuid():N}";
             var evidence = new AgentJobEvidence(
                 QueuedEvidenceCode,
-                "The simulated job was accepted by the installed development policy.",
+                "The job was accepted by the installed development policy.",
                 now);
             var job = new AgentJobRecord(
                 jobId,
@@ -149,7 +163,19 @@ public sealed class AgentJobService(
             {
                 return AgentJobCommandResult.Rejected(
                     AgentErrorCode.JobNotCancellable,
-                    "Only queued or running simulated jobs can be cancelled.");
+                    "Only queued or safely cancellable running jobs can be cancelled.");
+            }
+
+            AuthorizedAgentAction? action = authorizationPolicy.Find(
+                job.ActionId,
+                job.TargetId,
+                job.TargetVersion);
+            if (job.State == AgentJobState.Running
+                && action?.SupportsRunningCancellation != true)
+            {
+                return AgentJobCommandResult.Rejected(
+                    AgentErrorCode.JobNotCancellable,
+                    "The running adapter cannot be interrupted safely.");
             }
 
             DateTimeOffset now = timeProvider.GetUtcNow();
@@ -162,7 +188,7 @@ public sealed class AgentJobService(
                     .. job.Evidence,
                     new(
                         CancelledEvidenceCode,
-                        "The simulated job was cancelled before any device change.",
+                        "The job was cancelled before an unsafe device change.",
                         now),
                 ],
             };
@@ -178,6 +204,9 @@ public sealed class AgentJobService(
 
     public async Task AdvancePendingJobsAsync(CancellationToken cancellationToken)
     {
+        AgentJobRecord? claimedJob = null;
+        AuthorizedAgentAction? claimedAction = null;
+
         await _gate.WaitAsync(cancellationToken);
         try
         {
@@ -187,7 +216,29 @@ public sealed class AgentJobService(
 
             foreach ((string jobId, AgentJobRecord job) in _jobs.ToArray())
             {
-                AgentJobRecord? advanced = Advance(job, now);
+                AuthorizedAgentAction? action = authorizationPolicy.Find(
+                    job.ActionId,
+                    job.TargetId,
+                    job.TargetVersion);
+                if (action is null)
+                {
+                    continue;
+                }
+
+                if (action.ExecutionKind != AgentActionExecutionKind.Simulated)
+                {
+                    if (claimedJob is null && job.State == AgentJobState.Queued)
+                    {
+                        claimedAction = action;
+                        claimedJob = StartExecution(job, now);
+                        _jobs[jobId] = claimedJob;
+                        changed = true;
+                    }
+
+                    continue;
+                }
+
+                AgentJobRecord? advanced = AdvanceSimulation(job, now);
                 if (advanced is null)
                 {
                     continue;
@@ -206,6 +257,45 @@ public sealed class AgentJobService(
         {
             _gate.Release();
         }
+
+        if (claimedJob is null || claimedAction is null)
+        {
+            return;
+        }
+
+        AgentActionExecutionResult executionResult;
+        if (!actionExecutor.CanExecute(claimedAction))
+        {
+            executionResult = new(
+                Success: false,
+                "job.execution.adapter_unavailable",
+                "The installed policy did not resolve an execution adapter.");
+        }
+        else
+        {
+            try
+            {
+                executionResult = await actionExecutor.ExecuteAsync(
+                    claimedAction,
+                    cancellationToken);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+                executionResult = new(
+                    Success: false,
+                    "job.execution.internal_failure",
+                    "The adapter failed without exposing internal details.");
+            }
+        }
+
+        await CompleteExecutionAsync(
+            claimedJob.JobId,
+            executionResult,
+            cancellationToken);
     }
 
     private async Task EnsureInitializedCoreAsync(CancellationToken cancellationToken)
@@ -234,7 +324,7 @@ public sealed class AgentJobService(
                         .. job.Evidence,
                         new(
                             RecoveredEvidenceCode,
-                            "The interrupted simulated job was queued after agent restart.",
+                            "The interrupted job was queued after agent restart.",
                             now),
                     ],
                 };
@@ -257,7 +347,66 @@ public sealed class AgentJobService(
         await store.SaveAsync(jobs, cancellationToken);
     }
 
-    private static AgentJobRecord? Advance(AgentJobRecord job, DateTimeOffset now)
+    private static AgentJobRecord StartExecution(
+        AgentJobRecord job,
+        DateTimeOffset now)
+    {
+        return job with
+        {
+            State = AgentJobState.Running,
+            ProgressPercent = 25,
+            UpdatedAt = now,
+            Evidence =
+            [
+                .. job.Evidence,
+                new(
+                    ExecutionStartedEvidenceCode,
+                    "The agent started a fixed allowlisted execution adapter.",
+                    now),
+            ],
+        };
+    }
+
+    private async Task CompleteExecutionAsync(
+        string jobId,
+        AgentActionExecutionResult result,
+        CancellationToken cancellationToken)
+    {
+        await _gate.WaitAsync(cancellationToken);
+        try
+        {
+            await EnsureInitializedCoreAsync(cancellationToken);
+            if (!_jobs.TryGetValue(jobId, out AgentJobRecord? job)
+                || job.State != AgentJobState.Running)
+            {
+                return;
+            }
+
+            DateTimeOffset now = timeProvider.GetUtcNow();
+            _jobs[jobId] = job with
+            {
+                State = result.Success
+                    ? AgentJobState.Succeeded
+                    : AgentJobState.Failed,
+                ProgressPercent = 100,
+                UpdatedAt = now,
+                Evidence =
+                [
+                    .. job.Evidence,
+                    new(result.EvidenceCode, result.Summary, now),
+                ],
+            };
+            await PersistCoreAsync(cancellationToken);
+        }
+        finally
+        {
+            _gate.Release();
+        }
+    }
+
+    private static AgentJobRecord? AdvanceSimulation(
+        AgentJobRecord job,
+        DateTimeOffset now)
     {
         if (job.State == AgentJobState.Queued)
         {

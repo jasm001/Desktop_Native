@@ -4,8 +4,9 @@ Fecha de ultima actualizacion: 2026-06-12.
 
 ## Objetivo inmediato
 
-Preparar el Bloque 6: primer adaptador real en una VM Windows 11, sin adelantar
-la seleccion del paquete ni ejecutar cambios en la PC principal.
+Completar el Bloque 6: adaptador cerrado de 7-Zip 26.01 x64 MSI, ya implementado
+y probado con dobles, pendiente de ejecutar la matriz en una VM Windows 11 con
+checkpoint. El paquete no se ejecuta en la PC principal.
 
 El incremento puede usar un mirror local simulado con software libre
 redistribuible. Hermes/RAG, Windows Service, Salud real, API local y modo
@@ -58,10 +59,20 @@ separadas y no se mezclan dentro del primer adaptador.
 - La CLI compila y ejecuta la shell. La depuracion en IDE requiere Visual Studio
   2026 version 18.0 o posterior; Visual Studio 2022 no admite `net10.0`.
 - Gitleaks y CI de GitHub configurados.
-- Build Release y 82 pruebas pasan para el Bloque 5; la validacion completa se
+- Build Release y 110 pruebas pasan; la validacion completa del repositorio se
   registra en `WORKFLOW.md`.
 - No existen acciones privilegiadas, secretos, datos corporativos ni
   integraciones productivas.
+- Bloque 6 `in_progress` con manifiesto versionado para 7-Zip 26.01 x64 MSI,
+  SHA-256 obligatorio y perfil `local-demo` deshabilitado por defecto.
+- Acciones reales exactas de instalacion y desinstalacion seleccionan
+  `seven-zip.msi.v1`; IPC no acepta rutas, comandos, switches ni argumentos.
+- `Detect`, `Preflight`, `Install`, `Verify` y `Uninstall` estan implementados
+  con idempotencia, timeout de cinco minutos, codigos MSI tipados, verificacion
+  posterior y evidencia saneada.
+- La accion sintetica existente permanece disponible.
+- La sesion actual no tiene permisos para consultar Hyper-V; la matriz VM y la
+  restauracion del checkpoint siguen pendientes y el bloque no esta completed.
 
 ## Alcance local acordado
 

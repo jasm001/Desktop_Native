@@ -6,7 +6,7 @@ El DeviceAgent es la unica frontera que puede ejecutar acciones locales. WinUI,
 Teams, IA y backend solo pueden enviar contratos tipados y autorizados; nunca
 envian shell, PowerShell libre, rutas arbitrarias ni argumentos generados.
 
-## Implementacion local de los Bloques 4 y 5
+## Implementacion local de los Bloques 4 a 6
 
 `src/Contracts/Agent` define el protocolo v1 compartido. Los unicos mensajes de
 entrada son:
@@ -30,11 +30,17 @@ accion, target y version. No expone comando, argumentos ni contenido ejecutable.
 - persistencia SQLite local;
 - progreso, cancelacion y evidencia saneada;
 - recuperacion de trabajos interrumpidos;
+- seleccion de adaptador por accion, target, version y adapter ID;
+- origen local de artefactos con longitud y SHA-256 obligatorios;
+- adaptador MSI cerrado para 7-Zip 26.01 x64;
+- proceso hijo con argumentos separados, timeout y salida descartada;
 - framing de mensajes con limite de 64 KiB;
 - servidor Named Pipe restringido al usuario actual en desarrollo.
 
-`src/DeviceAgent` es un host fino que registra el nucleo mediante DI. No contiene
-adaptadores de instalacion ni acciones privilegiadas.
+`src/DeviceAgent` es un host fino que registra el nucleo mediante DI. El perfil
+de ejecucion real queda `disabled` por defecto y debe configurarse exactamente
+como `local-demo` dentro de la VM. Fuera de ese perfil las acciones reales no
+forman parte de la politica instalada y se rechazan como `UnauthorizedAction`.
 
 ## Politica sintetica
 
@@ -46,6 +52,17 @@ software.install.simulated.v1 / secure-transfer / 6.5
 
 Esta entrada existe solo para probar el protocolo y las reglas. No instala,
 descarga, detecta ni modifica software. Cualquier otra combinacion se rechaza.
+
+La accion sintetica se conserva en el Bloque 6. La politica agrega solo estas
+combinaciones reales:
+
+```text
+software.install.7zip.v1 / seven-zip / 26.01 / seven-zip.msi.v1
+software.uninstall.7zip.v1 / seven-zip / 26.01 / seven-zip.msi.v1
+```
+
+Variar accion, target, version o adaptador falla cerrado. IPC no incorpora
+campos nuevos y sigue sin aceptar comando, ruta, switches o argumentos.
 
 La misma entrada declara prerrequisitos sinteticos y acotados para demostrar la
 evaluacion tipada: Windows, arquitectura x64, 1 GiB disponible, 512 MiB de
@@ -111,10 +128,27 @@ La ACL no sustituye la autorizacion del mensaje. El agente tambien valida:
 - idempotency key;
 - estado valido para cancelacion.
 
-## Fuera del alcance despues del Bloque 5
+## Adaptador real en curso
 
-- instalaciones, desinstalaciones o remediaciones reales;
-- WinGet, MSI, MSIX o PowerShell firmado;
+El DeviceAgent puede resolver el manifiesto fijo de 7-Zip 26.01 x64 desde un
+mirror local, validar longitud y SHA-256 y ejecutar `msiexec` con argumentos
+internos. `Detect`, `Preflight`, `Install`, `Verify` y `Uninstall` devuelven
+resultados tipados.
+
+Una instalacion repetida sobre la version exacta y una desinstalacion repetida
+sobre ausencia son exitos idempotentes sin proceso hijo. Un trabajo real puede
+cancelarse en cola; durante MSI devuelve `JobNotCancellable`. Timeout, fallo de
+inicio, hash, longitud, mirror, exit code y verificacion producen `Failed` con
+evidencia fija.
+
+La sesion actual no tiene autorizacion Hyper-V para validar el checkpoint. Por
+eso el Bloque 6 permanece `in_progress` y ningun instalador se ha ejecutado en
+la PC principal.
+
+## Fuera del alcance durante el Bloque 6
+
+- WinGet, otros MSI, MSIX o PowerShell firmado;
+- cualquier segundo paquete o adaptador generico;
 - trabajo emitido por backend;
 - identidad de dispositivo o usuario corporativa;
 - firma de politicas o mensajes;
@@ -122,8 +156,8 @@ La ACL no sustituye la autorizacion del mensaje. El agente tambien valida:
 - sincronizacion de evidencia con API o tickets;
 - conexion de la shell a una solicitud real.
 
-Los adaptadores reales empiezan en el Bloque 6 y solo despues de validar el
-paquete en una VM Windows 11.
+El primer adaptador no se promueve fuera de `local-demo` hasta completar la
+matriz en una VM Windows 11 y cerrar los gates posteriores de piloto.
 
 ## Perfil local posterior
 

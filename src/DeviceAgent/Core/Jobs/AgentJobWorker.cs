@@ -5,16 +5,16 @@ using Microsoft.Extensions.Options;
 
 namespace ITSupportNative.DeviceAgent.Jobs;
 
-public sealed class SimulatedJobWorker(
+public sealed class AgentJobWorker(
     AgentJobService jobs,
     IOptions<DeviceAgentOptions> options,
-    ILogger<SimulatedJobWorker> logger) : BackgroundService
+    ILogger<AgentJobWorker> logger) : BackgroundService
 {
-    private static readonly Action<ILogger, Exception?> LogSimulationFailure =
+    private static readonly Action<ILogger, Exception?> LogJobLoopFailure =
         LoggerMessage.Define(
             LogLevel.Error,
-            new EventId(2001, nameof(LogSimulationFailure)),
-            "The simulated job loop failed without exposing job payloads.");
+            new EventId(2001, nameof(LogJobLoopFailure)),
+            "The job loop failed without exposing job payloads.");
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -34,7 +34,7 @@ public sealed class SimulatedJobWorker(
             }
             catch (Exception exception)
             {
-                LogSimulationFailure(logger, exception);
+                LogJobLoopFailure(logger, exception);
             }
         }
     }

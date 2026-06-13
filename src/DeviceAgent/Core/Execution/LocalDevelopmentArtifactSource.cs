@@ -1,0 +1,54 @@
+using System.Security.Cryptography;
+
+namespace ITSupportNative.DeviceAgent.Execution;
+
+public sealed class LocalDevelopmentArtifactSource : ISoftwareArtifactSource
+{
+    private readonly string _rootPath;
+
+    public LocalDevelopmentArtifactSource(string rootPath)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(rootPath);
+        _rootPath = Path.GetFullPath(rootPath);
+    }
+
+    public async Task<SoftwareArtifactResolution> ResolveAsync(
+        SoftwareArtifactDefinition artifact,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(artifact);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        string candidatePath = Path.GetFullPath(
+            Path.Combine(_rootPath, artifact.FileName));
+        string relativePath = Path.GetRelativePath(_rootPath, candidatePath);
+        if (relativePath.StartsWith("..", StringComparison.Ordinal)
+            || Path.IsPathRooted(relativePath)
+            || !File.Exists(candidatePath))
+        {
+            return SoftwareArtifactResolution.Rejected(
+                SoftwareArtifactResolutionCode.SourceUnavailable);
+        }
+
+        var file = new FileInfo(candidatePath);
+        if (file.Length != artifact.Length)
+        {
+            return SoftwareArtifactResolution.Rejected(
+                SoftwareArtifactResolutionCode.LengthMismatch);
+        }
+
+        await using FileStream stream = new(
+            candidatePath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read,
+            bufferSize: 64 * 1024,
+            FileOptions.Asynchronous | FileOptions.SequentialScan);
+        byte[] hash = await SHA256.HashDataAsync(stream, cancellationToken);
+        string actualHash = Convert.ToHexString(hash);
+        return string.Equals(actualHash, artifact.Sha256, StringComparison.Ordinal)
+            ? SoftwareArtifactResolution.Available(candidatePath)
+            : SoftwareArtifactResolution.Rejected(
+                SoftwareArtifactResolutionCode.HashMismatch);
+    }
+}

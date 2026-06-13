@@ -1,11 +1,14 @@
 using ITSupportNative.Contracts.Agent;
 using ITSupportNative.DeviceAgent.Diagnostics;
+using ITSupportNative.DeviceAgent.Execution;
 
 namespace ITSupportNative.DeviceAgent.Jobs;
 
 public sealed class AgentActionAuthorizationPolicy
 {
-    private static readonly AuthorizedAgentAction[] DevelopmentAllowlist =
+    private const string LocalDemoProfile = "local-demo";
+
+    private static readonly AuthorizedAgentAction[] SyntheticAllowlist =
     [
         new(
             "software.install.simulated.v1",
@@ -29,10 +32,42 @@ public sealed class AgentActionAuthorizationPolicy
             ]),
     ];
 
+    private static readonly AuthorizedAgentAction[] LocalDemoAllowlist =
+    [
+        .. SyntheticAllowlist,
+        new(
+            SevenZip2601X64Definition.InstallActionId,
+            SevenZip2601X64Definition.TargetId,
+            SevenZip2601X64Definition.TargetVersion,
+            SevenZipPrerequisites())
+        {
+            ExecutionKind = AgentActionExecutionKind.SoftwareInstall,
+            AdapterId = SevenZip2601X64Definition.AdapterId,
+            SupportsRunningCancellation = false,
+        },
+        new(
+            SevenZip2601X64Definition.UninstallActionId,
+            SevenZip2601X64Definition.TargetId,
+            SevenZip2601X64Definition.TargetVersion,
+            SevenZipPrerequisites())
+        {
+            ExecutionKind = AgentActionExecutionKind.SoftwareUninstall,
+            AdapterId = SevenZip2601X64Definition.AdapterId,
+            SupportsRunningCancellation = false,
+        },
+    ];
+
     private readonly IReadOnlyList<AuthorizedAgentAction> _allowlist;
 
     public AgentActionAuthorizationPolicy()
-        : this(DevelopmentAllowlist)
+        : this(SyntheticAllowlist)
+    {
+    }
+
+    public AgentActionAuthorizationPolicy(string executionProfile)
+        : this(string.Equals(executionProfile, LocalDemoProfile, StringComparison.Ordinal)
+            ? LocalDemoAllowlist
+            : SyntheticAllowlist)
     {
     }
 
@@ -58,5 +93,24 @@ public sealed class AgentActionAuthorizationPolicy
             string.Equals(action.ActionId, actionId, StringComparison.Ordinal)
             && string.Equals(action.TargetId, targetId, StringComparison.Ordinal)
             && string.Equals(action.TargetVersion, targetVersion, StringComparison.Ordinal));
+    }
+
+    private static AgentPrerequisiteDefinition[] SevenZipPrerequisites()
+    {
+        return
+        [
+            AgentPrerequisiteDefinition.ForRequiredValue(
+                AgentPrerequisiteKind.WindowsOperatingSystem,
+                "windows"),
+            AgentPrerequisiteDefinition.ForRequiredValue(
+                AgentPrerequisiteKind.Architecture,
+                "x64"),
+            AgentPrerequisiteDefinition.ForRequiredBytes(
+                AgentPrerequisiteKind.MinimumStorageAvailableBytes,
+                64L * 1024 * 1024),
+            AgentPrerequisiteDefinition.ForRequiredBytes(
+                AgentPrerequisiteKind.MinimumMemoryAvailableBytes,
+                256L * 1024 * 1024),
+        ];
     }
 }

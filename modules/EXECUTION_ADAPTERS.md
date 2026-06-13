@@ -1,11 +1,71 @@
 # Adaptadores de instalacion y configuracion
 
-Los Bloques 4 y 5 no implementan estos adaptadores. La accion
-`software.install.simulated.v1` solo prueba IPC, autorizacion y estado; no llama
-WinGet, MSI, MSIX, PowerShell ni procesos hijos.
+Los Bloques 4 y 5 no implementaron adaptadores reales. La accion
+`software.install.simulated.v1` se conserva para probar IPC, autorizacion,
+estado y recuperacion sin llamar procesos hijos.
 
-El Bloque 6 es la primera unidad que puede agregar un adaptador real, siempre
-validado primero en una VM Windows 11 desechable con snapshot.
+El Bloque 6 esta `in_progress` con el primer adaptador cerrado:
+
+```text
+seven-zip.msi.v1
+  install: software.install.7zip.v1 / seven-zip / 26.01
+  uninstall: software.uninstall.7zip.v1 / seven-zip / 26.01
+```
+
+La implementacion, manifiesto y pruebas automatizadas existen, pero el bloque no
+esta completado porque la sesion actual no tiene permisos para consultar u
+operar la VM Hyper-V y su checkpoint. El MSI no se ha ejecutado en el host.
+
+## Adaptador 7-Zip 26.01
+
+El incremento fija el MSI x64 oficial:
+
+- archivo `7z2601-x64.msi`;
+- longitud `2,002,432` bytes;
+- SHA-256
+  `A47EA8DCF8BC08E6DE474CAE77C828E031FA22CB528F6095DEFFFEBF11CD02F2`;
+- ProductCode `{23170F69-40C1-2702-2601-000001000000}`;
+- version MSI `26.01.00.0`;
+- sin firma Authenticode;
+- licencia GNU LGPL con componentes BSD y restriccion unRAR;
+- redistribucion binaria condicionada a reproducir los avisos relacionados.
+
+El manifiesto vive en
+`deploy/local-demo/manifests/seven-zip-26.01-x64.json`. El binario y
+`license.txt` viven fuera de Git en el mirror de laboratorio.
+
+`SevenZip2601X64Adapter` implementa `Detect`, `Preflight`, `Install`, `Verify` y
+`Uninstall`. El perfil de ejecucion es `disabled` por defecto y solo acepta el
+valor exacto `local-demo`; fuera de ese perfil las acciones reales no se cargan
+en la politica de autorizacion.
+
+La lista de procesos y argumentos esta fijada dentro del adaptador:
+
+```text
+%SystemRoot%\System32\msiexec.exe
+  /i <artefacto resuelto y validado> /qn /norestart
+  /x {23170F69-40C1-2702-2601-000001000000} /qn /norestart
+```
+
+La ruta del artefacto se obtiene de un root local confiable y del nombre fijo
+del manifiesto. No llega desde IPC. Antes de instalar se valida perfil,
+Windows x64, longitud y SHA-256. La deteccion lee la entrada MSI allowlisted en
+el registro de desinstalacion de 64 bits y exige la version exacta.
+
+La operacion tiene timeout fijo de cinco minutos. No existe retry interno:
+`1618`, timeout y cualquier salida no allowlisted fallan cerrados y requieren
+una nueva solicitud explicita despues de detectar el estado. `0` es exito;
+`3010` es exito verificado con reinicio pendiente; `1641` se rechaza porque
+indica un reinicio iniciado pese a `/norestart`.
+
+La cancelacion es segura mientras el trabajo sigue `Queued`. Una vez iniciado
+`msiexec`, IPC devuelve `JobNotCancellable`; el runner solo termina el proceso
+por timeout interno. stdout y stderr se consumen y descartan. La evidencia
+persistida contiene exclusivamente codigos y textos fijos, sin rutas, hash,
+ProductCode, argumentos, salida o excepciones.
+
+El detalle y la matriz VM viven en
+`../docs/modules/seven-zip-adapter.md`.
 
 ## Laboratorio local
 
@@ -28,6 +88,9 @@ La matriz de laboratorio cubre:
 - `Verify`;
 - `Uninstall`;
 - restauracion del snapshot de VM.
+
+La cobertura automatizada usa dobles de artefacto, deteccion y proceso; nunca
+ejecuta `msiexec`. La ejecucion real sigue reservada a la VM.
 
 Un paquete reempaquetado se conserva solo si su licencia permite modificacion y
 redistribucion. El resultado no se promueve fuera del laboratorio sin revision

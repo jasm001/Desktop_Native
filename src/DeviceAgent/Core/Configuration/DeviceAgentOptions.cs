@@ -17,4 +17,12 @@ public sealed class DeviceAgentOptions
     public int SimulationIntervalMilliseconds { get; set; } = 250;
 
     public int DomainProbeTimeoutMilliseconds { get; set; } = 2000;
+
+    public string ExecutionProfile { get; set; } = "disabled";
+
+    public string LocalArtifactRootPath { get; set; } = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "ITSupportNative",
+        "DeviceAgent",
+        "artifacts");
 }

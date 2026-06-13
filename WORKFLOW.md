@@ -3,35 +3,40 @@
 ## Estado
 
 - Fase actual: capacidades locales controladas para Windows 11.
-- Bloque activo: ninguno; Bloque 5 completado y publicado.
+- Bloque activo: 6. Primer adaptador en VM (`in_progress`).
 - Ultimo resultado: diagnostico local de solo lectura con snapshot efimero,
   fallos parciales tipados y prerrequisitos allowlisted.
-- Siguiente resultado: primer adaptador real validado en VM Windows 11.
+- Resultado en curso: adaptador cerrado para 7-Zip 26.01 x64 MSI, con
+  validacion automatizada local y matriz pendiente en VM Windows 11.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.
 
 ## Ultima validacion
 
-- Fecha: 2026-06-12.
+- Fecha: 2026-06-13.
 - SDK global `10.0.301`: correcto.
 - El gate .NET local usa `-m:1`, deshabilita build servers y escribe build/test
   en `.artifacts/validate` para no competir con el build host del IDE.
-- Lockfile Unit regenerado por la referencia directa a Contracts; los lockfiles
-  Desktop/WindowsUi conservan unicamente `win-x64`.
 - `dotnet restore ITSupportNative.slnx --locked-mode`: correcto.
 - `dotnet format ITSupportNative.slnx --verify-no-changes --no-restore`:
   correcto.
 - `dotnet build ITSupportNative.slnx --configuration Release --no-restore`:
   correcto, 0 warnings y 0 errores.
 - `dotnet test ITSupportNative.slnx --configuration Release --no-build`:
-  correcto, 82 pruebas.
-- Pruebas nuevas: modelos diagnosticos, estructura contractual, orden y unidades
-  de prerrequisitos, fallos parciales saneados, cancelacion, limites, colectores
-  Windows, frontera de persistencia y consulta real por Named Pipe.
+  correcto, 110 pruebas.
+- Pruebas nuevas del Bloque 6: manifiesto versionado, mirror, longitud,
+  SHA-256, perfil `local-demo`, plataforma, argumentos fijos, idempotencia,
+  timeout, codigos MSI, fallo de inicio, verificacion, desinstalacion,
+  seleccion exacta, autorizacion deny-by-default y cancelacion segura/no segura.
+- Las pruebas del adaptador usan dobles y no ejecutan el MSI en el host.
+- Named Pipe real: correcto fuera del sandbox con ACL del usuario actual.
 - `corepack pnpm@11.5.3 run check`: correcto.
 - `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
 - `scripts/Validate.ps1`: correcto.
+- Lockfiles sin cambios; Desktop/WindowsUi conservan unicamente `win-x64`.
+- Matriz VM: pendiente porque la sesion no tiene permisos Hyper-V. El MSI no se
+  ha ejecutado en la PC principal y el Bloque 6 sigue `in_progress`.
 
 Validacion anterior de fundacion:
 
@@ -91,7 +96,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 3. Conversacion determinista | completed | Cinco estados, intenciones fijas, solicitud sintetica idempotente, 13 pruebas unitarias y 3 pruebas del adaptador WinUI; `b09f07a`. |
 | 4. Agente simulado e IPC | completed | Contrato v1, Named Pipe con ACL de usuario actual, allowlist exacta, maquina de estados, cancelacion, evidencia saneada, SQLite, recuperacion e IPC real cubiertos por 18 pruebas nuevas; `b56bfcb`. |
 | 5. Diagnostico de solo lectura | completed | Snapshot IPC efimero, colectores Windows de solo lectura, prerrequisitos tipados, fallos parciales saneados y pruebas de frontera; `e3a0b8d`. |
-| 6. Primer adaptador en VM | pending | |
+| 6. Primer adaptador en VM | in_progress | 7-Zip 26.01 x64 MSI seleccionado; evidencia oficial y bloqueo de acceso a Hyper-V registrados en `docs/modules/seven-zip-adapter.md`. |
 | 7. API compartida y persistencia | pending | |
 | 8. Casos, tickets y OpenText fake | pending | |
 | 9. Canal Teams existente | pending | |
@@ -178,6 +183,30 @@ Impacto: Define proveedores, empaquetado y modelo comercial, pero no cambia el
 Recomendacion: Mantener contratos neutrales y posponer el borrado hasta validar
   autoservicio, seguridad, enrolamiento y retiro.
 Owner: Product Owner / Security / Endpoint Management.
+```
+
+## Bloqueo activo del Bloque 6
+
+```text
+Fecha: 2026-06-13
+Modulo: DeviceAgent / primer adaptador real
+Decision requerida: Habilitar a la sesion de desarrollo para consultar y
+  operar la VM Windows 11 de laboratorio y su checkpoint, o ejecutar la matriz
+  documentada desde una sesion con permisos equivalentes.
+Evidencia: `Get-VM` y `Get-VM | Get-VMSnapshot` devuelven que el usuario no
+  dispone del permiso necesario sobre la directiva de autorizacion Hyper-V del
+  host `DESKTOP-LDK3DDJ`, incluso fuera del sandbox.
+Alternativas: Agregar temporalmente al usuario al grupo local
+  `Hyper-V Administrators` y reiniciar sesion; ejecutar la matriz manualmente
+  desde Hyper-V Manager con una cuenta autorizada; proporcionar evidencia
+  saneada de una VM y checkpoint equivalentes.
+Impacto: Se puede implementar y validar el adaptador con dobles de proceso y
+  artefacto, pero el Bloque 6 no puede marcarse `completed` ni el MSI puede
+  ejecutarse hasta completar instalacion, repeticion, verificacion,
+  desinstalacion, fallos de mirror/hash y restauracion de checkpoint en la VM.
+Recomendacion: Mantener el bloque `in_progress`, no ejecutar el paquete en el
+  host y cerrar la matriz en una VM desechable antes de publicar el cambio.
+Owner: Desarrollo / administrador local de Hyper-V.
 ```
 
 ## Formato de stopper
