@@ -2,6 +2,7 @@ using System.IO.Pipes;
 using System.Text.Json;
 using ITSupportNative.Contracts.Agent;
 using ITSupportNative.DeviceAgent.Configuration;
+using ITSupportNative.DeviceAgent.Logging;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,12 +14,6 @@ public sealed class NamedPipeAgentWorker(
     IOptions<DeviceAgentOptions> options,
     ILogger<NamedPipeAgentWorker> logger) : BackgroundService
 {
-    private static readonly Action<ILogger, Exception?> LogRequestFailure =
-        LoggerMessage.Define(
-            LogLevel.Warning,
-            new EventId(1001, nameof(LogRequestFailure)),
-            "A local IPC request failed before an authorized action could run.");
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         string pipeName = options.Value.PipeName;
@@ -35,9 +30,9 @@ public sealed class NamedPipeAgentWorker(
             {
                 break;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                LogRequestFailure(logger, exception);
+                AgentRuntimeLog.IpcRequestFailure(logger);
             }
         }
     }

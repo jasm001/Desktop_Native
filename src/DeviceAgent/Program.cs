@@ -7,9 +7,31 @@ using ITSupportNative.DeviceAgent.Ipc;
 using ITSupportNative.DeviceAgent.Jobs;
 
 var builder = Host.CreateApplicationBuilder(args);
+var deviceAgentConfiguration = builder.Configuration.GetSection(
+    DeviceAgentOptions.SectionName);
+var startupOptions = deviceAgentConfiguration.Get<DeviceAgentOptions>()
+    ?? new DeviceAgentOptions();
+if (!DeviceAgentConfigurationPolicy.IsValid(
+        startupOptions,
+        builder.Environment.EnvironmentName))
+{
+    Console.Error.WriteLine("The DeviceAgent configuration is invalid.");
+    Environment.ExitCode = 78;
+    return;
+}
+
 builder.Services
     .Configure<DeviceAgentOptions>(
-        builder.Configuration.GetSection(DeviceAgentOptions.SectionName))
+        deviceAgentConfiguration)
+    .AddOptions<DeviceAgentOptions>()
+    .Validate(
+        options => DeviceAgentConfigurationPolicy.IsValid(
+            options,
+            builder.Environment.EnvironmentName),
+        "The DeviceAgent configuration is not valid for this environment.")
+    .ValidateOnStart();
+
+builder.Services
     .AddSingleton(TimeProvider.System)
     .AddSingleton(services =>
     {

@@ -1,6 +1,7 @@
 using ITSupportNative.Contracts.ControlPlane;
 using ITSupportNative.DeviceAgent.Configuration;
 using ITSupportNative.DeviceAgent.Jobs;
+using ITSupportNative.DeviceAgent.Logging;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,12 +14,6 @@ public sealed class ControlPlaneAgentWorker(
     IOptions<DeviceAgentOptions> options,
     ILogger<ControlPlaneAgentWorker> logger) : BackgroundService
 {
-    private static readonly Action<ILogger, Exception?> LogSynchronizationFailure =
-        LoggerMessage.Define(
-            LogLevel.Warning,
-            new EventId(3001, nameof(LogSynchronizationFailure)),
-            "The local control plane synchronization attempt failed.");
-
     private readonly DeviceAgentOptions _options = options.Value;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -47,7 +42,7 @@ public sealed class ControlPlaneAgentWorker(
             }
             catch (Exception)
             {
-                LogSynchronizationFailure(logger, null);
+                AgentRuntimeLog.SynchronizationFailure(logger);
                 await Task.Delay(
                     _options.ControlPlanePollingIntervalMilliseconds,
                     stoppingToken);

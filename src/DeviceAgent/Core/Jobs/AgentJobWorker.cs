@@ -1,4 +1,5 @@
 using ITSupportNative.DeviceAgent.Configuration;
+using ITSupportNative.DeviceAgent.Logging;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -10,12 +11,6 @@ public sealed class AgentJobWorker(
     IOptions<DeviceAgentOptions> options,
     ILogger<AgentJobWorker> logger) : BackgroundService
 {
-    private static readonly Action<ILogger, Exception?> LogJobLoopFailure =
-        LoggerMessage.Define(
-            LogLevel.Error,
-            new EventId(2001, nameof(LogJobLoopFailure)),
-            "The job loop failed without exposing job payloads.");
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         TimeSpan interval = TimeSpan.FromMilliseconds(
@@ -32,9 +27,9 @@ public sealed class AgentJobWorker(
             {
                 break;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                LogJobLoopFailure(logger, exception);
+                AgentRuntimeLog.JobLoopFailure(logger);
             }
         }
     }

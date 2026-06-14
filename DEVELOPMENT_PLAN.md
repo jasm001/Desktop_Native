@@ -212,13 +212,14 @@ Cerrar gates externos necesarios para dos endpoints:
 
 Gate: threat model revisado y despliegue/retiro ensayados.
 
-Estado: `in_progress`. Es el unico bloque principal activo. El alcance,
-controles locales permitidos, evidencia y gates externos viven en
-`modules/PILOT_HARDENING.md`; el threat model de trabajo vive en
-`docs/threat-model/README.md`. La primera unidad local agrega un kill switch
-fail-closed del DeviceAgent, pruebas y runbook de retiro. El bloque no se
-declara `completed` hasta revisar el threat model y ensayar despliegue y retiro
-en dos endpoints autorizados.
+Estado: `blocked`. El alcance local verificable esta implementado: threat model
+trazable, kill switch fail-closed, runbook de retiro, confinamiento de
+`local-demo` a `Development` y eventos de fallo del host sin excepciones ni
+payloads. La configuracion invalida termina antes de construir el host con
+mensaje fijo. El bloque no se declara `completed` hasta que Security revise el
+threat model y se ensayen despliegue, deshabilitacion, rollback y retiro en dos
+endpoints autorizados. No queda un bloque principal `in_progress`; el Bloque 11
+permanece `pending`.
 
 ## Bloque 11: portal administrativo web
 

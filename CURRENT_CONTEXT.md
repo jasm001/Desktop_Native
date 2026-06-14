@@ -5,7 +5,8 @@ Fecha de ultima actualizacion: 2026-06-14.
 ## Objetivo inmediato
 
 Los Bloques 0 a 8 estan `completed`. El Bloque 9 queda `blocked` por la
-integracion corporativa del bot existente. El Bloque 10 es el unico bloque
+integracion corporativa del bot existente. El trabajo local acotado del Bloque
+10 termino y el bloque queda `blocked` por gates externos. No hay un bloque
 principal `in_progress`; el Bloque 11 permanece `pending`.
 
 El cierre tecnico del Bloque 8 vive en
@@ -55,23 +56,28 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   allowlist, contratos, privilegios ni evidencia.
 - El runbook local de deshabilitacion, rollback y retiro vive en
   `docs/runbooks/device-agent-disable-rollback-retirement.md`.
+- La unidad local final valida al iniciar que solo existan los perfiles
+  `disabled` y `local-demo`, confina `local-demo` a `Development` y rechaza
+  capacidades habilitadas con perfil `disabled`.
+- Los fallos de los workers IPC, trabajos y sincronizacion usan eventos fijos
+  sin objetos `Exception`, payloads ni salida operativa completa.
+- El inventario de cierre y los puntos de sustitucion viven en
+  `docs/modules/pilot-hardening-local-closure.md`.
 - OpenText, Teams, Entra, UEMS, Hermes/RAG y portal productivos siguen
   deshabilitados.
-- El gate completo mantiene 129 pruebas .NET; Node tiene 20 pruebas
+- El gate completo mantiene 136 pruebas .NET; Node tiene 20 pruebas
   unitarias/de contrato, 11 integraciones AdminWeb y 4 del Worker, mas el E2E
   WinUI/DeviceAgent sobre PostgreSQL efimero.
 
 ## Siguiente reanudacion
 
-1. Mantener el Bloque 9 `blocked`, el Bloque 10 `in_progress` y el Bloque 11
-   `pending`.
-2. Conservar la primera unidad local de kill switch y completar su sustitucion
-   por configuracion administrada solo cuando exista owner y mecanismo aprobado.
-3. Preparar el siguiente incremento local a partir de las brechas restantes del
-   threat model, sin UEMS, Entra, Sophos, PKI ni endpoints corporativos.
-4. Preparar evidencia de despliegue y retiro para una futura prueba en dos
-   endpoints.
-5. Mantener por separado el stopper de Teams; reanudar el Bloque 9 solo cuando
+1. Mantener los Bloques 9 y 10 `blocked` y el Bloque 11 `pending`.
+2. Reanudar el Bloque 10 solo cuando exista evidencia saneada de UEMS, cuenta
+   restringida, identidad, Security/Sophos, owner del kill switch, logs y
+   retencion, paquete/publicador y dos endpoints autorizados.
+3. Definir un perfil empresarial nuevo despues de decidir si los proveedores
+   seran corporativos o propios; no promover ni renombrar `local-demo`.
+4. Mantener por separado el stopper de Teams; reanudar el Bloque 9 solo cuando
    exista evidencia saneada del bot corporativo.
 
 ## Limites vigentes

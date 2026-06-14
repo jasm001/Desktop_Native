@@ -2,11 +2,13 @@
 
 ## Estado
 
-Documento propietario del Bloque 10 `in_progress`.
+Documento propietario del Bloque 10 `blocked`.
 
 Los Bloques 0 a 8 estan `completed`. El Bloque 9 esta `blocked` por la
 integracion corporativa del bot existente y el Bloque 11 permanece `pending`.
 El trabajo de este bloque no convierte `local-demo` en un piloto corporativo.
+No queda un bloque principal `in_progress`: el Bloque 10 conserva sus controles
+locales y espera exclusivamente evidencia externa. El Bloque 11 no se adelanta.
 
 ## Objetivo
 
@@ -62,7 +64,7 @@ No se puede:
 El inventario inicial de amenazas y evidencia vive en
 `../docs/threat-model/README.md`.
 
-## Primera unidad local validada
+## Unidades locales validadas
 
 El 2026-06-14 se completo un kill switch local del DeviceAgent:
 
@@ -82,6 +84,21 @@ de deshabilitacion, rollback y retiro vive en
 Este control reduce la brecha local de deshabilitacion, pero no cierra el gate
 corporativo: faltan owner, configuracion administrada, revocacion de identidad,
 retencion, Security/Sophos, UEMS y ensayo en dos endpoints.
+
+La unidad local final confina configuracion y fallos del host:
+
+- solo se aceptan los perfiles `disabled` y `local-demo`;
+- `local-demo` solo inicia en ambiente .NET `Development`;
+- ejecucion y sincronizacion solo pueden habilitarse con `local-demo`;
+- combinaciones desconocidas o contradictorias fallan al iniciar;
+- los fallos no controlados de IPC, trabajos y sincronizacion publican eventos
+  fijos sin excepcion, payload ni salida operativa completa;
+- no se agregan contratos, acciones, argumentos, privilegios, datos,
+  dependencias, identidades ni endpoints.
+
+La especificacion vive en
+`../docs/modules/pilot-hardening-local-profile-confinement.md` y el inventario
+final en `../docs/modules/pilot-hardening-local-closure.md`.
 
 ## Gates externos para dos endpoints
 
@@ -115,8 +132,9 @@ El bloque solo puede declararse `completed` cuando:
 - el paquete y la confianza del publicador tienen mecanismo aprobado;
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
 
-Hasta entonces el Bloque 10 permanece `in_progress` o pasa a `blocked` si solo
-resta evidencia externa.
+El trabajo local reproducible queda agotado. El Bloque 10 permanece `blocked`
+hasta recibir la evidencia externa anterior; no esta `completed` y no autoriza
+un piloto.
 
 ## Referencias
 
@@ -125,6 +143,7 @@ resta evidencia externa.
 - `../core/DECISIONS.md`
 - `OPERATIONS.md`
 - `../docs/modules/local-mvp-lab.md`
+- `../docs/modules/pilot-hardening-local-closure.md`
 - `../docs/threat-model/README.md`
 - `../project-management/PILOT_ASSESSMENT.md`
 - `../project-management/INFORMATION_REQUESTS.md`

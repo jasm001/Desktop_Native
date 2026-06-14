@@ -128,9 +128,10 @@ No permitido:
 
 Los Bloques 6, 7 y 8 ya cerraron sus gates locales. El Bloque 9 completo su
 incremento local y esta `blocked` por la integracion corporativa de Teams. El
-Bloque 10 es el unico `in_progress`; puede preparar hardening, evidencia y
-runbooks locales/fake conforme a D-072. Ningun bloque puede declararse
-corporativamente validado mientras falten:
+Bloque 10 completo su trabajo local acotado y esta `blocked`; el MVP conserva
+hardening, evidencia y runbooks locales/fake conforme a D-072 sin iniciar el
+Bloque 11. Ningun bloque puede declararse corporativamente validado mientras
+falten:
 
 - UEMS y proceso de distribucion/retiro;
 - cuenta e identidad restringida del servicio;

@@ -3,14 +3,13 @@
 ## Estado
 
 - Fase actual: capacidades locales controladas para Windows 11.
-- Bloque activo: Bloque 10, endurecimiento para piloto, `in_progress`.
-- Los Bloques 0 a 8 estan `completed`; el Bloque 9 esta `blocked` y el Bloque 11
-  sigue `pending`.
-- Ultimo resultado publicado: incremento local del Bloque 9 en `0448a42`.
-- Ultimo resultado funcional: primera unidad local del Bloque 10 con kill switch
-  fail-closed del DeviceAgent. Deshabilitado, no admite trabajos IPC, no reclama
-  trabajos remotos y no inicia ni reanuda pendientes; diagnostico, consulta y
-  cancelacion permanecen disponibles.
+- Bloque activo: ninguno. Los Bloques 9 y 10 estan `blocked`; el Bloque 11 sigue
+  `pending`.
+- Los Bloques 0 a 8 estan `completed`.
+- Ultimo resultado publicado: kill switch local del Bloque 10 en `04b6738`.
+- Ultimo resultado funcional: cierre local del Bloque 10 con kill switch,
+  confinamiento fail-closed de `local-demo`, eventos de fallo saneados y runbook
+  de retiro. El gate corporativo no esta cerrado.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.
@@ -27,10 +26,13 @@
 - `dotnet build ITSupportNative.slnx --configuration Release --no-restore`:
   correcto, 0 warnings y 0 errores.
 - `dotnet test ITSupportNative.slnx --configuration Release --no-build`:
-  correcto, 129 pruebas.
-- Pruebas nuevas del Bloque 10: configuracion predeterminada fail-closed sin
-  persistencia, trabajo pendiente sin avance, rechazo IPC allowlisted y ausencia
-  de claim remoto cuando el kill switch esta deshabilitado.
+  correcto, 136 pruebas.
+- Pruebas del Bloque 10: kill switch sin persistencia, pendientes sin avance,
+  rechazo IPC y ausencia de claim; politica de configuracion predeterminada,
+  perfiles/ambientes/combinaciones invalidos; eventos de runtime con IDs,
+  mensajes fijos y sin excepciones.
+- Smoke del DeviceAgent con perfil no soportado: salida fija sin stack trace y
+  codigo `78` antes de construir el host.
 - Pruebas nuevas del Bloque 6: manifiesto versionado, mirror, longitud,
   SHA-256, perfil `local-demo`, plataforma, argumentos fijos, idempotencia,
   timeout, codigos MSI, fallo de inicio, verificacion, desinstalacion,
@@ -140,15 +142,16 @@ Solo un bloque principal puede estar `in_progress`.
 | 7. API compartida y persistencia | completed | Fundacion publicada en `2b89a6b`; cierre local validado con segunda migracion, WinUI HTTP, worker separado, DeviceAgent saliente y E2E sobre PostgreSQL efimero. |
 | 8. Casos, tickets y OpenText fake | completed | `BotCase`, politica de 72 horas, evento de escalamiento, `ITicketingProvider` fake, `ExternalTicket`, worker idempotente y consulta HTTP validados sobre PostgreSQL real efimero; `cf262b4`. |
 | 9. Canal Teams existente | blocked | Incremento local publicado en `0448a42`: contrato v1 estricto, `IConversationChannel`, adaptador recorded, API compartida y paridad Teams/WinUI. Integracion corporativa bloqueada por evidencia externa. |
-| 10. Endurecimiento para piloto | in_progress | Inventario trazable del threat model y primera unidad local: kill switch del DeviceAgent apagado por defecto, pruebas focalizadas y runbook de deshabilitacion/rollback/retiro. Gates externos y dos endpoints pendientes. |
+| 10. Endurecimiento para piloto | blocked | Trabajo local acotado: threat model trazable, kill switch apagado por defecto, perfil `local-demo` confinado a `Development`, fallos del host saneados y runbook de retiro. Revision externa y ensayo en dos endpoints pendientes. |
 | 11. Portal administrativo web | pending | |
 
 ## Alcance del MVP local
 
-El desarrollo puede continuar con el Bloque 10 usando proveedores locales o
-fake aunque el cierre corporativo del Bloque 9 este bloqueado. D-072 permite
-preparar unidades locales reemplazables sin cerrar los gates externos. La
-referencia tecnica es `docs/modules/local-mvp-lab.md`.
+El MVP local permanece utilizable con proveedores locales o fake aunque los
+Bloques 9 y 10 esten bloqueados. D-072 permite conservar unidades locales
+reemplazables sin cerrar gates externos, pero no autoriza iniciar el Bloque 11
+ni promover `local-demo`. La referencia tecnica es
+`docs/modules/local-mvp-lab.md`.
 
 Permitido antes de la decision corporativa:
 
@@ -173,8 +176,8 @@ Estos stoppers condicionan integraciones o mejoras externas. No revierten
 bloques ya completados ni impiden unidades locales que respeten sus limites.
 
 El siguiente stopper bloquea la conexion corporativa y el cierre del Bloque 9.
-No bloquea el Bloque 10 ni revierte los contratos, el adaptador recorded o las
-pruebas de paridad ya validadas.
+No revierte los contratos, el adaptador recorded o las pruebas de paridad ya
+validadas.
 
 ```text
 Fecha: 2026-06-14
@@ -193,6 +196,31 @@ Impacto: Sin esta evidencia no puede validarse ni declararse completa la
 Recomendacion: Mantener neutral `IConversationChannel` y no acoplar el dominio a
   una plataforma no confirmada.
 Owner: Equipo actual del bot de Teams / Collaboration / Automation.
+```
+
+El siguiente stopper bloquea el cierre del Bloque 10. No afecta el MVP local ni
+revierte sus controles validados.
+
+```text
+Fecha: 2026-06-14
+Modulo: Endurecimiento para piloto
+Decision requerida: Confirmar procedimiento UEMS de despliegue y retiro, cuenta
+  restringida del agente, identidad de usuario y dispositivo, revision
+  Security/Sophos, owner operativo del kill switch, logs y retencion, respuesta
+  ante compromiso, paquete y confianza de publicador, y dos endpoints
+  autorizados con criterio de restauracion.
+Evidencia: Procedimiento y configuracion saneados; matriz de permisos; revision
+  de Security; mecanismo de paquete/firma/confianza; resultados de despliegue,
+  actualizacion, deshabilitacion, rollback y retiro en dos endpoints; revision
+  de logs y evidencia.
+Alternativas: Mantener el MVP `local-demo` en `Development`; decidir despues
+  entre proveedores corporativos o propios mediante puntos de sustitucion
+  explicitos, sin promover el perfil local.
+Impacto: Sin esta evidencia no puede declararse `completed` el Bloque 10 ni
+  iniciar un piloto corporativo.
+Recomendacion: Mantener el Bloque 10 `blocked` y reanudarlo solo con el paquete
+  minimo de evidencia externa. No adelantar el Bloque 11 para simular el gate.
+Owner: Por confirmar mediante las solicitudes de informacion vigentes.
 ```
 
 Los siguientes stoppers condicionan solo la mejora posterior de refresco

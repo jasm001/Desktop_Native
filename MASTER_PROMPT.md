@@ -14,11 +14,14 @@ Estado confirmado:
 - Bloque 9, canal Teams existente, esta `blocked` hasta disponer de evidencia
   para integrar y validar el bot corporativo real.
 - `modules/TEAMS.md` conserva el gobierno del Bloque 9.
-- Bloque 10, endurecimiento para piloto, esta `in_progress` y es el unico bloque
-  principal activo.
+- Bloque 10, endurecimiento para piloto, esta `blocked` porque el trabajo local
+  reproducible termino y solo resta evidencia externa.
 - `modules/PILOT_HARDENING.md` es el documento propietario del Bloque 10.
 - La primera unidad local del Bloque 10 agrega un kill switch fail-closed del
   DeviceAgent y un runbook de deshabilitacion, rollback y retiro.
+- La unidad local final confina `local-demo` a `Development`, rechaza
+  configuraciones contradictorias y sanea los eventos genericos de fallo del
+  DeviceAgent.
 - `docs/threat-model/README.md` es el threat model de trabajo y aun no tiene
   revision ni aprobacion de Security.
 - Bloque 11, portal administrativo web, permanece `pending`.
@@ -35,7 +38,7 @@ Estado confirmado:
   `IConversationChannel` y un adaptador recorded sin red.
 - OpenText real, Teams corporativo, Entra, UEMS, Sophos, PKI, Hermes/RAG
   productivo y portal administrativo siguen deshabilitados.
-- Ultimo gate completo: 129 pruebas .NET, 20 pruebas Node unitarias/de contrato,
+- Ultimo gate completo: 136 pruebas .NET, 20 pruebas Node unitarias/de contrato,
   11 integraciones AdminWeb, 4 del Worker, cuatro migraciones PostgreSQL y E2E.
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
 
@@ -56,8 +59,8 @@ Antes de editar:
    `project-management/INFORMATION_REQUESTS.md`;
 8. inspecciona `src/Desktop`, `src/DeviceAgent`, `src/AdminWeb`, `src/Worker`,
    `src/Contracts`, `deploy`, `scripts` y sus pruebas;
-9. identifica controles implementados y brechas reales antes de elegir la
-   primera unidad tecnica del Bloque 10.
+9. identifica controles implementados, evidencia recibida y brechas reales
+   antes de reanudar el Bloque 10.
 
 Reglas no negociables:
 - no cambies stack, alcance, arquitectura, persistencia, seguridad o contratos
@@ -85,27 +88,25 @@ Reglas no negociables:
 - no declares terminada una unidad sin ejecutar los gates aplicables.
 
 Tarea:
-Continua el Bloque 10 despues de la primera unidad local de hardening. El threat
-model ya contiene un inventario trazable y el kill switch del DeviceAgent esta
-validado. Elige la siguiente brecha local acotada de mayor prioridad que pueda
-cerrarse sin depender de infraestructura corporativa.
+Conserva el Bloque 10 `blocked` y el MVP local sin cambios hasta recibir
+evidencia externa. Reanuda hardening solo para integrar y validar una decision
+documentada sobre proveedores corporativos o propios; no promociones ni
+renombres `local-demo` y no adelantes el Bloque 11.
 
 Antes de implementar:
 - mapea las amenazas de `docs/threat-model/README.md` a codigo, configuracion y
   pruebas existentes;
 - contrasta identidad del agente, IPC, replay, artefactos, logs, evidencia,
   perdida de red, deshabilitacion y retiro;
-- elige una sola brecha local de mayor prioridad que pueda cerrarse sin UEMS,
-  Entra, Sophos, PKI ni endpoints reales;
-- define en `docs/modules/` el alcance tecnico exacto, alternativas, evidencia y
-  criterio de aceptacion;
-- registra un stopper nuevo solo si la solucion exige alterar una frontera
-  normativa o depende de una decision externa no documentada.
+- confirma que la evidencia corresponde al stopper vigente del Bloque 10;
+- define una unidad separada para el perfil empresarial y sus proveedores;
+- registra un stopper nuevo solo si aparece una decision externa diferente o
+  una alteracion de frontera normativa.
 
 Alcance minimo esperado:
 - inventario trazable de controles existentes y brechas del threat model;
-- una unidad tecnica local, pequena y completa, elegida despues de inspeccionar
-  el codigo;
+- una unidad tecnica pequena y completa para integrar solo la evidencia o
+  proveedor ya decidido;
 - fallo cerrado y configuracion segura por defecto;
 - pruebas unitarias, de contrato o integracion proporcionales al cambio;
 - evidencia de que no se amplian comandos, privilegios ni datos recolectados;
@@ -116,7 +117,7 @@ Alcance minimo esperado:
 Criterios de aceptacion:
 - Bloques 0 a 8 permanecen `completed`;
 - Bloque 9 permanece `blocked`;
-- Bloque 10 permanece como unico bloque `in_progress`;
+- Bloque 10 permanece `blocked` hasta cumplir su gate externo;
 - Bloque 11 permanece `pending`;
 - no se crea ninguna conexion o identidad corporativa;
 - el control agregado falla cerrado y es verificable localmente;

@@ -4,6 +4,25 @@ Este documento separa lo minimo para validar el MVP de los controles que se
 solicitaran cuando el proyecto pase a piloto formal o produccion. No solicitar
 secretos por correo.
 
+## Paquete minimo para desbloquear el Bloque 10
+
+Entregar evidencia saneada, no secretos ni configuracion productiva completa:
+
+- procedimiento UEMS para desplegar, actualizar, deshabilitar, hacer rollback y
+  retirar en dos endpoints autorizados;
+- matriz de la cuenta restringida del agente y ausencia de logon interactivo;
+- identidad de usuario y dispositivo, con bootstrap, rotacion y revocacion;
+- revision Security/Sophos del threat model, privilegios, datos, artefactos y
+  respuesta ante compromiso;
+- owner operativo y mecanismo protegido del kill switch;
+- inventario de logs, acceso, retencion, alertas y respuesta;
+- paquete aprobado y mecanismo de firma o confianza de publicador;
+- endpoints, ventana, responsables, criterio de restauracion y resultados del
+  ensayo.
+
+Hasta recibir este paquete, el Bloque 10 permanece `blocked` y `local-demo`
+permanece limitado a `Development`.
+
 ## Nivel 1: MVP de viabilidad
 
 ## Lider de Mesa de Ayuda

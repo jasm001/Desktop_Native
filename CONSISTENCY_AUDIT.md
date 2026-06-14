@@ -33,12 +33,12 @@ La precedencia vigente permanece definida en `README.md`:
 - Bloques 0 a 8: `completed`.
 - Incremento local del Bloque 9 publicado en `0448a42`.
 - Bloque 9, canal Teams existente: `blocked` por evidencia externa.
-- Bloque principal activo: Bloque 10, endurecimiento para piloto,
-  `in_progress`.
+- Bloques 9 y 10: `blocked` por evidencia externa.
+- No existe un bloque principal `in_progress`.
 - Documento propietario del Bloque 9: `modules/TEAMS.md`.
 - Documento propietario del Bloque 10: `modules/PILOT_HARDENING.md`.
 - Bloque 11 permanece `pending`.
-- Gate completo vigente: 129 pruebas .NET, 20 pruebas Node unitarias/de
+- Gate completo vigente: 136 pruebas .NET, 20 pruebas Node unitarias/de
   contrato, 11 integraciones AdminWeb, 4 del Worker, cuatro migraciones
   PostgreSQL y E2E local.
 
@@ -67,12 +67,15 @@ declarar cerrada la integracion Teams.
 
 ## Alineacion del Bloque 10
 
-- El bloque tiene un documento propietario y es el unico `in_progress`.
+- El bloque tiene un documento propietario y queda `blocked`.
 - El threat model dejo de ser un placeholder y enumera activos, fronteras,
   amenazas, controles actuales y evidencia pendiente.
 - La primera unidad local implementa un kill switch del DeviceAgent apagado por
   defecto, pruebas de admision/claim/pendientes y un runbook de
   deshabilitacion, rollback y retiro.
+- La unidad local final confina `local-demo` a `Development`, rechaza
+  configuraciones contradictorias antes de construir el host y evita adjuntar
+  excepciones o payloads a los eventos genericos de fallo de workers.
 - El alcance local no autoriza UEMS, Entra, Sophos, PKI, Teams, OpenText ni
   endpoints corporativos.
 - El gate externo sigue exigiendo revision del threat model y ensayo de
@@ -82,18 +85,21 @@ declarar cerrada la integracion Teams.
 ## Correcciones realizadas
 
 - `README.md`, `CURRENT_CONTEXT.md`, `WORKFLOW.md` y `DEVELOPMENT_PLAN.md`
-  registran al Bloque 9 `blocked`, al Bloque 10 como unico `in_progress` y al
-  Bloque 11 `pending`;
-- `WORKFLOW.md` registra `0448a42` como ultimo resultado publicado y elimina una
-  entrada duplicada de auditoria de dependencias;
+  registran a los Bloques 9 y 10 `blocked`, sin bloque principal
+  `in_progress`, y al Bloque 11 `pending`;
+- `WORKFLOW.md` registra `04b6738` como ultimo resultado publicado y conserva
+  stoppers separados para Teams y hardening;
 - `modules/PILOT_HARDENING.md` define alcance, limites y gate del Bloque 10;
 - `docs/threat-model/README.md` contiene el inventario inicial verificable;
 - `docs/modules/pilot-hardening-local-kill-switch.md` y
   `docs/runbooks/device-agent-disable-rollback-retirement.md` conservan la
   primera mitigacion local y su operacion;
+- `docs/modules/pilot-hardening-local-profile-confinement.md` y
+  `docs/modules/pilot-hardening-local-closure.md` conservan la unidad final, el
+  inventario y los puntos de sustitucion;
 - `modules/TEAMS.md` conserva el incremento local y el gate corporativo;
-- `MASTER_PROMPT.md` apunta al primer incremento local del Bloque 10 y protege
-  los Bloques 9 y 11.
+- `MASTER_PROMPT.md` conserva el Bloque 10 `blocked`, sus gates externos y la
+  proteccion de los Bloques 9 y 11.
 
 ## Diferencias intencionales
 
@@ -105,8 +111,12 @@ declarar cerrada la integracion Teams.
   corporativa.
 - `blocked` en el Bloque 9 significa que su siguiente avance depende de
   evidencia externa; no revierte el incremento local publicado.
+- `blocked` en el Bloque 10 significa que el trabajo local reproducible termino,
+  pero no existe revision Security ni ensayo en dos endpoints; no equivale a
+  `completed`.
 
 ## Resultado
 
-No queda una contradiccion material conocida sobre bloque activo, estado de
-Teams, alcance de hardening, estado del ticketing fake o limites del portal.
+No queda una contradiccion material conocida sobre ausencia de bloque activo,
+estado de Teams, alcance de hardening, estado del ticketing fake o limites del
+portal.

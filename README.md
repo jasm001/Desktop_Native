@@ -11,8 +11,8 @@ only in a disposable Windows 11 VM. Block 7 completes the shared control plane,
 PostgreSQL persistence, durable worker, and local simulated-agent flow. Block 8
 completes internal `BotCase` tracking and deterministic fake ticketing. Block 9
 has a validated local channel boundary and is blocked on the existing corporate
-Teams bot. Block 10 is in progress with pilot-hardening documentation and threat
-modeling as its current local scope. No production integration or administrative
+Teams bot. Block 10 has completed its bounded local hardening work and is
+blocked on external pilot evidence. No production integration or administrative
 portal behavior is implemented.
 
 ## Current Status
@@ -35,15 +35,14 @@ portal behavior is implemented.
 - Block 9: local channel boundary, recorded adapter, strict v1 contracts,
   shared control-plane client, and Teams/WinUI parity completed; the block is
   `blocked` until the existing corporate bot can be integrated and validated.
-- Block 10: pilot hardening is the only block `in_progress`; current work is
-  limited to repository-grounded threat modeling, local controls, deployment
-  and removal preparation, and explicit external gates for two endpoints. Its
-  first local unit adds a fail-closed DeviceAgent kill switch and removal
-  runbook.
-- Next gate: preserve the validated local kill switch and close another bounded
-  threat-model gap or obtain external deployment/removal evidence without
-  presenting either as a corporate pilot. UEMS, Entra, Security/Sophos,
-  publisher trust, real Teams, and OpenText remain disabled.
+- Block 10: bounded local hardening is validated; the DeviceAgent has a
+  fail-closed kill switch, startup configuration confinement, fixed sanitized
+  runtime failure events, and a removal runbook. The block is `blocked`, not
+  completed, until external review and deployment/removal evidence exist for
+  two authorized endpoints.
+- Next gate: obtain the external Block 10 evidence before defining an explicit
+  enterprise profile. UEMS, Entra, Security/Sophos, publisher trust, real Teams,
+  and OpenText remain disabled. Block 11 remains pending.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes/RAG. This
   profile is not a corporate pilot.

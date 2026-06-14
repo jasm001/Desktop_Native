@@ -13,13 +13,16 @@ El valor predeterminado es `false`.
 
 Para una ejecucion local autorizada deben coincidir tres controles:
 
+- ambiente .NET `Development`;
 - `JobExecutionEnabled=true`;
 - `ExecutionProfile=local-demo`;
 - `ControlPlaneSyncEnabled=true` solo cuando se necesite sincronizacion local.
 
 La configuracion puede suministrarse por el proveedor normal de configuracion
 .NET, por ejemplo `DeviceAgent__JobExecutionEnabled`. El repositorio no incluye
-un perfil habilitado para piloto o produccion.
+un perfil habilitado para piloto o produccion. Un perfil desconocido,
+`local-demo` fuera de `Development` o una capacidad habilitada con perfil
+`disabled` impiden iniciar el host.
 
 ## Deshabilitacion local
 
@@ -48,8 +51,8 @@ Antes de reactivar:
    idempotency key y artefacto;
 3. cancelar los trabajos que ya no deban ejecutarse cuando la cancelacion sea
    segura;
-4. confirmar que el perfil sigue siendo `local-demo` y que el artefacto conserva
-   longitud y SHA-256 esperados;
+4. confirmar que el ambiente es `Development`, el perfil sigue siendo
+   `local-demo` y el artefacto conserva longitud y SHA-256 esperados;
 5. establecer `JobExecutionEnabled=true`, reiniciar y observar un solo trabajo
    sintetico o de laboratorio;
 6. volver a `false` si la verificacion falla.
@@ -72,13 +75,14 @@ configuracion administrada. Este runbook no concede esas capacidades.
 
 ## Sustitucion para piloto
 
-El punto de sustitucion es la fuente de
-`DeviceAgent:JobExecutionEnabled`. UEMS o el mecanismo aprobado debera:
+Los puntos de sustitucion son la fuente de configuracion y
+`DeviceAgentConfigurationPolicy`. UEMS o el mecanismo aprobado debera:
 
 - entregar una configuracion protegida y vinculada al ambiente;
 - registrar quien deshabilita o reactiva y por que;
 - reiniciar o retirar el servicio;
 - impedir que `local-demo` sea promovido;
+- introducir un perfil empresarial explicito con validaciones propias;
 - coordinar revocacion de identidad y tratamiento de trabajos remotos;
 - aportar evidencia de despliegue y retiro en dos endpoints.
 
