@@ -188,11 +188,13 @@ API compartida:
 
 Gate: Teams y WinUI producen las mismas decisiones para la misma entrada.
 
-Estado: `pending`. El primer incremento puede definir contratos versionados,
-`IConversationChannel`, un adaptador local fake/recorded y pruebas de paridad
-sin Microsoft 365. La integracion real requiere conocer owner, plataforma,
-repositorio, autenticacion, permisos y ambiente del bot existente. El gobierno
-del bloque vive en `modules/TEAMS.md`.
+Estado: `in_progress`. El primer incremento local ya define contratos
+versionados, `IConversationChannel`, un adaptador recorded sin red, consumo de
+las capacidades HTTP existentes y pruebas de paridad Teams/WinUI. La
+integracion real requiere conocer owner, plataforma, repositorio,
+autenticacion, permisos y ambiente del bot existente. El gobierno y la evidencia
+viven en `modules/TEAMS.md` y
+`docs/modules/teams-channel-local-increment.md`.
 
 ## Bloque 10: endurecimiento para piloto
 

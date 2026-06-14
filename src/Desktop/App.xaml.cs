@@ -30,6 +30,9 @@ public partial class App : Application
                     ? new DisabledControlPlaneRequestClient()
                     : new HttpControlPlaneRequestClient(new HttpClient(), options);
             })
+            .AddSingleton<IConversationControlPlane>(
+                provider => provider.GetRequiredService<IControlPlaneRequestClient>())
+            .AddSingleton<ConversationChannelService>()
             .AddSingleton<ShellViewModel>()
             .AddSingleton<HomeViewModel>()
             .AddSingleton<CatalogViewModel>()

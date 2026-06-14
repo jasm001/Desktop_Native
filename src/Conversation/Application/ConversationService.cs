@@ -210,12 +210,7 @@ public sealed class ConversationService(CatalogDecisionService catalogDecisions)
     {
         PendingConversationRequest pendingRequest = session.PendingRequest
             ?? throw new InvalidOperationException("A pending request is required.");
-        string idempotencyKey = string.Join(
-            ':',
-            session.Id,
-            pendingRequest.ProductReference,
-            pendingRequest.ProductVersion,
-            pendingRequest.Kind);
+        string idempotencyKey = ConversationChannelIdempotency.Create(session);
         string reference = $"SYN-{session.Id}-{pendingRequest.ProductReference}";
 
         return new(

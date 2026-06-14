@@ -3,11 +3,12 @@
 ## Estado
 
 - Fase actual: capacidades locales controladas para Windows 11.
-- Bloque activo: ninguno. Los Bloques 0 a 8 estan `completed`.
-- Siguiente bloque desbloqueado: Bloque 9, canal Teams existente.
-- Ultimo resultado funcional: caso fallido -> outbox de escalamiento -> worker
-  -> `ExternalTicket` fake unico, validado con PostgreSQL real efimero.
+- Bloque activo: Bloque 9, canal Teams existente, `in_progress`.
+- Los Bloques 0 a 8 estan `completed`; los Bloques 10 y 11 siguen `pending`.
 - Ultimo resultado publicado: cierre completo del Bloque 8 en `cf262b4`.
+- Ultimo resultado funcional: contrato `conversation-channel.v1`, frontera
+  `IConversationChannel`, adaptador recorded sin red, consumo tipado de la API y
+  paridad Teams/WinUI validados localmente.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.
@@ -24,7 +25,7 @@
 - `dotnet build ITSupportNative.slnx --configuration Release --no-restore`:
   correcto, 0 warnings y 0 errores.
 - `dotnet test ITSupportNative.slnx --configuration Release --no-build`:
-  correcto, 113 pruebas.
+  correcto, 125 pruebas.
 - Pruebas nuevas del Bloque 6: manifiesto versionado, mirror, longitud,
   SHA-256, perfil `local-demo`, plataforma, argumentos fijos, idempotencia,
   timeout, codigos MSI, fallo de inicio, verificacion, desinstalacion,
@@ -32,8 +33,11 @@
 - Las pruebas del adaptador usan dobles y no ejecutan el MSI en el host.
 - Named Pipe real: correcto fuera del sandbox con ACL del usuario actual.
 - `corepack pnpm@11.5.3 run check`: correcto.
-- Contratos/Node: 17 pruebas unitarias y de contrato; lint, TypeScript estricto
+- Contratos/Node: 20 pruebas unitarias y de contrato; lint, TypeScript estricto
   y builds de Contracts, AdminWeb y Worker correctos.
+- Canal Teams local: contrato estricto C#/Zod, acciones allowlisted, rechazo de
+  campos ejecutables, adaptador recorded, correlacion, idempotencia, estado,
+  caso y paridad con WinUI cubiertos.
 - Next.js `16.2.9`: build standalone correcto con webpack; rutas HTTP v1 de
   catalogo, creacion confirmada, estado y caso interno incluidas.
 - PostgreSQL 18 real efimero: cuatro migraciones aplicadas con `migrate deploy`,
@@ -51,6 +55,8 @@
   vulnerabilidades conocidas.
 - `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
 - `scripts/Validate.ps1`: correcto.
+- `corepack pnpm@11.5.3 audit --prod --audit-level high`: correcto, sin
+  vulnerabilidades conocidas.
 - Lockfiles sin cambios; Desktop/WindowsUi conservan unicamente `win-x64`.
 - Token Hyper-V: `S-1-5-32-578` habilitado; grupo local y acceso de lectura a
   VM/checkpoint confirmados.
@@ -130,7 +136,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 6. Primer adaptador en VM | completed | Adaptador 7-Zip 26.01 x64 y 110 pruebas publicados en `f808425`; matriz real de instalacion, idempotencia, desinstalacion, fallos de mirror/hash y restauracion de checkpoint validada el 2026-06-13. |
 | 7. API compartida y persistencia | completed | Fundacion publicada en `2b89a6b`; cierre local validado con segunda migracion, WinUI HTTP, worker separado, DeviceAgent saliente y E2E sobre PostgreSQL efimero. |
 | 8. Casos, tickets y OpenText fake | completed | `BotCase`, politica de 72 horas, evento de escalamiento, `ITicketingProvider` fake, `ExternalTicket`, worker idempotente y consulta HTTP validados sobre PostgreSQL real efimero; `cf262b4`. |
-| 9. Canal Teams existente | pending | Documento propietario `modules/TEAMS.md`; primer incremento local desbloqueado, integracion corporativa sujeta a owner, plataforma, autenticacion y ambiente del bot existente. |
+| 9. Canal Teams existente | in_progress | Primer incremento local validado: contrato v1 estricto, `IConversationChannel`, adaptador recorded, API compartida y paridad Teams/WinUI. Integracion corporativa pendiente por stopper. |
 | 10. Endurecimiento para piloto | pending | |
 | 11. Portal administrativo web | pending | |
 

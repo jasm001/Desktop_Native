@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Catalog\ITSupportNative.Catalog.csproj" />
+    <ProjectReference Include="..\Contracts\ITSupportNative.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

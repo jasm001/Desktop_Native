@@ -4,13 +4,14 @@ Fecha de ultima actualizacion: 2026-06-14.
 
 ## Objetivo inmediato
 
-Los Bloques 0 a 8 estan `completed`. No hay bloque principal activo. El
-siguiente bloque desbloqueado es el Bloque 9: adaptar el canal Teams existente a
-la API compartida sin crear otro bot ni adelantar endurecimiento o portal.
+Los Bloques 0 a 8 estan `completed`. El Bloque 9 es el unico bloque principal
+`in_progress`. Su primer incremento local fija la frontera del canal sin
+Microsoft 365, sin crear otro bot y sin adelantar endurecimiento o portal.
 
 El cierre tecnico del Bloque 8 vive en
 `docs/modules/case-foundation.md` y su gobierno en `modules/TICKETING.md`.
-El documento propietario del siguiente bloque es `modules/TEAMS.md`.
+El documento propietario es `modules/TEAMS.md` y la evidencia tecnica vive en
+`docs/modules/teams-channel-local-increment.md`.
 
 ## Estado del repositorio
 
@@ -29,25 +30,37 @@ El documento propietario del siguiente bloque es `modules/TEAMS.md`.
   corporativa.
 - `external_tickets` permite un solo ticket sintetico por caso.
 - La consulta HTTP del caso devuelve el ticket nullable sin efectos laterales.
+- `conversation-channel.v1` define entrada/salida normalizada estricta en C# y
+  TypeScript.
+- `ConversationChannelService` reutiliza `ConversationService` y
+  `CatalogDecisionService`; no duplica reglas en Teams.
+- `RecordedTeamsConversationChannel` es local, determinista, sin red y no
+  supone payloads de Microsoft.
+- WinUI usa la misma aplicacion normalizada y pasa fixtures de paridad con el
+  canal recorded.
+- Correlacion, dispositivo e idempotency key llegan al cliente HTTP compartido;
+  solicitud, estado y caso usan endpoints existentes.
+- La revision humana durable no tiene endpoint actual y falla como capacidad no
+  disponible despues de confirmacion, sin efectos laterales.
 - La politica de 72 horas es pura; no existe scheduler ni cierre automatico.
 - Auditoria append-only, outbox, leases y reintentos acotados permanecen activos.
 - WinUI y DeviceAgent conservan el recorrido local del Bloque 7 y no recibieron
   nuevas capacidades privilegiadas.
 - OpenText, Teams, Entra, UEMS, Hermes/RAG y portal productivos siguen
   deshabilitados.
-- El gate completo mantiene 113 pruebas .NET; Node tiene 17 pruebas
+- El gate completo mantiene 125 pruebas .NET; Node tiene 20 pruebas
   unitarias/de contrato, 11 integraciones AdminWeb y 4 del Worker, mas el E2E
   WinUI/DeviceAgent sobre PostgreSQL efimero.
 
 ## Siguiente reanudacion
 
-1. Confirmar que los Bloques 0 a 8 permanecen `completed`.
-2. Leer `modules/TEAMS.md` antes de activar el Bloque 9.
-3. Reutilizar contratos y decisiones de la API compartida; no crear reglas de
-   catalogo, casos o ticketing dentro del canal.
-4. Mantener Teams y WinUI equivalentes para la misma entrada confirmada.
-5. Registrar un stopper si se intenta conectar el bot real sin owner,
-   plataforma, autenticacion, permisos y ambiente aprobados.
+1. Mantener el Bloque 9 `in_progress` y los Bloques 10-11 `pending`.
+2. Obtener owner, plataforma, repositorio, autenticacion, permisos, tenant,
+   ambientes, DLP, despliegue y payloads saneados del bot existente.
+3. Sustituir el adaptador recorded solo cuando exista esa evidencia.
+4. Definir en el control plane la mutacion durable de revision humana antes de
+   ofrecer escalamiento manual desde Teams.
+5. No declarar `completed` el Bloque 9 hasta validar el bot corporativo real.
 
 ## Limites vigentes
 

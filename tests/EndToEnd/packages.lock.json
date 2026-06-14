@@ -396,7 +396,8 @@
       "itsupportnative.conversation": {
         "type": "Project",
         "dependencies": {
-          "ITSupportNative.Catalog": "[1.0.0, )"
+          "ITSupportNative.Catalog": "[1.0.0, )",
+          "ITSupportNative.Contracts": "[1.0.0, )"
         }
       },
       "itsupportnative.desktop": {

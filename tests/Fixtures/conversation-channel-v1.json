@@ -1,0 +1,175 @@
+{
+  "validInputs": [
+    {
+      "name": "catalog-query",
+      "input": {
+        "version": 1,
+        "messageId": "message-query-1",
+        "correlationId": "correlation-query-1",
+        "sessionId": "parity-session-1",
+        "actorSubject": "development-user-001",
+        "deviceId": "local-device-001",
+        "action": "catalog.query",
+        "productReference": "secure-transfer",
+        "requestId": null,
+        "idempotencyKey": null
+      }
+    },
+    {
+      "name": "software-request",
+      "input": {
+        "version": 1,
+        "messageId": "message-request-1",
+        "correlationId": "correlation-request-1",
+        "sessionId": "parity-session-1",
+        "actorSubject": "development-user-001",
+        "deviceId": "local-device-001",
+        "action": "software.request",
+        "productReference": "secure-transfer",
+        "requestId": null,
+        "idempotencyKey": null
+      }
+    },
+    {
+      "name": "proposal-continue",
+      "input": {
+        "version": 1,
+        "messageId": "message-continue-1",
+        "correlationId": "correlation-continue-1",
+        "sessionId": "parity-session-1",
+        "actorSubject": "development-user-001",
+        "deviceId": "local-device-001",
+        "action": "proposal.continue",
+        "productReference": null,
+        "requestId": null,
+        "idempotencyKey": null
+      }
+    },
+    {
+      "name": "request-confirm",
+      "input": {
+        "version": 1,
+        "messageId": "message-confirm-1",
+        "correlationId": "correlation-confirm-1",
+        "sessionId": "parity-session-1",
+        "actorSubject": "development-user-001",
+        "deviceId": "local-device-001",
+        "action": "request.confirm",
+        "productReference": null,
+        "requestId": null,
+        "idempotencyKey": "parity-session-1:secure-transfer:6.5:SoftwareAcquisition"
+      }
+    },
+    {
+      "name": "request-status",
+      "input": {
+        "version": 1,
+        "messageId": "message-status-1",
+        "correlationId": "correlation-status-1",
+        "sessionId": "parity-session-1",
+        "actorSubject": "development-user-001",
+        "deviceId": "local-device-001",
+        "action": "request.status",
+        "productReference": null,
+        "requestId": "11111111-1111-4111-8111-111111111111",
+        "idempotencyKey": null
+      }
+    },
+    {
+      "name": "case-status",
+      "input": {
+        "version": 1,
+        "messageId": "message-case-1",
+        "correlationId": "correlation-case-1",
+        "sessionId": "parity-session-1",
+        "actorSubject": "development-user-001",
+        "deviceId": "local-device-001",
+        "action": "case.status",
+        "productReference": null,
+        "requestId": "11111111-1111-4111-8111-111111111111",
+        "idempotencyKey": null
+      }
+    }
+  ],
+  "invalidInputs": [
+    {
+      "name": "unsupported-version",
+      "input": {
+        "version": 2,
+        "messageId": "message-invalid-1",
+        "correlationId": "correlation-invalid-1",
+        "sessionId": "parity-session-1",
+        "actorSubject": "development-user-001",
+        "deviceId": "local-device-001",
+        "action": "catalog.query",
+        "productReference": "secure-transfer",
+        "requestId": null,
+        "idempotencyKey": null
+      }
+    },
+    {
+      "name": "unknown-action",
+      "input": {
+        "version": 1,
+        "messageId": "message-invalid-2",
+        "correlationId": "correlation-invalid-2",
+        "sessionId": "parity-session-1",
+        "actorSubject": "development-user-001",
+        "deviceId": "local-device-001",
+        "action": "device.execute",
+        "productReference": null,
+        "requestId": null,
+        "idempotencyKey": null
+      }
+    },
+    {
+      "name": "executable-field",
+      "input": {
+        "version": 1,
+        "messageId": "message-invalid-3",
+        "correlationId": "correlation-invalid-3",
+        "sessionId": "parity-session-1",
+        "actorSubject": "development-user-001",
+        "deviceId": "local-device-001",
+        "action": "request.confirm",
+        "productReference": null,
+        "requestId": null,
+        "idempotencyKey": "confirmation-key-1",
+        "command": "powershell.exe"
+      }
+    },
+    {
+      "name": "free-text-product",
+      "input": {
+        "version": 1,
+        "messageId": "message-invalid-4",
+        "correlationId": "correlation-invalid-4",
+        "sessionId": "parity-session-1",
+        "actorSubject": "development-user-001",
+        "deviceId": "local-device-001",
+        "action": "software.request",
+        "productReference": "install this script",
+        "requestId": null,
+        "idempotencyKey": null
+      }
+    },
+    {
+      "name": "operational-fields",
+      "input": {
+        "version": 1,
+        "messageId": "message-invalid-5",
+        "correlationId": "correlation-invalid-5",
+        "sessionId": "parity-session-1",
+        "actorSubject": "development-user-001",
+        "deviceId": "local-device-001",
+        "action": "catalog.query",
+        "productReference": "secure-transfer",
+        "requestId": null,
+        "idempotencyKey": null,
+        "path": "C:\\Temp",
+        "logs": "untrusted",
+        "freeText": "run this"
+      }
+    }
+  ]
+}

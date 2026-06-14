@@ -70,3 +70,30 @@ public sealed record ReportAgentEvidence(
 public sealed record ReportAgentJobResultData(
     ControlPlaneSupportRequest Request,
     bool Replayed);
+
+public sealed record GetBotCaseData(
+    ControlPlaneBotCase Case);
+
+public sealed record ControlPlaneBotCase(
+    string Id,
+    string RequestId,
+    string CorrelationId,
+    string Category,
+    string Status,
+    string Result,
+    DateTimeOffset? WaitingForUserSince,
+    DateTimeOffset? EscalatedAt,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset UpdatedAt,
+    ControlPlaneExternalTicket? ExternalTicket);
+
+public sealed record ControlPlaneExternalTicket(
+    string Id,
+    string Provider,
+    string Reference,
+    string Category,
+    string Status,
+    string CorrelationId,
+    string ReasonCode,
+    string Description,
+    DateTimeOffset CreatedAt);

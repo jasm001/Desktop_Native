@@ -28,7 +28,9 @@ try
     string idempotencyKey = $"desktop-e2e-{Guid.NewGuid():N}";
     CreateSoftwareInstallationData created =
         await desktopClient.CreateSoftwareInstallationAsync(
+            $"desktop-e2e-correlation-{Guid.NewGuid():N}",
             idempotencyKey,
+            "local-device-001",
             "secure-transfer",
             "6.5",
             CancellationToken.None)
@@ -71,6 +73,7 @@ try
 
     ControlPlaneSupportRequest persisted =
         await desktopClient.GetSupportRequestAsync(
+            $"desktop-e2e-status-{Guid.NewGuid():N}",
             created.Request.Id,
             CancellationToken.None)
         ?? throw new InvalidOperationException(

@@ -2,10 +2,14 @@
 
 ## Estado
 
-Documento propietario del Bloque 9 `pending`.
+Documento propietario del Bloque 9 `in_progress`.
 
-Los Bloques 0 a 8 estan `completed`. No hay bloque principal activo y el
-Bloque 9 es la siguiente unidad desbloqueada.
+Los Bloques 0 a 8 estan `completed`. El Bloque 9 es el unico bloque principal
+`in_progress`.
+
+El primer incremento local fue implementado y validado el 2026-06-14. Su
+evidencia tecnica vive en
+`../docs/modules/teams-channel-local-increment.md`.
 
 ## Hechos confirmados
 
@@ -59,24 +63,27 @@ No puede:
 - tratar una sesion abierta de Teams como autorizacion suficiente para acciones
   sensibles o recuperacion de identidad.
 
-## Primer incremento local esperado
+## Primer incremento local implementado
 
-Antes de conectar el bot corporativo:
+Antes de conectar el bot corporativo se completo:
 
-1. auditar los contratos HTTP existentes y el flujo WinUI;
-2. definir un contrato versionado de entrada/salida del canal;
-3. implementar una frontera `IConversationChannel` y un adaptador local fake o
-   recorded, sin Microsoft 365 ni red externa;
-4. reutilizar la API compartida para catalogo, confirmacion, solicitud, estado y
-   caso;
-5. demostrar con fixtures comunes que Teams y WinUI producen las mismas
-   decisiones para la misma entrada;
-6. probar que consultas no mutan y reintentos confirmados no duplican;
-7. documentar el mecanismo de sustitucion por el adaptador corporativo futuro.
+1. auditoria de contratos HTTP y del flujo WinUI;
+2. contrato estricto `conversation-channel.v1` en C# y TypeScript;
+3. frontera `IConversationChannel` y
+   `RecordedTeamsConversationChannel`, sin red ni formato Microsoft supuesto;
+4. `ConversationChannelService` sobre la maquina y reglas existentes;
+5. propagacion de correlacion, dispositivo e idempotencia al control plane;
+6. consulta tipada de solicitud y `BotCase`;
+7. fixtures comunes y paridad observable Teams/WinUI;
+8. rechazo de versiones, acciones, campos y contenido ejecutable desconocidos;
+9. documentacion del punto de sustitucion por el adaptador corporativo.
 
-La ubicacion concreta del adaptador debe decidirse despues de inspeccionar las
-fronteras actuales. No se crea un backend adicional ni se duplican reglas entre
-C# y TypeScript.
+La API existente no ofrece una mutacion durable para `HumanReview`. El canal
+exige confirmacion y devuelve `capability_unavailable` sin crear una instalacion
+ni fingir un escalamiento. Esta capacidad debe agregarse como caso de uso del
+control plane en una unidad posterior, no como regla del adaptador.
+
+No se creo un backend adicional ni se duplicaron reglas entre C# y TypeScript.
 
 ## Gate del Bloque 9
 

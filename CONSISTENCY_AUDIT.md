@@ -32,11 +32,11 @@ La precedencia vigente permanece definida en `README.md`:
 
 - Bloques 0 a 8: `completed`.
 - Cierre del Bloque 8 publicado en `cf262b4`.
-- Bloque principal activo: ninguno.
-- Siguiente unidad desbloqueada: Bloque 9, canal Teams existente.
+- Bloque principal activo: Bloque 9, canal Teams existente, `in_progress`.
+- Primer incremento local del Bloque 9: implementado y validado.
 - Documento propietario del Bloque 9: `modules/TEAMS.md`.
 - Bloques 10 y 11 permanecen `pending`.
-- Gate completo vigente: 113 pruebas .NET, 17 pruebas Node unitarias/de
+- Gate completo vigente: 125 pruebas .NET, 20 pruebas Node unitarias/de
   contrato, 11 integraciones AdminWeb, 4 del Worker, cuatro migraciones
   PostgreSQL y E2E local.
 
@@ -58,19 +58,21 @@ Pendientes externos:
 - capacidad real de consumir la API compartida.
 
 La falta de esos datos no bloquea contratos, un adaptador local fake/recorded ni
-pruebas de paridad. El stopper para conectar el bot real sin esa evidencia esta
-registrado en `WORKFLOW.md`.
+pruebas de paridad, que ya fueron implementados. El stopper para conectar el bot
+real sin esa evidencia esta registrado en `WORKFLOW.md` y mantiene el bloque
+`in_progress`.
 
 ## Correcciones realizadas
 
-- se eliminaron referencias actuales que dejaban al Bloque 8 como siguiente;
-- `WORKFLOW.md` y `CURRENT_CONTEXT.md` ahora reconocen `cf262b4`;
-- `modules/ADMIN_PORTAL.md` protege el portal durante Bloques 9 y 10;
-- `modules/OPERATIONS.md` protege las fronteras de Teams durante Bloque 9;
-- documentos historicos de fundacion y adaptador senalan Bloque 9 como siguiente;
-- el laboratorio permite preparacion local de Bloques 9-11, no 8-11;
-- se creo `modules/TEAMS.md` con alcance, limites y gate;
-- `MASTER_PROMPT.md` se preparo para iniciar el primer incremento del Bloque 9.
+- `README.md`, `CURRENT_CONTEXT.md`, `WORKFLOW.md` y `DEVELOPMENT_PLAN.md`
+  registran al Bloque 9 como unico bloque `in_progress`;
+- `modules/TEAMS.md` registra el incremento local y conserva el gate
+  corporativo;
+- `modules/ASSISTANT.md` documenta la fuente de verdad compartida;
+- `docs/modules/teams-channel-local-increment.md` conserva alcance, contratos,
+  limites, sustitucion futura y riesgos;
+- `MASTER_PROMPT.md` se actualizo para reanudar la integracion corporativa, no
+  para repetir el incremento local.
 
 ## Diferencias intencionales
 

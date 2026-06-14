@@ -5,7 +5,6 @@ namespace ITSupportNative.Desktop.ControlPlane;
 
 public sealed class HttpControlPlaneRequestClient : IControlPlaneRequestClient
 {
-    private const string DeviceId = "local-device-001";
     private const string SimulatedActionId = "software.install.simulated.v1";
 
     private readonly HttpClient _httpClient;
@@ -23,21 +22,23 @@ public sealed class HttpControlPlaneRequestClient : IControlPlaneRequestClient
     }
 
     public async Task<CreateSoftwareInstallationData?> CreateSoftwareInstallationAsync(
+        string correlationId,
         string idempotencyKey,
+        string deviceId,
         string productId,
         string productVersion,
         CancellationToken cancellationToken)
     {
         var body = new CreateSoftwareInstallationRequest(
             Confirmed: true,
-            DeviceId,
+            deviceId,
             productId,
             productVersion,
             SimulatedActionId);
         using var request = CreateRequest(
             HttpMethod.Post,
             "api/v1/requests/software-installations",
-            $"desktop-{Guid.NewGuid():N}",
+            correlationId,
             idempotencyKey,
             body);
         using HttpResponseMessage response = await _httpClient.SendAsync(
@@ -49,13 +50,14 @@ public sealed class HttpControlPlaneRequestClient : IControlPlaneRequestClient
     }
 
     public async Task<ControlPlaneSupportRequest?> GetSupportRequestAsync(
+        string correlationId,
         string requestId,
         CancellationToken cancellationToken)
     {
         using var request = CreateRequest(
             HttpMethod.Get,
             $"api/v1/requests/{Uri.EscapeDataString(requestId)}",
-            $"desktop-status-{Guid.NewGuid():N}");
+            correlationId);
         using HttpResponseMessage response = await _httpClient.SendAsync(
             request,
             cancellationToken);
@@ -64,6 +66,25 @@ public sealed class HttpControlPlaneRequestClient : IControlPlaneRequestClient
                 response,
                 cancellationToken);
         return data?.Request;
+    }
+
+    public async Task<ControlPlaneBotCase?> GetBotCaseAsync(
+        string correlationId,
+        string requestId,
+        CancellationToken cancellationToken)
+    {
+        using var request = CreateRequest(
+            HttpMethod.Get,
+            $"api/v1/requests/{Uri.EscapeDataString(requestId)}/case",
+            correlationId);
+        using HttpResponseMessage response = await _httpClient.SendAsync(
+            request,
+            cancellationToken);
+        GetBotCaseData? data =
+            await ReadDataAsync<GetBotCaseData>(
+                response,
+                cancellationToken);
+        return data?.Case;
     }
 
     private static HttpRequestMessage CreateRequest<TBody>(

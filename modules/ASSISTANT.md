@@ -76,6 +76,27 @@ La vista Asistente ofrece opciones fijas para:
 habilita comandos. No evalua licencia, estado, alternativas ni transiciones.
 El campo de texto libre permanece deshabilitado.
 
+## Frontera compartida del Bloque 9
+
+`ConversationChannelService` aplica el contrato normalizado
+`conversation-channel.v1` sobre la misma `ConversationService`. WinUI construye
+entradas normalizadas mediante `WinUiConversationInputFactory`; el adaptador
+recorded de Teams lee los mismos fixtures estrictos.
+
+La frontera:
+
+- conserva `ConversationService` y `CatalogDecisionService` como fuente de
+  verdad;
+- propaga correlacion, dispositivo e idempotency key;
+- usa el control plane solo para creacion confirmada, estado y caso;
+- no contiene reglas de licencia, ticketing, autorizacion o ejecucion;
+- devuelve codigos saneados y falla cerrada ante acciones o versiones
+  desconocidas.
+
+La revision humana durable todavia no tiene caso de uso HTTP. Una confirmacion
+de ese tipo queda tipada como capacidad no disponible y no crea instalacion,
+caso, ticket, auditoria ni outbox.
+
 ## Evolucion para el MVP local
 
 El perfil `local-demo` puede habilitar texto libre mediante un
