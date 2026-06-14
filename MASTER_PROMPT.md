@@ -17,6 +17,8 @@ Estado confirmado:
 - Bloque 10, endurecimiento para piloto, esta `in_progress` y es el unico bloque
   principal activo.
 - `modules/PILOT_HARDENING.md` es el documento propietario del Bloque 10.
+- La primera unidad local del Bloque 10 agrega un kill switch fail-closed del
+  DeviceAgent y un runbook de deshabilitacion, rollback y retiro.
 - `docs/threat-model/README.md` es el threat model de trabajo y aun no tiene
   revision ni aprobacion de Security.
 - Bloque 11, portal administrativo web, permanece `pending`.
@@ -33,7 +35,7 @@ Estado confirmado:
   `IConversationChannel` y un adaptador recorded sin red.
 - OpenText real, Teams corporativo, Entra, UEMS, Sophos, PKI, Hermes/RAG
   productivo y portal administrativo siguen deshabilitados.
-- Ultimo gate completo: 125 pruebas .NET, 20 pruebas Node unitarias/de contrato,
+- Ultimo gate completo: 129 pruebas .NET, 20 pruebas Node unitarias/de contrato,
   11 integraciones AdminWeb, 4 del Worker, cuatro migraciones PostgreSQL y E2E.
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
 
@@ -83,10 +85,10 @@ Reglas no negociables:
 - no declares terminada una unidad sin ejecutar los gates aplicables.
 
 Tarea:
-Inicia el Bloque 10 con una primera unidad local de hardening coherente con el
-codigo existente. El objetivo es convertir el threat model de trabajo en una
-auditoria verificable y cerrar una brecha local acotada sin depender de
-infraestructura corporativa.
+Continua el Bloque 10 despues de la primera unidad local de hardening. El threat
+model ya contiene un inventario trazable y el kill switch del DeviceAgent esta
+validado. Elige la siguiente brecha local acotada de mayor prioridad que pueda
+cerrarse sin depender de infraestructura corporativa.
 
 Antes de implementar:
 - mapea las amenazas de `docs/threat-model/README.md` a codigo, configuracion y

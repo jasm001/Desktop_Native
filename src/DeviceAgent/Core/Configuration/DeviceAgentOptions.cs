@@ -20,6 +20,8 @@ public sealed class DeviceAgentOptions
 
     public string ExecutionProfile { get; set; } = "disabled";
 
+    public bool JobExecutionEnabled { get; set; }
+
     public string LocalArtifactRootPath { get; set; } = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "ITSupportNative",

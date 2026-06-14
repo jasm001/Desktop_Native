@@ -53,6 +53,7 @@ public sealed class AgentRealExecutionTests : IDisposable
         var service = new AgentJobService(
             new SqliteAgentJobStore(Path.Combine(_testDirectory, "disabled.db")),
             new AgentActionAuthorizationPolicy(),
+            new AgentJobExecutionGate(isEnabled: true),
             TimeProvider.System,
             new ImmediateActionExecutor());
 
@@ -209,6 +210,7 @@ public sealed class AgentRealExecutionTests : IDisposable
         return new(
             new SqliteAgentJobStore(Path.Combine(_testDirectory, "jobs.db")),
             new AgentActionAuthorizationPolicy("local-demo"),
+            new AgentJobExecutionGate(isEnabled: true),
             TimeProvider.System,
             executor);
     }

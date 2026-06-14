@@ -62,6 +62,27 @@ No se puede:
 El inventario inicial de amenazas y evidencia vive en
 `../docs/threat-model/README.md`.
 
+## Primera unidad local validada
+
+El 2026-06-14 se completo un kill switch local del DeviceAgent:
+
+- `DeviceAgent:JobExecutionEnabled` es `false` por defecto;
+- deshabilitado, rechaza nuevos trabajos IPC sin persistirlos;
+- no reclama trabajos del control plane;
+- no inicia ni reanuda trabajos locales pendientes;
+- conserva consulta, diagnosticos y cancelacion;
+- no interrumpe a la fuerza un adaptador que ya inicio;
+- no agrega acciones, privilegios, datos, dependencias ni contratos publicos.
+
+La especificacion y evidencia viven en
+`../docs/modules/pilot-hardening-local-kill-switch.md`. El procedimiento local
+de deshabilitacion, rollback y retiro vive en
+`../docs/runbooks/device-agent-disable-rollback-retirement.md`.
+
+Este control reduce la brecha local de deshabilitacion, pero no cierra el gate
+corporativo: faltan owner, configuracion administrada, revocacion de identidad,
+retencion, Security/Sophos, UEMS y ensayo en dos endpoints.
+
 ## Gates externos para dos endpoints
 
 Se requiere evidencia verificable de:

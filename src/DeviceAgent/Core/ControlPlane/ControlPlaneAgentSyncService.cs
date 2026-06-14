@@ -6,7 +6,8 @@ namespace ITSupportNative.DeviceAgent.ControlPlane;
 
 public sealed class ControlPlaneAgentSyncService(
     IControlPlaneAgentClient controlPlane,
-    AgentJobService jobs)
+    AgentJobService jobs,
+    AgentJobExecutionGate executionGate)
 {
     private static readonly HashSet<string> AllowedEvidenceCodes =
     [
@@ -19,6 +20,11 @@ public sealed class ControlPlaneAgentSyncService(
     public async Task<ControlPlaneSupportRequest?> RunOnceAsync(
         CancellationToken cancellationToken)
     {
+        if (!executionGate.IsEnabled)
+        {
+            return null;
+        }
+
         ClaimedAgentJob? claimed =
             await controlPlane.ClaimNextAsync(cancellationToken);
         if (claimed is null)

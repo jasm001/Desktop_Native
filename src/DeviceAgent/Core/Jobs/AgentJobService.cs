@@ -5,6 +5,7 @@ namespace ITSupportNative.DeviceAgent.Jobs;
 public sealed class AgentJobService(
     IAgentJobStore store,
     AgentActionAuthorizationPolicy authorizationPolicy,
+    AgentJobExecutionGate executionGate,
     TimeProvider timeProvider,
     IAgentActionExecutor actionExecutor) : IDisposable
 {
@@ -22,10 +23,12 @@ public sealed class AgentJobService(
     public AgentJobService(
         IAgentJobStore store,
         AgentActionAuthorizationPolicy authorizationPolicy,
+        AgentJobExecutionGate executionGate,
         TimeProvider timeProvider)
         : this(
             store,
             authorizationPolicy,
+            executionGate,
             timeProvider,
             new DenyAgentActionExecutor())
     {
@@ -48,6 +51,13 @@ public sealed class AgentJobService(
             return AgentJobCommandResult.Rejected(
                 validationError.Code,
                 validationError.Message);
+        }
+
+        if (!executionGate.IsEnabled)
+        {
+            return AgentJobCommandResult.Rejected(
+                AgentErrorCode.UnauthorizedAction,
+                "The agent is not accepting new jobs.");
         }
 
         if (!authorizationPolicy.IsAuthorized(request))
@@ -204,6 +214,11 @@ public sealed class AgentJobService(
 
     public async Task AdvancePendingJobsAsync(CancellationToken cancellationToken)
     {
+        if (!executionGate.IsEnabled)
+        {
+            return;
+        }
+
         AgentJobRecord? claimedJob = null;
         AuthorizedAgentAction? claimedAction = null;
 

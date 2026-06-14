@@ -38,7 +38,7 @@ La precedencia vigente permanece definida en `README.md`:
 - Documento propietario del Bloque 9: `modules/TEAMS.md`.
 - Documento propietario del Bloque 10: `modules/PILOT_HARDENING.md`.
 - Bloque 11 permanece `pending`.
-- Gate completo vigente: 125 pruebas .NET, 20 pruebas Node unitarias/de
+- Gate completo vigente: 129 pruebas .NET, 20 pruebas Node unitarias/de
   contrato, 11 integraciones AdminWeb, 4 del Worker, cuatro migraciones
   PostgreSQL y E2E local.
 
@@ -70,6 +70,9 @@ declarar cerrada la integracion Teams.
 - El bloque tiene un documento propietario y es el unico `in_progress`.
 - El threat model dejo de ser un placeholder y enumera activos, fronteras,
   amenazas, controles actuales y evidencia pendiente.
+- La primera unidad local implementa un kill switch del DeviceAgent apagado por
+  defecto, pruebas de admision/claim/pendientes y un runbook de
+  deshabilitacion, rollback y retiro.
 - El alcance local no autoriza UEMS, Entra, Sophos, PKI, Teams, OpenText ni
   endpoints corporativos.
 - El gate externo sigue exigiendo revision del threat model y ensayo de
@@ -85,6 +88,9 @@ declarar cerrada la integracion Teams.
   entrada duplicada de auditoria de dependencias;
 - `modules/PILOT_HARDENING.md` define alcance, limites y gate del Bloque 10;
 - `docs/threat-model/README.md` contiene el inventario inicial verificable;
+- `docs/modules/pilot-hardening-local-kill-switch.md` y
+  `docs/runbooks/device-agent-disable-rollback-retirement.md` conservan la
+  primera mitigacion local y su operacion;
 - `modules/TEAMS.md` conserva el incremento local y el gate corporativo;
 - `MASTER_PROMPT.md` apunta al primer incremento local del Bloque 10 y protege
   los Bloques 9 y 11.

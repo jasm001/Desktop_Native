@@ -1,4 +1,5 @@
 using ITSupportNative.Contracts.Agent;
+using ITSupportNative.DeviceAgent.Configuration;
 using ITSupportNative.DeviceAgent.Jobs;
 
 namespace ITSupportNative.IntegrationTests;
@@ -40,6 +41,63 @@ public sealed class AgentJobServiceTests : IDisposable
 
         Assert.False(result.Success);
         Assert.Equal(AgentErrorCode.UnauthorizedAction, result.Error?.Code);
+    }
+
+    [Fact]
+    public async Task DefaultExecutionGateRejectsAuthorizedJobWithoutPersistingIt()
+    {
+        string stateFile = Path.Combine(_testDirectory, "disabled.db");
+        using var service = new AgentJobService(
+            new SqliteAgentJobStore(stateFile),
+            new AgentActionAuthorizationPolicy(),
+            new AgentJobExecutionGate(
+                new DeviceAgentOptions().JobExecutionEnabled),
+            TimeProvider.System);
+
+        AgentJobCommandResult result = await service.StartAsync(
+            CreateAuthorizedRequest(),
+            CancellationToken.None);
+        IReadOnlyList<AgentJobRecord> persisted =
+            await new SqliteAgentJobStore(stateFile).LoadAsync(
+                CancellationToken.None);
+
+        Assert.False(result.Success);
+        Assert.Equal(AgentErrorCode.UnauthorizedAction, result.Error?.Code);
+        Assert.Empty(persisted);
+    }
+
+    [Fact]
+    public async Task DisabledExecutionGateLeavesPersistedQueuedJobPending()
+    {
+        string stateFile = Path.Combine(_testDirectory, "pending.db");
+        using (var enabledService = new AgentJobService(
+            new SqliteAgentJobStore(stateFile),
+            new AgentActionAuthorizationPolicy(),
+            new AgentJobExecutionGate(isEnabled: true),
+            TimeProvider.System))
+        {
+            AgentJobCommandResult started = await enabledService.StartAsync(
+                CreateAuthorizedRequest(),
+                CancellationToken.None);
+            Assert.Equal(AgentJobState.Queued, started.Job?.State);
+        }
+
+        using var disabledService = new AgentJobService(
+            new SqliteAgentJobStore(stateFile),
+            new AgentActionAuthorizationPolicy(),
+            new AgentJobExecutionGate(isEnabled: false),
+            TimeProvider.System);
+
+        await disabledService.AdvancePendingJobsAsync(CancellationToken.None);
+        AgentJobCommandResult pending = await disabledService.GetAsync(
+            (await new SqliteAgentJobStore(stateFile).LoadAsync(
+                CancellationToken.None)).Single().JobId,
+            CancellationToken.None);
+
+        Assert.Equal(AgentJobState.Queued, pending.Job?.State);
+        Assert.DoesNotContain(
+            pending.Job!.Evidence,
+            evidence => evidence.Code == "job.simulation.started");
     }
 
     [Theory]
@@ -160,6 +218,7 @@ public sealed class AgentJobServiceTests : IDisposable
         return new(
             new SqliteAgentJobStore(stateFile),
             new AgentActionAuthorizationPolicy(),
+            new AgentJobExecutionGate(isEnabled: true),
             TimeProvider.System);
     }
 

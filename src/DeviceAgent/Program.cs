@@ -18,6 +18,13 @@ builder.Services
             .Value;
         return new AgentActionAuthorizationPolicy(options.ExecutionProfile);
     })
+    .AddSingleton(services =>
+    {
+        var options = services
+            .GetRequiredService<Microsoft.Extensions.Options.IOptions<DeviceAgentOptions>>()
+            .Value;
+        return new AgentJobExecutionGate(options.JobExecutionEnabled);
+    })
     .AddSingleton<IAgentJobStore>(services =>
     {
         var options = services

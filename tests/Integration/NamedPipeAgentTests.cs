@@ -118,6 +118,7 @@ public sealed class NamedPipeAgentTests : IDisposable
         var service = new AgentJobService(
             new SqliteAgentJobStore(stateFile),
             new AgentActionAuthorizationPolicy(),
+            new AgentJobExecutionGate(isEnabled: true),
             TimeProvider.System);
         return new AgentRequestDispatcher(
             service,

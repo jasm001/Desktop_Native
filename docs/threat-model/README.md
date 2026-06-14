@@ -47,24 +47,40 @@ Fuera del alcance conectado actual:
 7. Entorno `local-demo` y un futuro entorno piloto.
 8. Owners corporativos y mecanismos externos todavia no conectados.
 
-## Amenazas y controles actuales
+## Inventario trazable
 
-| Amenaza | Control existente | Evidencia pendiente |
-| --- | --- | --- |
-| Suplantacion de agente o dispositivo | Contratos tipados y perfil local; sin identidad corporativa | Bootstrap, rotacion, revocacion y vinculacion reales |
-| Elevacion por Named Pipe | ACL del usuario actual, version y allowlist exacta | Validacion con cuenta restringida del servicio |
-| Replay o duplicacion de trabajos | Correlacion, idempotencia y restricciones unicas | Prueba de recuperacion y replay en dos endpoints |
-| Paquete sustituido | Version, longitud y SHA-256 fijados en `local-demo` | Firma/confianza de publicador y proceso UEMS |
-| Downgrade del agente o contrato | Versiones desconocidas fallan cerradas | Politica de version minima y rollback aprobado |
-| Abuso de contenido conversacional | Esquemas estrictos; sin comandos, scripts ni rutas | Validacion del bot corporativo real |
-| Fuga por logs o evidencia | Resultados tipados y saneados; secretos prohibidos | Inventario de eventos, retencion y revision de Security |
-| Perdida de red durante una operacion | Estados durables, SQLite local y sincronizacion idempotente | Ensayo de interrupcion y recuperacion |
-| Manipulacion de auditoria u outbox | Auditoria append-only y escritura transaccional | Acceso operativo, alertas y retencion |
-| Integracion de tickets comprometida | Provider fake separado y payload tipado | Autenticacion, rate limits y ambiente OpenText |
-| Administrador interno abusivo | Portal administrativo aun no implementado | RBAC, segregacion, alertas y revision del Bloque 11 |
-| Exclusion antivirus excesiva | Se prohibe exclusion general | Resultado Sophos y excepcion acotada si fuera necesaria |
-| Promocion accidental de `local-demo` | Providers y politica de desarrollo separados | Gate de configuracion y paquete por ambiente |
-| Deshabilitacion o retiro incompletos | Cancelacion y desinstalacion acotadas | Kill switch, revocacion y runbook ensayado |
+| Amenaza | Prioridad | Codigo, configuracion y pruebas existentes | Brecha o evidencia pendiente |
+| --- | --- | --- | --- |
+| Suplantacion de agente o dispositivo | critica | Identidad local cerrada en `development-agent-identity.ts`; claim vinculado a `deviceId`, `agentSubject`, token hasheado y lease en `prisma-agent-job-repository.ts`; integracion PostgreSQL valida claims | Bootstrap, identidad unica, rotacion, revocacion y vinculacion corporativa |
+| Elevacion por Named Pipe | critica | `NamedPipeAgentWorker` usa `CurrentUserOnly`; `AgentPipeFraming` limita 64 KiB; `AgentRequestDispatcher` valida version y message type; pruebas de IPC real y contratos sin command/argument/path | ACL e identidad cliente/servicio con cuenta restringida en dos endpoints |
+| Replay o duplicacion de trabajos | alta | `AgentJobService`, restricciones unicas PostgreSQL, advisory locks, idempotency hash, claim lease y resultado idempotente; pruebas locales, HTTP e integracion | Replay y recuperacion ensayados bajo identidad y red del piloto |
+| Paquete sustituido o repositorio comprometido | critica | `LocalDevelopmentArtifactSource` restringe raiz, longitud y SHA-256; manifiesto versionado; adaptador fija producto, version y argumentos; pruebas de hash, longitud y mirror | Firma/confianza de publicador, origen UEMS y respuesta ante compromiso |
+| Downgrade del agente o contrato | alta | IPC y canal conversacional rechazan versiones desconocidas; adaptador y allowlist fijan versiones exactas; pruebas de contrato | Version minima del agente, politica firmada y rollback aprobado |
+| Abuso de contenido conversacional | alta | Contratos C#/Zod estrictos, acciones enumeradas y rechazo de campos desconocidos; Teams recorded y WinUI solo llaman aplicacion/control plane | Validacion del bot corporativo real y su identidad |
+| Fuga por logs o evidencia | alta | Evidencia usa codigos y resumenes fijos; excepciones de diagnostico y ejecucion se sanean; logs del agente omiten payloads; pruebas buscan datos sensibles | Inventario completo de eventos, retencion, acceso y revision Security |
+| Perdida de red durante una operacion | alta | SQLite conserva trabajos; estados `running` vuelven a `queued`; control plane usa leases, retries e idempotencia; pruebas de recuperacion y claims agotados | Ensayo de interrupcion antes/durante/despues en dos endpoints |
+| Manipulacion de auditoria u outbox | alta | Trigger PostgreSQL impide update/delete de auditoria; request/job/case/outbox son transaccionales; worker usa claims y retries acotados; integraciones verifican append-only | Acceso operativo, alertas, backup y retencion |
+| Integracion de tickets comprometida | alta | `ITicketingProvider` fake separado, evento v1 estricto, ticket unico por caso y descripcion acotada; pruebas de retry | OpenText real: autenticacion, rate limits, sandbox, soporte y revocacion |
+| Administrador interno abusivo | alta | Portal del Bloque 11 no implementado; control plane actual solo expone flujos locales acotados | RBAC, segregacion, alertas y revision del Bloque 11 |
+| Exclusion antivirus excesiva | alta | `core/SECURITY.md` prohibe exclusion general; no existe configuracion de exclusion en codigo o deploy | Resultado Sophos; excepcion especifica y expirable solo si fuera necesaria |
+| Promocion accidental de `local-demo` | alta | Perfil `disabled` por defecto; URL de agente limitada a loopback; manifiesto `development-only`; 7-Zip falla fuera de `local-demo`; pruebas de perfil | Configuracion administrada, paquete por ambiente y bloqueo de promocion |
+| Deshabilitacion o retiro incompletos | alta | `JobExecutionEnabled=false` por defecto; `AgentJobExecutionGate` bloquea admision, claim e inicio/reanudacion; pruebas focalizadas; runbook local | Owner, configuracion protegida, revocacion, retencion y ensayo UEMS en dos endpoints |
+
+## Primera mitigacion del Bloque 10
+
+La unidad `docs/modules/pilot-hardening-local-kill-switch.md` cierra la brecha
+local de admision durante una deshabilitacion:
+
+- configuracion fail-closed;
+- ningun trabajo nuevo por IPC;
+- ningun claim del control plane;
+- ningun inicio o reanudacion de trabajos en cola;
+- diagnostico, consulta y cancelacion conservados;
+- sin cambios a contratos, allowlist, privilegios o datos.
+
+Riesgo residual: el switch se carga al iniciar, no interrumpe un adaptador que
+ya entro en ejecucion y aun no tiene owner, distribucion o proteccion
+corporativa.
 
 ## Criterios de revision
 

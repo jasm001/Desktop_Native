@@ -18,10 +18,12 @@ public sealed class ControlPlaneAgentSyncServiceTests : IDisposable
         using AgentJobService jobs = new(
             new SqliteAgentJobStore(Path.Combine(_testDirectory, "jobs.db")),
             new AgentActionAuthorizationPolicy(),
+            new AgentJobExecutionGate(isEnabled: true),
             TimeProvider.System);
         var synchronization = new ControlPlaneAgentSyncService(
             controlPlane,
-            jobs);
+            jobs,
+            new AgentJobExecutionGate(isEnabled: true));
 
         ControlPlaneSupportRequest? result =
             await synchronization.RunOnceAsync(CancellationToken.None);
@@ -36,6 +38,29 @@ public sealed class ControlPlaneAgentSyncServiceTests : IDisposable
                 "job.simulation.verified",
             ],
             controlPlane.Evidence.Select(item => item.Code));
+    }
+
+    [Fact]
+    public async Task DisabledExecutionGateDoesNotClaimRemoteJob()
+    {
+        var controlPlane = new RecordingControlPlaneAgentClient();
+        var executionGate = new AgentJobExecutionGate(isEnabled: false);
+        using AgentJobService jobs = new(
+            new SqliteAgentJobStore(Path.Combine(_testDirectory, "disabled.db")),
+            new AgentActionAuthorizationPolicy(),
+            executionGate,
+            TimeProvider.System);
+        var synchronization = new ControlPlaneAgentSyncService(
+            controlPlane,
+            jobs,
+            executionGate);
+
+        ControlPlaneSupportRequest? result =
+            await synchronization.RunOnceAsync(CancellationToken.None);
+
+        Assert.Null(result);
+        Assert.Equal(0, controlPlane.ClaimCount);
+        Assert.Null(controlPlane.Result);
     }
 
     public void Dispose()
@@ -63,12 +88,15 @@ public sealed class ControlPlaneAgentSyncServiceTests : IDisposable
 
         public string? Result { get; private set; }
 
+        public int ClaimCount { get; private set; }
+
         public IReadOnlyList<ReportAgentEvidence> Evidence { get; private set; } =
             [];
 
         public Task<ClaimedAgentJob?> ClaimNextAsync(
             CancellationToken cancellationToken)
         {
+            ClaimCount++;
             return Task.FromResult<ClaimedAgentJob?>(_job);
         }
 

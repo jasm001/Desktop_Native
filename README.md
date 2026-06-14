@@ -37,10 +37,13 @@ portal behavior is implemented.
   `blocked` until the existing corporate bot can be integrated and validated.
 - Block 10: pilot hardening is the only block `in_progress`; current work is
   limited to repository-grounded threat modeling, local controls, deployment
-  and removal preparation, and explicit external gates for two endpoints.
-- Next gate: complete a bounded local hardening increment without presenting it
-  as a corporate pilot. UEMS, Entra, Security/Sophos, publisher trust, real
-  Teams, and OpenText remain disabled until their owners provide evidence.
+  and removal preparation, and explicit external gates for two endpoints. Its
+  first local unit adds a fail-closed DeviceAgent kill switch and removal
+  runbook.
+- Next gate: preserve the validated local kill switch and close another bounded
+  threat-model gap or obtain external deployment/removal evidence without
+  presenting either as a corporate pilot. UEMS, Entra, Security/Sophos,
+  publisher trust, real Teams, and OpenText remain disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes/RAG. This
   profile is not a corporate pilot.

@@ -215,8 +215,10 @@ Gate: threat model revisado y despliegue/retiro ensayados.
 Estado: `in_progress`. Es el unico bloque principal activo. El alcance,
 controles locales permitidos, evidencia y gates externos viven en
 `modules/PILOT_HARDENING.md`; el threat model de trabajo vive en
-`docs/threat-model/README.md`. El bloque no se declara `completed` hasta revisar
-el threat model y ensayar despliegue y retiro en dos endpoints autorizados.
+`docs/threat-model/README.md`. La primera unidad local agrega un kill switch
+fail-closed del DeviceAgent, pruebas y runbook de retiro. El bloque no se
+declara `completed` hasta revisar el threat model y ensayar despliegue y retiro
+en dos endpoints autorizados.
 
 ## Bloque 11: portal administrativo web
 

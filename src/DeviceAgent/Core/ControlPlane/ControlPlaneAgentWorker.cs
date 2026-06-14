@@ -1,5 +1,6 @@
 using ITSupportNative.Contracts.ControlPlane;
 using ITSupportNative.DeviceAgent.Configuration;
+using ITSupportNative.DeviceAgent.Jobs;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -8,6 +9,7 @@ namespace ITSupportNative.DeviceAgent.ControlPlane;
 
 public sealed class ControlPlaneAgentWorker(
     ControlPlaneAgentSyncService synchronization,
+    AgentJobExecutionGate executionGate,
     IOptions<DeviceAgentOptions> options,
     ILogger<ControlPlaneAgentWorker> logger) : BackgroundService
 {
@@ -56,6 +58,7 @@ public sealed class ControlPlaneAgentWorker(
     private bool IsEnabled()
     {
         return _options.ControlPlaneSyncEnabled
+            && executionGate.IsEnabled
             && string.Equals(
                 _options.ExecutionProfile,
                 "local-demo",

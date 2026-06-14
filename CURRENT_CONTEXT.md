@@ -49,9 +49,15 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 - Auditoria append-only, outbox, leases y reintentos acotados permanecen activos.
 - WinUI y DeviceAgent conservan el recorrido local del Bloque 7 y no recibieron
   nuevas capacidades privilegiadas.
+- La primera unidad local del Bloque 10 agrega
+  `DeviceAgent:JobExecutionEnabled=false` por defecto. El gate impide admision
+  IPC, claims remotos e inicio/reanudacion de trabajos pendientes, sin ampliar
+  allowlist, contratos, privilegios ni evidencia.
+- El runbook local de deshabilitacion, rollback y retiro vive en
+  `docs/runbooks/device-agent-disable-rollback-retirement.md`.
 - OpenText, Teams, Entra, UEMS, Hermes/RAG y portal productivos siguen
   deshabilitados.
-- El gate completo mantiene 125 pruebas .NET; Node tiene 20 pruebas
+- El gate completo mantiene 129 pruebas .NET; Node tiene 20 pruebas
   unitarias/de contrato, 11 integraciones AdminWeb y 4 del Worker, mas el E2E
   WinUI/DeviceAgent sobre PostgreSQL efimero.
 
@@ -59,12 +65,12 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 
 1. Mantener el Bloque 9 `blocked`, el Bloque 10 `in_progress` y el Bloque 11
    `pending`.
-2. Auditar el hardening real del repositorio contra `core/SECURITY.md` y el
-   threat model antes de elegir una primera unidad tecnica.
-3. Implementar una unidad local acotada con fakes o configuracion de desarrollo,
-   sin UEMS, Entra, Sophos, PKI ni endpoints corporativos.
-4. Preparar evidencia y runbooks de despliegue, deshabilitacion y retiro para
-   una futura prueba en dos endpoints.
+2. Conservar la primera unidad local de kill switch y completar su sustitucion
+   por configuracion administrada solo cuando exista owner y mecanismo aprobado.
+3. Preparar el siguiente incremento local a partir de las brechas restantes del
+   threat model, sin UEMS, Entra, Sophos, PKI ni endpoints corporativos.
+4. Preparar evidencia de despliegue y retiro para una futura prueba en dos
+   endpoints.
 5. Mantener por separado el stopper de Teams; reanudar el Bloque 9 solo cuando
    exista evidencia saneada del bot corporativo.
 

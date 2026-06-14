@@ -7,9 +7,10 @@
 - Los Bloques 0 a 8 estan `completed`; el Bloque 9 esta `blocked` y el Bloque 11
   sigue `pending`.
 - Ultimo resultado publicado: incremento local del Bloque 9 en `0448a42`.
-- Ultimo resultado funcional: contrato `conversation-channel.v1`, frontera
-  `IConversationChannel`, adaptador recorded sin red, consumo tipado de la API y
-  paridad Teams/WinUI validados localmente.
+- Ultimo resultado funcional: primera unidad local del Bloque 10 con kill switch
+  fail-closed del DeviceAgent. Deshabilitado, no admite trabajos IPC, no reclama
+  trabajos remotos y no inicia ni reanuda pendientes; diagnostico, consulta y
+  cancelacion permanecen disponibles.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.
@@ -26,7 +27,10 @@
 - `dotnet build ITSupportNative.slnx --configuration Release --no-restore`:
   correcto, 0 warnings y 0 errores.
 - `dotnet test ITSupportNative.slnx --configuration Release --no-build`:
-  correcto, 125 pruebas.
+  correcto, 129 pruebas.
+- Pruebas nuevas del Bloque 10: configuracion predeterminada fail-closed sin
+  persistencia, trabajo pendiente sin avance, rechazo IPC allowlisted y ausencia
+  de claim remoto cuando el kill switch esta deshabilitado.
 - Pruebas nuevas del Bloque 6: manifiesto versionado, mirror, longitud,
   SHA-256, perfil `local-demo`, plataforma, argumentos fijos, idempotencia,
   timeout, codigos MSI, fallo de inicio, verificacion, desinstalacion,
@@ -136,7 +140,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 7. API compartida y persistencia | completed | Fundacion publicada en `2b89a6b`; cierre local validado con segunda migracion, WinUI HTTP, worker separado, DeviceAgent saliente y E2E sobre PostgreSQL efimero. |
 | 8. Casos, tickets y OpenText fake | completed | `BotCase`, politica de 72 horas, evento de escalamiento, `ITicketingProvider` fake, `ExternalTicket`, worker idempotente y consulta HTTP validados sobre PostgreSQL real efimero; `cf262b4`. |
 | 9. Canal Teams existente | blocked | Incremento local publicado en `0448a42`: contrato v1 estricto, `IConversationChannel`, adaptador recorded, API compartida y paridad Teams/WinUI. Integracion corporativa bloqueada por evidencia externa. |
-| 10. Endurecimiento para piloto | in_progress | Documento propietario y threat model de trabajo abiertos; primera unidad tecnica local pendiente de auditoria contra el codigo. |
+| 10. Endurecimiento para piloto | in_progress | Inventario trazable del threat model y primera unidad local: kill switch del DeviceAgent apagado por defecto, pruebas focalizadas y runbook de deshabilitacion/rollback/retiro. Gates externos y dos endpoints pendientes. |
 | 11. Portal administrativo web | pending | |
 
 ## Alcance del MVP local

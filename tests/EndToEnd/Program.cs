@@ -50,8 +50,12 @@ try
     using var jobs = new AgentJobService(
         new SqliteAgentJobStore(Path.Combine(stateDirectory, "jobs.db")),
         new AgentActionAuthorizationPolicy(),
+        new AgentJobExecutionGate(isEnabled: true),
         TimeProvider.System);
-    var synchronization = new ControlPlaneAgentSyncService(agentClient, jobs);
+    var synchronization = new ControlPlaneAgentSyncService(
+        agentClient,
+        jobs,
+        new AgentJobExecutionGate(isEnabled: true));
 
     ControlPlaneSupportRequest? completed = null;
     for (int attempt = 0; attempt < 30 && completed is null; attempt++)

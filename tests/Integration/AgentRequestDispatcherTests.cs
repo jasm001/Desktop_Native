@@ -76,6 +76,29 @@ public sealed class AgentRequestDispatcherTests : IDisposable
     }
 
     [Fact]
+    public async Task DisabledExecutionGateRejectsAllowlistedStartMessage()
+    {
+        AgentRequestDispatcher dispatcher = CreateDispatcher(
+            executionEnabled: false);
+        AgentRequestEnvelope request = AgentJson.CreateRequest(
+            AgentMessageTypes.StartJob,
+            "correlation-disabled",
+            new StartAgentJobRequest(
+                "request-disabled",
+                "request-disabled:secure-transfer:6.5",
+                "software.install.simulated.v1",
+                "secure-transfer",
+                "6.5"));
+
+        AgentResponseEnvelope response = await dispatcher.DispatchAsync(
+            request,
+            CancellationToken.None);
+
+        Assert.False(response.Success);
+        Assert.Equal(AgentErrorCode.UnauthorizedAction, response.Error?.Code);
+    }
+
+    [Fact]
     public async Task InvalidCorrelationIdIsNotReflected()
     {
         AgentRequestDispatcher dispatcher = CreateDispatcher();
@@ -124,12 +147,13 @@ public sealed class AgentRequestDispatcherTests : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private AgentRequestDispatcher CreateDispatcher()
+    private AgentRequestDispatcher CreateDispatcher(bool executionEnabled = true)
     {
         string stateFile = Path.Combine(_testDirectory, "jobs.db");
         var service = new AgentJobService(
             new SqliteAgentJobStore(stateFile),
             new AgentActionAuthorizationPolicy(),
+            new AgentJobExecutionGate(executionEnabled),
             TimeProvider.System);
         return new AgentRequestDispatcher(
             service,
