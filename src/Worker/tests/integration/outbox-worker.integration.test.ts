@@ -16,6 +16,7 @@ describe("outbox worker", () => {
     await pool.query("DELETE FROM outbox_events");
     await pool.query("DELETE FROM execution_evidence");
     await pool.query("DELETE FROM execution_jobs");
+    await pool.query("DELETE FROM bot_cases");
     await pool.query("DELETE FROM support_requests");
 
     const requestId = crypto.randomUUID();
@@ -111,6 +112,31 @@ describe("outbox worker", () => {
           event.productId,
           event.productVersion,
         ],
+      );
+      await client.query(
+        `
+            INSERT INTO bot_cases (
+              id,
+              request_id,
+              correlation_id,
+              category,
+              status,
+              result,
+              created_at,
+              updated_at
+            )
+            VALUES (
+              $1,
+              $2,
+              $3,
+              'SOFTWARE_INSTALLATION',
+              'OPEN',
+              'PENDING',
+              clock_timestamp(),
+              clock_timestamp()
+            )
+        `,
+        [crypto.randomUUID(), requestId, event.correlationId],
       );
       await client.query(
         `

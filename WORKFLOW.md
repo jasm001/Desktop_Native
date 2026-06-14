@@ -3,9 +3,10 @@
 ## Estado
 
 - Fase actual: capacidades locales controladas para Windows 11.
-- Bloque activo: ninguno. Los Bloques 6 y 7 permanecen `completed`.
-- Siguiente bloque desbloqueado: Bloque 8 `pending`; debe iniciarse como una
-  unidad separada antes de cambiarlo a `in_progress`.
+- Bloque activo: Bloque 8 `in_progress`. Los Bloques 6 y 7 permanecen
+  `completed`.
+- Incremento actual: fundacion de casos internos implementada; ticketing fake y
+  `ExternalTicket` quedan para la segunda mitad del bloque.
 - Ultimo resultado funcional: recorrido local WinUI -> API -> worker/outbox ->
   agente simulado -> evidencia validado con PostgreSQL real efimero.
 - Ultimo resultado publicado: cierre del control plane del Bloque 7 en
@@ -16,7 +17,7 @@
 
 ## Ultima validacion
 
-- Fecha: 2026-06-13.
+- Fecha: 2026-06-14.
 - SDK global `10.0.301`: correcto.
 - El gate .NET local usa `-m:1`, deshabilita build servers y escribe build/test
   en `.artifacts/validate` para no competir con el build host del IDE.
@@ -34,16 +35,16 @@
 - Las pruebas del adaptador usan dobles y no ejecutan el MSI en el host.
 - Named Pipe real: correcto fuera del sandbox con ACL del usuario actual.
 - `corepack pnpm@11.5.3 run check`: correcto.
-- Contratos/Node: 8 pruebas unitarias y de contrato; lint, TypeScript estricto y
-  builds de Contracts, AdminWeb y Worker correctos.
+- Contratos/Node: 13 pruebas unitarias y de contrato; lint, TypeScript estricto
+  y builds de Contracts, AdminWeb y Worker correctos.
 - Next.js `16.2.9`: build standalone correcto con webpack; rutas HTTP v1 de
-  catalogo, creacion confirmada y estado incluidas.
-- PostgreSQL 18 real efimero: migraciones
-  `20260613074457_control_plane_foundation` y
-  `20260613183000_control_plane_local_flow` aplicadas con `migrate deploy`.
-- Integracion del Bloque 7: 10 pruebas AdminWeb y 3 pruebas Worker correctas;
-  idempotencia, conflicto de payload, transaccion, auditoria append-only,
-  consultas sin mutacion, leases agotados y efectos sinteticos cubiertos.
+  catalogo, creacion confirmada, estado y caso interno incluidas.
+- PostgreSQL 18 real efimero: tres migraciones aplicadas con `migrate deploy`,
+  incluida `20260614013000_bot_case_foundation`.
+- Integracion PostgreSQL: 11 pruebas AdminWeb y 3 pruebas Worker correctas;
+  idempotencia, caso unico, conflicto de payload, transaccion, auditoria
+  append-only, consultas sin mutacion, resultados de exito/fallo, leases
+  agotados y efectos sinteticos cubiertos.
 - E2E del Bloque 7: build standalone de Next.js, bundle ejecutable del worker,
   cliente HTTP de WinUI y DeviceAgent saliente completaron una solicitud con
   tres evidencias saneadas sin ejecutar instalaciones reales.
@@ -129,7 +130,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 5. Diagnostico de solo lectura | completed | Snapshot IPC efimero, colectores Windows de solo lectura, prerrequisitos tipados, fallos parciales saneados y pruebas de frontera; `e3a0b8d`. |
 | 6. Primer adaptador en VM | completed | Adaptador 7-Zip 26.01 x64 y 110 pruebas publicados en `f808425`; matriz real de instalacion, idempotencia, desinstalacion, fallos de mirror/hash y restauracion de checkpoint validada el 2026-06-13. |
 | 7. API compartida y persistencia | completed | Fundacion publicada en `2b89a6b`; cierre local validado con segunda migracion, WinUI HTTP, worker separado, DeviceAgent saliente y E2E sobre PostgreSQL efimero. |
-| 8. Casos, tickets y OpenText fake | pending | Siguiente bloque desbloqueado; todavia no iniciado. |
+| 8. Casos, tickets y OpenText fake | in_progress | Primera mitad: `BotCase`, transiciones, politica pura de 72 horas, migracion y consulta HTTP; ticketing fake pendiente. |
 | 9. Canal Teams existente | pending | |
 | 10. Endurecimiento para piloto | pending | |
 | 11. Portal administrativo web | pending | |

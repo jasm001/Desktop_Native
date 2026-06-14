@@ -2,8 +2,12 @@
 
 ## Estado
 
-Documento propietario del siguiente bloque desbloqueado: Bloque 8 `pending`.
-Antes de implementarlo se debe definir un primer incremento acotado.
+Documento propietario del Bloque 8 `in_progress`.
+
+El primer incremento acotado implementa la fundacion de `BotCase`, su relacion
+uno a uno con `SupportRequest`, las transiciones por resultado, la consulta de
+solo lectura y la politica pura de 72 horas. La evidencia tecnica vive en
+`../docs/modules/case-foundation.md`.
 
 El Bloque 8 usa `ITicketingProvider` fake y datos sinteticos. No conecta
 OpenText real, no usa endpoints corporativos y no implementa Teams ni el portal
@@ -22,6 +26,10 @@ Toda interaccion operativa crea un `BotCase` interno. Solo algunas crean un
 Durante el Bloque 8, `ExternalTicket` es una representacion sintetica producida
 por el provider fake. Las referencias a estados, campos y flujos de OpenText en
 este documento definen el contrato futuro; no autorizan una conexion real.
+
+La segunda mitad del bloque debe agregar el evento de escalamiento,
+`ITicketingProvider`, el provider fake, `ExternalTicket` y su procesamiento por
+worker. Hasta entonces no se publica un evento de ticket sin consumidor.
 
 ## Modelo recomendado
 

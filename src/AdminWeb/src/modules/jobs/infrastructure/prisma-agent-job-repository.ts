@@ -262,6 +262,12 @@ export class PrismaAgentJobRepository implements AgentJobRepository {
           data: { status: requestStatus },
         });
 
+        const botCase = await transitionBotCase(
+          transaction,
+          existing.requestId,
+          result.result,
+        );
+
         await transaction.auditEvent.create({
           data: {
             id: randomUUID(),
@@ -276,6 +282,26 @@ export class PrismaAgentJobRepository implements AgentJobRepository {
               deviceId: existing.request.deviceId,
               result: result.result,
               evidenceCodes: result.evidence.map((item) => item.code),
+            },
+          },
+        });
+
+        await transaction.auditEvent.create({
+          data: {
+            id: randomUUID(),
+            correlationId,
+            actorSubject: agentSubject,
+            eventType: "bot-case.result-recorded",
+            entityType: "bot-case",
+            entityId: botCase.id,
+            payload: {
+              caseId: botCase.id,
+              requestId: existing.requestId,
+              result: result.result,
+              status:
+                result.result === "succeeded"
+                  ? "attended_waiting_user"
+                  : "escalated",
             },
           },
         });
@@ -357,6 +383,11 @@ async function failExhaustedClaims(
       where: { id: row.request_id },
       data: { status: "FAILED" },
     });
+    const botCase = await transitionBotCase(
+      transaction,
+      row.request_id,
+      "failed",
+    );
     await transaction.$executeRaw`
       INSERT INTO execution_evidence (
         id,
@@ -392,6 +423,22 @@ async function failExhaustedClaims(
         },
       },
     });
+    await transaction.auditEvent.create({
+      data: {
+        id: randomUUID(),
+        correlationId: row.correlation_id,
+        actorSubject: agentSubject,
+        eventType: "bot-case.result-recorded",
+        entityType: "bot-case",
+        entityId: botCase.id,
+        payload: {
+          caseId: botCase.id,
+          requestId: row.request_id,
+          result: "failed",
+          status: "escalated",
+        },
+      },
+    });
     await insertResultOutbox(transaction, {
       version: 1,
       requestId: row.request_id,
@@ -401,6 +448,41 @@ async function failExhaustedClaims(
       result: "failed",
     });
   }
+}
+
+async function transitionBotCase(
+  transaction: Prisma.TransactionClient,
+  requestId: string,
+  result: "succeeded" | "failed",
+): Promise<{ readonly id: string }> {
+  const rows =
+    result === "succeeded"
+      ? await transaction.$queryRaw<Array<{ id: string }>>`
+          UPDATE bot_cases
+          SET
+            status = 'ATTENDED_WAITING_USER',
+            result = 'SUCCEEDED',
+            waiting_for_user_since = clock_timestamp(),
+            escalated_at = NULL
+          WHERE request_id = ${requestId}::uuid
+          RETURNING id
+        `
+      : await transaction.$queryRaw<Array<{ id: string }>>`
+          UPDATE bot_cases
+          SET
+            status = 'ESCALATED',
+            result = 'FAILED',
+            waiting_for_user_since = NULL,
+            escalated_at = clock_timestamp()
+          WHERE request_id = ${requestId}::uuid
+          RETURNING id
+        `;
+  const botCase = rows[0];
+  if (botCase === undefined) {
+    throw new Error("bot_case_missing");
+  }
+
+  return botCase;
 }
 
 async function insertResultOutbox(

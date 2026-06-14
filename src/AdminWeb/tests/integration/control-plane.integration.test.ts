@@ -4,12 +4,14 @@ import {
   catalogResponseSchema,
   claimAgentJobResponseSchema,
   createSoftwareInstallationResponseSchema,
+  getBotCaseResponseSchema,
   getSupportRequestResponseSchema,
   reportAgentJobResultResponseSchema,
 } from "@it-support-native/control-plane-contracts";
 import { POST as claimAgentJobRoute } from "@/app/api/v1/agent/jobs/claim/route";
 import { POST as reportAgentJobResultRoute } from "@/app/api/v1/agent/jobs/[jobId]/result/route";
 import { GET as getCatalog } from "@/app/api/v1/catalog/products/route";
+import { GET as getBotCaseRoute } from "@/app/api/v1/requests/[requestId]/case/route";
 import { GET as getRequestRoute } from "@/app/api/v1/requests/[requestId]/route";
 import { POST as createRequestRoute } from "@/app/api/v1/requests/software-installations/route";
 import { listCatalogProducts } from "@/modules/catalog/application/list-catalog-products";
@@ -45,6 +47,7 @@ describe("control plane persistence", () => {
     await prisma.auditEvent.deleteMany();
     await prisma.executionEvidence.deleteMany();
     await prisma.executionJob.deleteMany();
+    await prisma.botCase.deleteMany();
     await prisma.supportRequest.deleteMany();
     await prisma.device.upsert({
       where: { id: input.deviceId },
@@ -64,7 +67,7 @@ describe("control plane persistence", () => {
     await disconnectPrisma();
   });
 
-  it("persists request, job, audit, and outbox atomically", async () => {
+  it("persists request, job, case, audit, and outbox atomically", async () => {
     const result = await createRequest.execute(
       input,
       "integration-key-1",
@@ -77,8 +80,19 @@ describe("control plane persistence", () => {
     expect(result.request.job.status).toBe("queued");
     await expect(prisma.supportRequest.count()).resolves.toBe(1);
     await expect(prisma.executionJob.count()).resolves.toBe(1);
-    await expect(prisma.auditEvent.count()).resolves.toBe(1);
+    await expect(prisma.botCase.count()).resolves.toBe(1);
+    await expect(prisma.auditEvent.count()).resolves.toBe(2);
     await expect(prisma.outboxEvent.count()).resolves.toBe(1);
+    await expect(
+      prisma.botCase.findUniqueOrThrow({
+        where: { requestId: result.request.id },
+      }),
+    ).resolves.toMatchObject({
+      correlationId: "integration-correlation-1",
+      category: "SOFTWARE_INSTALLATION",
+      status: "OPEN",
+      result: "PENDING",
+    });
   });
 
   it("replays the same idempotency key without duplicate records", async () => {
@@ -92,7 +106,8 @@ describe("control plane persistence", () => {
     expect(replay.replayed).toBe(true);
     await expect(prisma.supportRequest.count()).resolves.toBe(1);
     await expect(prisma.executionJob.count()).resolves.toBe(1);
-    await expect(prisma.auditEvent.count()).resolves.toBe(1);
+    await expect(prisma.botCase.count()).resolves.toBe(1);
+    await expect(prisma.auditEvent.count()).resolves.toBe(2);
     await expect(prisma.outboxEvent.count()).resolves.toBe(1);
   });
 
@@ -122,6 +137,10 @@ describe("control plane persistence", () => {
         UNION ALL
         SELECT 'execution_jobs.updated_at', updated_at FROM execution_jobs
         UNION ALL
+        SELECT 'bot_cases.created_at', created_at FROM bot_cases
+        UNION ALL
+        SELECT 'bot_cases.updated_at', updated_at FROM bot_cases
+        UNION ALL
         SELECT 'audit_events.created_at', created_at FROM audit_events
         UNION ALL
         SELECT 'outbox_events.created_at', created_at FROM outbox_events
@@ -131,7 +150,7 @@ describe("control plane persistence", () => {
       ORDER BY source
     `;
 
-    expect(timestamps).toHaveLength(9);
+    expect(timestamps).toHaveLength(12);
     expect(
       timestamps.filter((timestamp) => timestamp.delta_seconds >= 10),
     ).toEqual([]);
@@ -186,7 +205,7 @@ describe("control plane persistence", () => {
         where: { id: audit.id },
       }),
     ).rejects.toThrow();
-    await expect(prisma.auditEvent.count()).resolves.toBe(1);
+    await expect(prisma.auditEvent.count()).resolves.toBe(2);
   });
 
   it("serves validated HTTP v1 envelopes without duplicate mutations", async () => {
@@ -221,6 +240,19 @@ describe("control plane persistence", () => {
         params: Promise.resolve({ requestId: existing.id }),
       },
     );
+    const caseResponse = await getBotCaseRoute(
+      new Request(
+        `http://localhost/api/v1/requests/${existing.id}/case`,
+        {
+          headers: {
+            "x-correlation-id": "http-case-correlation",
+          },
+        },
+      ),
+      {
+        params: Promise.resolve({ requestId: existing.id }),
+      },
+    );
     const catalogResponse = getCatalog(
       new Request("http://localhost/api/v1/catalog/products?limit=1", {
         headers: {
@@ -240,6 +272,14 @@ describe("control plane persistence", () => {
       getSupportRequestResponseSchema.parse(await statusResponse.json()).data
         .request.id,
     ).toBe(existing.id);
+    expect(caseResponse.status).toBe(200);
+    expect(
+      getBotCaseResponseSchema.parse(await caseResponse.json()).data.case,
+    ).toMatchObject({
+      requestId: existing.id,
+      status: "open",
+      result: "pending",
+    });
     expect(catalogResponse.status).toBe(200);
     expect(
       catalogResponseSchema.parse(await catalogResponse.json()).data.items,
@@ -345,6 +385,98 @@ describe("control plane persistence", () => {
     ).toBe("idempotency_conflict");
     await expect(prisma.executionEvidence.count()).resolves.toBe(3);
     await expect(prisma.outboxEvent.count()).resolves.toBe(2);
+    await expect(
+      prisma.botCase.findUniqueOrThrow({
+        where: { requestId: first.data.request.id },
+      }),
+    ).resolves.toMatchObject({
+      status: "ATTENDED_WAITING_USER",
+      result: "SUCCEEDED",
+      escalatedAt: null,
+    });
+    const attendedCase = await prisma.botCase.findUniqueOrThrow({
+      where: { requestId: first.data.request.id },
+    });
+    expect(attendedCase.waitingForUserSince).not.toBeNull();
+  });
+
+  it("escalates the case for an idempotent failed agent result", async () => {
+    const created = await createRequest.execute(
+      input,
+      "integration-key-failed-result",
+      "integration-correlation-failed-result",
+      principal,
+    );
+    const outbox = await prisma.outboxEvent.findFirstOrThrow({
+      where: {
+        aggregateId: created.request.id,
+        eventType: "support-request.confirmed.v1",
+      },
+      select: { id: true },
+    });
+    await prisma.syntheticOutboxEffect.create({
+      data: {
+        id: crypto.randomUUID(),
+        outboxEventId: outbox.id,
+        effectType: "support-request.dispatch-ready.v1",
+        payload: { result: "dispatch_ready" },
+      },
+    });
+    await prisma.outboxEvent.update({
+      where: { id: outbox.id },
+      data: {
+        status: "COMPLETED",
+        completedAt: new Date(),
+      },
+    });
+
+    const claimResponse = await claimAgentJobRoute(
+      agentRequest("/api/v1/agent/jobs/claim", {
+        deviceId: input.deviceId,
+      }),
+    );
+    const claim = claimAgentJobResponseSchema.parse(
+      await claimResponse.json(),
+    ).data.job;
+    expect(claim).not.toBeNull();
+    if (claim === null) {
+      throw new Error("agent_claim_missing");
+    }
+
+    const resultBody = {
+      claimToken: claim.claimToken,
+      result: "failed",
+      evidence: [
+        {
+          code: "job.simulation.failed",
+          recordedAt: new Date().toISOString(),
+        },
+      ],
+    } as const;
+    const resultUrl = `/api/v1/agent/jobs/${claim.jobId}/result`;
+    const firstResponse = await reportAgentJobResultRoute(
+      agentRequest(resultUrl, resultBody, "agent-failed-result-key-1"),
+      { params: Promise.resolve({ jobId: claim.jobId }) },
+    );
+    const replayResponse = await reportAgentJobResultRoute(
+      agentRequest(resultUrl, resultBody, "agent-failed-result-key-1"),
+      { params: Promise.resolve({ jobId: claim.jobId }) },
+    );
+
+    expect(firstResponse.status).toBe(201);
+    expect(replayResponse.status).toBe(200);
+    await expect(
+      prisma.botCase.findUniqueOrThrow({
+        where: { requestId: created.request.id },
+      }),
+    ).resolves.toMatchObject({
+      status: "ESCALATED",
+      result: "FAILED",
+      waitingForUserSince: null,
+    });
+    await expect(
+      prisma.botCase.count({ where: { requestId: created.request.id } }),
+    ).resolves.toBe(1);
   });
 
   it("fails a job after three expired agent claims", async () => {
@@ -413,17 +545,31 @@ describe("control plane persistence", () => {
     expect(failed.job.evidence).toMatchObject([
       { code: "job.simulation.failed" },
     ]);
+    await expect(
+      prisma.botCase.findUniqueOrThrow({
+        where: { requestId: created.request.id },
+      }),
+    ).resolves.toMatchObject({
+      status: "ESCALATED",
+      result: "FAILED",
+      waitingForUserSince: null,
+    });
+    const escalatedCase = await prisma.botCase.findUniqueOrThrow({
+      where: { requestId: created.request.id },
+    });
+    expect(escalatedCase.escalatedAt).not.toBeNull();
   });
 
   async function mutationCounts() {
-    const [requests, jobs, audits, outbox] = await Promise.all([
+    const [requests, jobs, cases, audits, outbox] = await Promise.all([
       prisma.supportRequest.count(),
       prisma.executionJob.count(),
+      prisma.botCase.count(),
       prisma.auditEvent.count(),
       prisma.outboxEvent.count(),
     ]);
 
-    return { requests, jobs, audits, outbox };
+    return { requests, jobs, cases, audits, outbox };
   }
 
   function agentRequest(

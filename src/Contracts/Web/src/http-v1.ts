@@ -25,6 +25,7 @@ export const apiErrorCodeSchema = z.enum([
   "identity_unavailable",
   "device_not_found",
   "request_not_found",
+  "case_not_found",
   "idempotency_conflict",
   "agent_identity_unavailable",
   "agent_claim_invalid",
@@ -119,6 +120,46 @@ export const getSupportRequestResponseSchema = z
     data: z
       .object({
         request: supportRequestViewSchema,
+      })
+      .strict(),
+    meta: apiMetaSchema,
+  })
+  .strict();
+
+export const botCaseCategorySchema = z.enum(["software_installation"]);
+
+export const botCaseStatusSchema = z.enum([
+  "open",
+  "attended_waiting_user",
+  "escalated",
+]);
+
+export const botCaseResultSchema = z.enum([
+  "pending",
+  "succeeded",
+  "failed",
+]);
+
+export const botCaseViewSchema = z
+  .object({
+    id: requestIdSchema,
+    requestId: requestIdSchema,
+    correlationId: correlationIdSchema,
+    category: botCaseCategorySchema,
+    status: botCaseStatusSchema,
+    result: botCaseResultSchema,
+    waitingForUserSince: z.iso.datetime().nullable(),
+    escalatedAt: z.iso.datetime().nullable(),
+    createdAt: z.iso.datetime(),
+    updatedAt: z.iso.datetime(),
+  })
+  .strict();
+
+export const getBotCaseResponseSchema = z
+  .object({
+    data: z
+      .object({
+        case: botCaseViewSchema,
       })
       .strict(),
     meta: apiMetaSchema,
@@ -224,4 +265,5 @@ export type ClaimedAgentJob = z.infer<typeof claimedAgentJobSchema>;
 export type ReportAgentJobResultRequest = z.infer<
   typeof reportAgentJobResultRequestSchema
 >;
+export type BotCaseView = z.infer<typeof botCaseViewSchema>;
 export type SupportRequestView = z.infer<typeof supportRequestViewSchema>;

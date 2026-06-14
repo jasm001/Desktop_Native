@@ -28,6 +28,22 @@ enum OutboxStatus {
   FAILED
 }
 
+enum BotCaseCategory {
+  SOFTWARE_INSTALLATION
+}
+
+enum BotCaseStatus {
+  OPEN
+  ATTENDED_WAITING_USER
+  ESCALATED
+}
+
+enum BotCaseResult {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
 model Device {
   id          String   @id @db.VarChar(128)
   displayName String   @map("display_name") @db.VarChar(120)
@@ -57,10 +73,30 @@ model SupportRequest {
 
   device Device        @relation(fields: [deviceId], references: [id], onDelete: Restrict)
   job    ExecutionJob?
+  botCase BotCase?
 
   @@index([deviceId, createdAt])
   @@index([correlationId])
   @@map("support_requests")
+}
+
+model BotCase {
+  id                  String          @id @db.Uuid
+  requestId           String          @unique @map("request_id") @db.Uuid
+  correlationId       String          @map("correlation_id") @db.VarChar(100)
+  category            BotCaseCategory @default(SOFTWARE_INSTALLATION)
+  status              BotCaseStatus   @default(OPEN)
+  result              BotCaseResult   @default(PENDING)
+  waitingForUserSince DateTime?       @map("waiting_for_user_since") @db.Timestamptz(6)
+  escalatedAt         DateTime?       @map("escalated_at") @db.Timestamptz(6)
+  createdAt           DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime        @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  request SupportRequest @relation(fields: [requestId], references: [id], onDelete: Restrict)
+
+  @@index([status, waitingForUserSince])
+  @@index([correlationId])
+  @@map("bot_cases")
 }
 
 model ExecutionJob {

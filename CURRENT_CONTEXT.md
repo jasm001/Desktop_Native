@@ -1,17 +1,19 @@
 # Contexto actual
 
-Fecha de ultima actualizacion: 2026-06-13.
+Fecha de ultima actualizacion: 2026-06-14.
 
 ## Objetivo inmediato
 
-Los Bloques 6 y 7 permanecen `completed`. No hay otro bloque principal activo.
-El recorrido local del Bloque 7 conecta WinUI, API, PostgreSQL, worker y agente
-simulado sin construir el portal administrativo ni conectar servicios externos.
+Los Bloques 6 y 7 permanecen `completed`. El Bloque 8 es el unico bloque
+principal activo y esta `in_progress`.
 
-El primer incremento fue publicado en `2b89a6b` y el cierre en `ed4789e`. El
-alcance y los limites viven en `docs/modules/control-plane-foundation.md` y
-`docs/modules/control-plane-local-flow.md`. El Bloque 8 es el siguiente bloque
-desbloqueado y permanece `pending`.
+El primer incremento local del Bloque 8 agrega el caso operativo interno:
+`BotCase` uno a uno con `SupportRequest`, creacion transaccional, transiciones
+idempotentes por resultado, politica pura de 72 horas y consulta HTTP de solo
+lectura. El alcance vive en `docs/modules/case-foundation.md`.
+
+La segunda mitad debe agregar el evento de escalamiento, `ITicketingProvider`,
+el provider fake, `ExternalTicket` y su procesamiento por worker.
 
 ## Estado del repositorio
 
@@ -32,8 +34,15 @@ desbloqueado y permanece `pending`.
 - Solucion .NET 10 y workspace pnpm creados por frontera.
 - `src/AdminWeb` es una aplicacion Next.js App Router con TypeScript estricto,
   contratos HTTP v1 y modulos iniciales del control plane; no contiene portal.
+- `BotCase` se crea exactamente una vez dentro de la confirmacion existente y
+  conserva correlacion explicita con solicitud y trabajo.
+- Un resultado exitoso deja el caso en `attended_waiting_user`; un fallo lo deja
+  en `escalated`.
+- La politica de 72 horas solo calcula elegibilidad; no existe scheduler,
+  notificacion ni cierre automatico.
+- `ExternalTicket` y el provider fake todavia no estan implementados.
 - Identidad sintetica determinista habilitable solo en desarrollo.
-- Prisma/PostgreSQL con dos migraciones versionadas, timestamps gobernados por
+- Prisma/PostgreSQL con tres migraciones versionadas, timestamps gobernados por
   la base, auditoria append-only y outbox transaccional.
 - La mutacion confirmada crea solicitud, trabajo, auditoria y outbox en una
   transaccion, con idempotencia por clave y hash del payload.
@@ -107,11 +116,12 @@ desbloqueado y permanece `pending`.
 
 ## Siguiente reanudacion
 
-1. Confirmar que los Bloques 6 y 7 permanecen `completed` y que no hay otro
-   bloque principal activo.
-2. Definir y documentar el alcance exacto del primer incremento del Bloque 8.
-3. Iniciar el Bloque 8 solo en esa nueva unidad acotada, sin adelantar Teams,
-   portal, Hermes/RAG, Windows Service, UEMS real ni integraciones corporativas.
+1. Confirmar que los Bloques 6 y 7 permanecen `completed` y el Bloque 8 es el
+   unico `in_progress`.
+2. Implementar el contrato de escalamiento y `ITicketingProvider` fake desde el
+   worker/outbox existente.
+3. Persistir `ExternalTicket` de forma idempotente y ampliar la consulta del
+   caso sin conectar OpenText real ni adelantar Teams o portal.
 
 ## Alcance local acordado
 

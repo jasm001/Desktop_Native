@@ -168,9 +168,11 @@ Implementar `BotCase`, escalamiento, SLA de 72 horas e `ITicketingProvider` fake
 Gate: consultas no crean caso operativo; confirmaciones crean una sola solicitud;
 fallos generan escalamiento detallado sin secretos.
 
-Estado: `pending` y siguiente bloque desbloqueado. Su primer incremento debe
-definirse antes de editar y no puede conectar OpenText real ni adelantar Teams o
-el portal administrativo.
+Estado: `in_progress`. El primer incremento agrega `BotCase` uno a uno con la
+solicitud confirmada, transiciones por resultado, politica pura de 72 horas,
+migracion PostgreSQL y consulta HTTP de solo lectura. La segunda mitad debe
+agregar el provider fake, `ExternalTicket` y el procesamiento de escalamiento
+por worker, sin conectar OpenText real ni adelantar Teams o el portal.
 
 ## Bloque 9: canal Teams existente
 

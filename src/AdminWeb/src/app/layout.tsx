@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "IT Support Native Control Plane",
-  description: "Local synthetic control plane foundation",
+  description: "Local synthetic control plane and internal case foundation",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

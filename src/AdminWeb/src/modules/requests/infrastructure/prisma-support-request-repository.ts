@@ -69,6 +69,7 @@ export class PrismaSupportRequestRepository
 
         const requestId = randomUUID();
         const jobId = randomUUID();
+        const botCaseId = randomUUID();
         const outboxId = randomUUID();
         const reference = `REQ-${requestId}`;
         const event: SupportRequestConfirmedEventV1 = {
@@ -103,6 +104,12 @@ export class PrismaSupportRequestRepository
                 targetVersion: command.productVersion,
               },
             },
+            botCase: {
+              create: {
+                id: botCaseId,
+                correlationId: command.correlationId,
+              },
+            },
           },
           include: { job: { include: { evidence: true } } },
         });
@@ -122,6 +129,22 @@ export class PrismaSupportRequestRepository
               actionId: command.actionId,
               productId: command.productId,
               productVersion: command.productVersion,
+            },
+          },
+        });
+
+        await transaction.auditEvent.create({
+          data: {
+            id: randomUUID(),
+            correlationId: command.correlationId,
+            actorSubject: command.actorSubject,
+            eventType: "bot-case.created",
+            entityType: "bot-case",
+            entityId: botCaseId,
+            payload: {
+              caseId: botCaseId,
+              requestId,
+              category: "software_installation",
             },
           },
         });

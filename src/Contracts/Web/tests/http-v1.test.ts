@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
+  botCaseViewSchema,
   claimAgentJobRequestSchema,
   createSoftwareInstallationRequestSchema,
   reportAgentJobResultRequestSchema,
@@ -67,6 +68,29 @@ describe("HTTP v1 contracts", () => {
             summary: "untrusted free text",
           },
         ],
+      }).success,
+    ).toBe(false);
+  });
+
+  it("accepts only bounded case views without operational free text", () => {
+    const result = botCaseViewSchema.safeParse({
+      id: randomUUID(),
+      requestId: randomUUID(),
+      correlationId: "correlation-1",
+      category: "software_installation",
+      status: "attended_waiting_user",
+      result: "succeeded",
+      waitingForUserSince: "2026-06-13T18:30:00.000Z",
+      escalatedAt: null,
+      createdAt: "2026-06-13T18:00:00.000Z",
+      updatedAt: "2026-06-13T18:30:00.000Z",
+    });
+
+    expect(result.success).toBe(true);
+    expect(
+      botCaseViewSchema.safeParse({
+        ...result.data,
+        description: "unbounded operational detail",
       }).success,
     ).toBe(false);
   });

@@ -23,3 +23,108 @@ main {
 code {
   font-family: "Cascadia Code", "Consolas", monospace;
 }
+
+.status-page {
+  display: grid;
+  gap: 2rem;
+}
+
+.status-header {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.eyebrow,
+.section-label {
+  margin: 0;
+  color: #0f6cbd;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.status-badge {
+  width: fit-content;
+  margin: 0;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid color-mix(in srgb, #0f6cbd 45%, Canvas);
+  border-radius: 999px;
+  background: color-mix(in srgb, #0f6cbd 12%, Canvas);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  max-width: 12ch;
+  margin-bottom: 0;
+  font-size: clamp(2.5rem, 8vw, 4.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.lede {
+  max-width: 46rem;
+  margin-bottom: 0;
+  color: color-mix(in srgb, CanvasText 72%, Canvas);
+  font-size: 1.1rem;
+  line-height: 1.65;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.status-grid article,
+.boundary-note {
+  padding: 1.5rem;
+  border: 1px solid color-mix(in srgb, CanvasText 16%, Canvas);
+  border-radius: 1rem;
+  background: color-mix(in srgb, CanvasText 3%, Canvas);
+}
+
+.status-grid ul {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding-left: 1.15rem;
+  line-height: 1.5;
+}
+
+.boundary-note p {
+  margin-bottom: 0;
+  line-height: 1.65;
+}
+
+.endpoint {
+  display: block;
+  margin-bottom: 0.75rem;
+  overflow-x: auto;
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, CanvasText 7%, Canvas);
+  white-space: nowrap;
+}
+
+@media (max-width: 42rem) {
+  main {
+    padding-top: 2.5rem;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+}
