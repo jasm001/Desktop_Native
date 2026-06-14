@@ -2,8 +2,8 @@
 
 ## Estado
 
-Reservado para el Bloque 11. No es el siguiente bloque y no debe ampliarse
-durante los Bloques 9 o 10.
+Reservado para el Bloque 11. No es el bloque activo y no debe ampliarse durante
+el Bloque 10.
 
 ## Responsabilidad
 

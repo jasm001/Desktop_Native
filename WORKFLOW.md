@@ -3,9 +3,10 @@
 ## Estado
 
 - Fase actual: capacidades locales controladas para Windows 11.
-- Bloque activo: Bloque 9, canal Teams existente, `in_progress`.
-- Los Bloques 0 a 8 estan `completed`; los Bloques 10 y 11 siguen `pending`.
-- Ultimo resultado publicado: cierre completo del Bloque 8 en `cf262b4`.
+- Bloque activo: Bloque 10, endurecimiento para piloto, `in_progress`.
+- Los Bloques 0 a 8 estan `completed`; el Bloque 9 esta `blocked` y el Bloque 11
+  sigue `pending`.
+- Ultimo resultado publicado: incremento local del Bloque 9 en `0448a42`.
 - Ultimo resultado funcional: contrato `conversation-channel.v1`, frontera
   `IConversationChannel`, adaptador recorded sin red, consumo tipado de la API y
   paridad Teams/WinUI validados localmente.
@@ -55,8 +56,6 @@
   vulnerabilidades conocidas.
 - `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
 - `scripts/Validate.ps1`: correcto.
-- `corepack pnpm@11.5.3 audit --prod --audit-level high`: correcto, sin
-  vulnerabilidades conocidas.
 - Lockfiles sin cambios; Desktop/WindowsUi conservan unicamente `win-x64`.
 - Token Hyper-V: `S-1-5-32-578` habilitado; grupo local y acceso de lectura a
   VM/checkpoint confirmados.
@@ -136,15 +135,16 @@ Solo un bloque principal puede estar `in_progress`.
 | 6. Primer adaptador en VM | completed | Adaptador 7-Zip 26.01 x64 y 110 pruebas publicados en `f808425`; matriz real de instalacion, idempotencia, desinstalacion, fallos de mirror/hash y restauracion de checkpoint validada el 2026-06-13. |
 | 7. API compartida y persistencia | completed | Fundacion publicada en `2b89a6b`; cierre local validado con segunda migracion, WinUI HTTP, worker separado, DeviceAgent saliente y E2E sobre PostgreSQL efimero. |
 | 8. Casos, tickets y OpenText fake | completed | `BotCase`, politica de 72 horas, evento de escalamiento, `ITicketingProvider` fake, `ExternalTicket`, worker idempotente y consulta HTTP validados sobre PostgreSQL real efimero; `cf262b4`. |
-| 9. Canal Teams existente | in_progress | Primer incremento local validado: contrato v1 estricto, `IConversationChannel`, adaptador recorded, API compartida y paridad Teams/WinUI. Integracion corporativa pendiente por stopper. |
-| 10. Endurecimiento para piloto | pending | |
+| 9. Canal Teams existente | blocked | Incremento local publicado en `0448a42`: contrato v1 estricto, `IConversationChannel`, adaptador recorded, API compartida y paridad Teams/WinUI. Integracion corporativa bloqueada por evidencia externa. |
+| 10. Endurecimiento para piloto | in_progress | Documento propietario y threat model de trabajo abiertos; primera unidad tecnica local pendiente de auditoria contra el codigo. |
 | 11. Portal administrativo web | pending | |
 
 ## Alcance del MVP local
 
-El desarrollo puede continuar por los Bloques 9-11 con proveedores locales o
-fake, respetando el orden y los gates de cada unidad. La referencia tecnica es
-`docs/modules/local-mvp-lab.md`.
+El desarrollo puede continuar con el Bloque 10 usando proveedores locales o
+fake aunque el cierre corporativo del Bloque 9 este bloqueado. D-072 permite
+preparar unidades locales reemplazables sin cerrar los gates externos. La
+referencia tecnica es `docs/modules/local-mvp-lab.md`.
 
 Permitido antes de la decision corporativa:
 
@@ -163,14 +163,14 @@ Pendiente para piloto:
 - identidad restringida y despliegue corporativo del servicio;
 - hosting, retencion, conectividad y paquetes corporativos aprobados.
 
-## Stoppers futuros no bloqueantes
+## Stoppers externos
 
-Estos stoppers condicionan integraciones o mejoras futuras. No revierten bloques
-ya completados ni impiden unidades locales que respeten sus limites.
+Estos stoppers condicionan integraciones o mejoras externas. No revierten
+bloques ya completados ni impiden unidades locales que respeten sus limites.
 
-El siguiente stopper condiciona solo la conexion corporativa y el cierre del
-Bloque 9. No bloquea contratos, adaptador fake/recorded ni pruebas de paridad
-locales.
+El siguiente stopper bloquea la conexion corporativa y el cierre del Bloque 9.
+No bloquea el Bloque 10 ni revierte los contratos, el adaptador recorded o las
+pruebas de paridad ya validadas.
 
 ```text
 Fecha: 2026-06-14

@@ -23,9 +23,11 @@ La demostracion local puede incluir:
 - continuidad sin conexion mediante conocimiento, politicas, autorizaciones,
   acciones y artefactos ya disponibles.
 
-El orden de bloques no cambia. Cada capacidad se implementa y valida como unidad
-separada. Los gates corporativos de UEMS, Security, Entra, OpenText, Teams, PKI,
-hosting y conectividad permanecen pendientes y se cierran antes del piloto.
+El orden funcional no cambia. Si una integracion queda `blocked` por evidencia
+externa, D-072 permite preparar el siguiente bloque con proveedores locales y
+reemplazables, sin declarar cerrado el gate anterior. Los gates corporativos de
+UEMS, Security, Entra, OpenText, Teams, PKI, hosting y conectividad permanecen
+pendientes y se cierran antes del piloto.
 
 El detalle vive en `docs/modules/local-mvp-lab.md`.
 
@@ -188,7 +190,7 @@ API compartida:
 
 Gate: Teams y WinUI producen las mismas decisiones para la misma entrada.
 
-Estado: `in_progress`. El primer incremento local ya define contratos
+Estado: `blocked`. El primer incremento local ya define contratos
 versionados, `IConversationChannel`, un adaptador recorded sin red, consumo de
 las capacidades HTTP existentes y pruebas de paridad Teams/WinUI. La
 integracion real requiere conocer owner, plataforma, repositorio,
@@ -209,6 +211,12 @@ Cerrar gates externos necesarios para dos endpoints:
 - paquete y confianza de publicador.
 
 Gate: threat model revisado y despliegue/retiro ensayados.
+
+Estado: `in_progress`. Es el unico bloque principal activo. El alcance,
+controles locales permitidos, evidencia y gates externos viven en
+`modules/PILOT_HARDENING.md`; el threat model de trabajo vive en
+`docs/threat-model/README.md`. El bloque no se declara `completed` hasta revisar
+el threat model y ensayar despliegue y retiro en dos endpoints autorizados.
 
 ## Bloque 11: portal administrativo web
 

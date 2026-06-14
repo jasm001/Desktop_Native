@@ -10,9 +10,10 @@ with partial typed results. Block 6 adds one closed 7-Zip MSI adapter validated
 only in a disposable Windows 11 VM. Block 7 completes the shared control plane,
 PostgreSQL persistence, durable worker, and local simulated-agent flow. Block 8
 completes internal `BotCase` tracking and deterministic fake ticketing. Block 9
-is in progress with a strict normalized channel contract, a recorded local
-adapter, and Teams/WinUI parity tests. No production integration or
-administrative portal behavior is implemented.
+has a validated local channel boundary and is blocked on the existing corporate
+Teams bot. Block 10 is in progress with pilot-hardening documentation and threat
+modeling as its current local scope. No production integration or administrative
+portal behavior is implemented.
 
 ## Current Status
 
@@ -32,12 +33,14 @@ administrative portal behavior is implemented.
   `ITicketingProvider`, synthetic `ExternalTicket`, worker idempotency, and the
   pure 72-hour eligibility policy completed.
 - Block 9: local channel boundary, recorded adapter, strict v1 contracts,
-  shared control-plane client, and Teams/WinUI parity completed as the first
-  increment; the block remains in progress until the existing corporate bot is
-  integrated and validated.
-- Next gate: obtain the owner, platform, repository, authentication, permissions,
-  tenant, environments, DLP, deployment, and action mechanism of the existing
-  Teams bot. Real Teams and OpenText remain disabled.
+  shared control-plane client, and Teams/WinUI parity completed; the block is
+  `blocked` until the existing corporate bot can be integrated and validated.
+- Block 10: pilot hardening is the only block `in_progress`; current work is
+  limited to repository-grounded threat modeling, local controls, deployment
+  and removal preparation, and explicit external gates for two endpoints.
+- Next gate: complete a bounded local hardening increment without presenting it
+  as a corporate pilot. UEMS, Entra, Security/Sophos, publisher trust, real
+  Teams, and OpenText remain disabled until their owners provide evidence.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes/RAG. This
   profile is not a corporate pilot.
@@ -48,7 +51,8 @@ The implementation sequence and gates are defined in
 [`DEVELOPMENT_PLAN.md`](DEVELOPMENT_PLAN.md). Current execution state is recorded
 in [`WORKFLOW.md`](WORKFLOW.md). The bounded local demonstration is defined in
 [`docs/modules/local-mvp-lab.md`](docs/modules/local-mvp-lab.md). Block 9 is
-owned by [`modules/TEAMS.md`](modules/TEAMS.md).
+owned by [`modules/TEAMS.md`](modules/TEAMS.md), and Block 10 is owned by
+[`modules/PILOT_HARDENING.md`](modules/PILOT_HARDENING.md).
 
 ## Documentation Precedence
 

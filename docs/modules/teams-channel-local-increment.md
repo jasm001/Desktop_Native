@@ -2,8 +2,9 @@
 
 ## Estado
 
-Primer incremento del Bloque 9. El bloque pasa a `in_progress` y no puede
-cerrarse hasta integrar y validar el bot corporativo existente.
+Primer incremento local completado del Bloque 9. Durante esta unidad el bloque
+pasa a `in_progress`; despues de publicar la evidencia queda `blocked` y no
+puede cerrarse hasta integrar y validar el bot corporativo existente.
 
 ## Objetivo
 

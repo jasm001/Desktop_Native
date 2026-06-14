@@ -126,10 +126,11 @@ No permitido:
 
 ## Limite de avance
 
-Los Bloques 6, 7 y 8 ya cerraron sus gates locales. El Bloque 9 es el siguiente y
-los Bloques 9-11 pueden preparar sus dominios, UI, persistencia y adaptadores
-locales/fake. Ninguno puede declararse corporativamente validado mientras
-falten:
+Los Bloques 6, 7 y 8 ya cerraron sus gates locales. El Bloque 9 completo su
+incremento local y esta `blocked` por la integracion corporativa de Teams. El
+Bloque 10 es el unico `in_progress`; puede preparar hardening, evidencia y
+runbooks locales/fake conforme a D-072. Ningun bloque puede declararse
+corporativamente validado mientras falten:
 
 - UEMS y proceso de distribucion/retiro;
 - cuenta e identidad restringida del servicio;

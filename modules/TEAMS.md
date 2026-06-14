@@ -2,10 +2,11 @@
 
 ## Estado
 
-Documento propietario del Bloque 9 `in_progress`.
+Documento propietario del Bloque 9 `blocked`.
 
-Los Bloques 0 a 8 estan `completed`. El Bloque 9 es el unico bloque principal
-`in_progress`.
+Los Bloques 0 a 8 estan `completed`. El Bloque 10 es el unico bloque principal
+`in_progress`; el Bloque 9 conserva su incremento local y espera evidencia
+externa.
 
 El primer incremento local fue implementado y validado el 2026-06-14. Su
 evidencia tecnica vive en
@@ -34,9 +35,10 @@ Todavia no se conocen ni estan disponibles en este repositorio:
 - mecanismo aprobado para Adaptive Cards o acciones equivalentes;
 - capacidad confirmada para consumir la API compartida.
 
-Estos pendientes bloquean la integracion corporativa real, pero no una primera
-unidad local de contratos, adaptador fake y pruebas de paridad.
-El stopper no bloqueante correspondiente esta registrado en `../WORKFLOW.md`.
+Estos pendientes bloquean la integracion corporativa real y el cierre del
+Bloque 9. La unidad local de contratos, adaptador recorded y pruebas de paridad
+ya fue completada. El stopper correspondiente esta registrado en
+`../WORKFLOW.md`.
 
 ## Frontera del canal
 
@@ -97,8 +99,8 @@ El bloque solo puede declararse `completed` cuando:
 - retries, correlacion, idempotencia y auditoria estan validados;
 - los gates corporativos aplicables tienen evidencia.
 
-Hasta disponer del bot y tenant reales, el Bloque 9 puede quedar `in_progress`
-con su incremento local validado, pero no `completed`.
+Hasta disponer del bot y tenant reales, el Bloque 9 queda `blocked` con su
+incremento local validado y no puede declararse `completed`.
 
 ## Referencias
 

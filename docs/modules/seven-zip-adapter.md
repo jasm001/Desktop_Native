@@ -155,5 +155,6 @@ Validacion local del 2026-06-13:
   secretos.
 
 La matriz VM y la restauracion estan completas. El Bloque 6 queda `completed`;
-esto no promueve el adaptador fuera de `local-demo`. Los Bloques 7 y 8 se
-completaron posteriormente; el siguiente bloque del roadmap es el Bloque 9.
+esto no promueve el adaptador fuera de `local-demo`. Los Bloques 7 y 8 y el
+incremento local del Bloque 9 se completaron posteriormente. La integracion
+corporativa de Teams esta `blocked` y el Bloque 10 es el bloque activo actual.

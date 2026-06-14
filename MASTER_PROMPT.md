@@ -10,28 +10,29 @@ Repositorio:
 
 Estado confirmado:
 - Bloques 0 a 8 estan `completed`.
-- Bloque 9, canal Teams existente, esta `in_progress` y es el unico bloque
+- El incremento local del Bloque 9 esta publicado en `0448a42`.
+- Bloque 9, canal Teams existente, esta `blocked` hasta disponer de evidencia
+  para integrar y validar el bot corporativo real.
+- `modules/TEAMS.md` conserva el gobierno del Bloque 9.
+- Bloque 10, endurecimiento para piloto, esta `in_progress` y es el unico bloque
   principal activo.
-- El primer incremento local del Bloque 9 esta implementado y validado.
-- `modules/TEAMS.md` es el documento propietario.
-- La evidencia tecnica vive en
-  `docs/modules/teams-channel-local-increment.md`.
-- Existe `conversation-channel.v1` estricto en C# y TypeScript.
-- `IConversationChannel` es una frontera de traduccion.
-- `RecordedTeamsConversationChannel` es local, determinista, sin red y no
-  representa un payload real de Microsoft.
-- `ConversationChannelService` reutiliza `ConversationService` y
-  `CatalogDecisionService`.
-- WinUI usa la misma aplicacion normalizada y pasa fixtures de paridad con el
-  canal recorded.
-- Correlacion, dispositivo e idempotency key se propagan al control plane.
-- Los endpoints existentes cubren catalogo, instalacion confirmada, estado de
-  solicitud y consulta de caso/escalamiento.
-- No existe una mutacion HTTP durable para `HumanReview`; el canal exige
-  confirmacion y devuelve `capability_unavailable` sin efectos laterales.
-- No se creo un segundo bot ni una conexion Microsoft 365.
-- OpenText real, Teams corporativo, Entra, UEMS, Hermes/RAG productivo y portal
-  administrativo siguen deshabilitados.
+- `modules/PILOT_HARDENING.md` es el documento propietario del Bloque 10.
+- `docs/threat-model/README.md` es el threat model de trabajo y aun no tiene
+  revision ni aprobacion de Security.
+- Bloque 11, portal administrativo web, permanece `pending`.
+- `src/AdminWeb` es el control plane Next.js modular, no el portal del
+  Bloque 11.
+- `src/Worker` es un proceso Node durable separado.
+- Prisma/PostgreSQL tiene cuatro migraciones versionadas.
+- WinUI y DeviceAgent conservan IPC tipado, allowlist cerrada, idempotencia,
+  evidencia saneada y recuperacion local.
+- Cada confirmacion crea una `SupportRequest`, un `ExecutionJob` y un `BotCase`.
+- Los fallos publican `bot-case.escalation-requested.v1`; el worker crea un solo
+  `ExternalTicket` fake por caso.
+- Teams local usa `conversation-channel.v1`,
+  `IConversationChannel` y un adaptador recorded sin red.
+- OpenText real, Teams corporativo, Entra, UEMS, Sophos, PKI, Hermes/RAG
+  productivo y portal administrativo siguen deshabilitados.
 - Ultimo gate completo: 125 pruebas .NET, 20 pruebas Node unitarias/de contrato,
   11 integraciones AdminWeb, 4 del Worker, cuatro migraciones PostgreSQL y E2E.
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
@@ -45,82 +46,103 @@ Antes de editar:
 4. lee completos `core/SECURITY.md`, `core/DECISIONS.md`, `core/SCOPE.md`,
    `core/STACK.md` y `core/ARCHITECTURE.md`;
 5. lee completos `standards/CODING_STANDARDS.md` y `standards/DELIVERY.md`;
-6. lee completos `modules/TEAMS.md`, `modules/ASSISTANT.md`,
-   `modules/CATALOG.md`, `modules/TICKETING.md` y `modules/OPERATIONS.md`;
-7. lee `docs/modules/teams-channel-local-increment.md`,
-   `context/IDENTITY_AND_TEAMS_RESPONSES.md` y la seccion Teams de
+6. lee completos `modules/PILOT_HARDENING.md`, `modules/OPERATIONS.md`,
+   `modules/TEAMS.md` y `modules/ADMIN_PORTAL.md`;
+7. lee completos `docs/threat-model/README.md`,
+   `docs/modules/local-mvp-lab.md`,
+   `project-management/PILOT_ASSESSMENT.md` y
    `project-management/INFORMATION_REQUESTS.md`;
-8. inspecciona `src/Conversation`, `src/Desktop`, `src/AdminWeb`,
-   `src/Contracts`, `src/Contracts/Web` y sus pruebas;
-9. consulta `modules/ADMIN_PORTAL.md` solo para proteger el Bloque 11.
+8. inspecciona `src/Desktop`, `src/DeviceAgent`, `src/AdminWeb`, `src/Worker`,
+   `src/Contracts`, `deploy`, `scripts` y sus pruebas;
+9. identifica controles implementados y brechas reales antes de elegir la
+   primera unidad tecnica del Bloque 10.
 
 Reglas no negociables:
 - no cambies stack, alcance, arquitectura, persistencia, seguridad o contratos
   publicos sin registrar un stopper en `WORKFLOW.md`;
 - conserva Next.js/TypeScript/Prisma/PostgreSQL como control plane;
 - conserva el worker Node como proceso durable separado;
-- integra el bot existente; no crees otro bot, tenant o aplicacion corporativa;
-- no inventes owner, plataforma Teams, App Registration, IDs, permisos,
-  endpoints, Adaptive Cards, secretos ni capacidades del bot;
-- Teams y WinUI son canales del mismo asistente y no mantienen reglas separadas;
-- `IConversationChannel` es traduccion, no motor de negocio;
-- Teams nunca ejecuta comandos, construye argumentos ni llama al DeviceAgent;
-- una consulta no crea solicitud, caso, ticket, trabajo, auditoria ni outbox;
-- toda mutacion requiere confirmacion explicita, identidad, dispositivo,
-  correlacion e idempotencia;
+- conserva WinUI sin privilegios y DeviceAgent como frontera privilegiada;
+- no aceptes comandos, scripts, rutas, argumentos o texto operativo libre;
+- toda mutacion requiere identidad, autorizacion, confirmacion, correlacion e
+  idempotencia;
 - payloads desconocidos, versiones no soportadas y acciones no allowlisted
   fallan cerrados;
-- no uses datos, credenciales, endpoints ni identificadores corporativos;
-- una sesion abierta de Teams no autoriza recuperacion de identidad ni acciones
-  sensibles;
-- no conectes OpenText real, Entra, UEMS, Power Automate o Microsoft 365 sin
-  evidencia y aprobacion;
-- no adelantes endurecimiento del Bloque 10 ni portal del Bloque 11;
-- no agregues dependencias si las APIs actuales son suficientes;
-- no declares completado el Bloque 9 sin integrar y validar el bot real;
+- no uses datos, credenciales, endpoints, tenant, certificados ni
+  identificadores corporativos;
+- no conectes OpenText, Teams, Microsoft 365, Entra, UEMS, Sophos o PKI reales;
+- no inventes owners, cuentas de servicio, permisos, politicas, excepciones,
+  firma, publicador, retencion ni mecanismos de despliegue;
+- no solicites ni implementes una exclusion antivirus general;
+- no presentes `local-demo` como piloto corporativo;
+- no reabras ni declares completado el Bloque 9 sin integrar el bot real;
+- no adelantes el portal administrativo del Bloque 11;
+- no agregues dependencias si las APIs y herramientas actuales son suficientes;
+- no declares completado el Bloque 10 sin threat model revisado y ensayo
+  autorizado de despliegue/retiro en dos endpoints;
 - no declares terminada una unidad sin ejecutar los gates aplicables.
 
-Tarea de reanudacion:
-Continuar el Bloque 9 solo cuando se disponga de evidencia saneada del bot
-corporativo existente. Confirmar:
+Tarea:
+Inicia el Bloque 10 con una primera unidad local de hardening coherente con el
+codigo existente. El objetivo es convertir el threat model de trabajo en una
+auditoria verificable y cerrar una brecha local acotada sin depender de
+infraestructura corporativa.
 
-- owner y contacto tecnico;
-- plataforma y runtime;
-- repositorio y proceso de despliegue/rollback;
-- autenticacion del bot frente al control plane;
-- permisos, tenant, App Registration o workload identity;
-- ambientes, DLP, limites, soporte y auditoria;
-- mecanismo real de acciones o tarjetas;
-- payloads de ejemplo sin datos reales;
-- capacidad de consumir la API compartida.
+Antes de implementar:
+- mapea las amenazas de `docs/threat-model/README.md` a codigo, configuracion y
+  pruebas existentes;
+- contrasta identidad del agente, IPC, replay, artefactos, logs, evidencia,
+  perdida de red, deshabilitacion y retiro;
+- elige una sola brecha local de mayor prioridad que pueda cerrarse sin UEMS,
+  Entra, Sophos, PKI ni endpoints reales;
+- define en `docs/modules/` el alcance tecnico exacto, alternativas, evidencia y
+  criterio de aceptacion;
+- registra un stopper nuevo solo si la solucion exige alterar una frontera
+  normativa o depende de una decision externa no documentada.
 
-Con esa evidencia:
-1. implementar el adaptador corporativo como sustituto de
-   `RecordedTeamsConversationChannel`;
-2. conservar `conversation-channel.v1` y las reglas en
-   `ConversationChannelService`;
-3. validar identidad, vinculacion de dispositivo, correlacion e idempotencia;
-4. probar catalogo, propuesta, confirmacion, solicitud, estado y caso;
-5. definir primero un caso de uso durable del control plane si se requiere
-   escalamiento manual `HumanReview`; no lo simules dentro del canal;
-6. mantener Teams sin acceso al DeviceAgent;
-7. actualizar pruebas, documento propietario, evidencia, `WORKFLOW.md`,
-   `CURRENT_CONTEXT.md` y esta ayuda de handoff.
+Alcance minimo esperado:
+- inventario trazable de controles existentes y brechas del threat model;
+- una unidad tecnica local, pequena y completa, elegida despues de inspeccionar
+  el codigo;
+- fallo cerrado y configuracion segura por defecto;
+- pruebas unitarias, de contrato o integracion proporcionales al cambio;
+- evidencia de que no se amplian comandos, privilegios ni datos recolectados;
+- documentacion del punto de sustitucion o configuracion para piloto;
+- runbook actualizado de deshabilitacion, rollback o retiro relacionado;
+- riesgos residuales y evidencia externa requerida para dos endpoints.
 
-Stopper externo vigente:
+Criterios de aceptacion:
+- Bloques 0 a 8 permanecen `completed`;
+- Bloque 9 permanece `blocked`;
+- Bloque 10 permanece como unico bloque `in_progress`;
+- Bloque 11 permanece `pending`;
+- no se crea ninguna conexion o identidad corporativa;
+- el control agregado falla cerrado y es verificable localmente;
+- WinUI, Teams e IA siguen sin ejecutar contenido privilegiado;
+- DeviceAgent conserva acciones tipadas y allowlisted;
+- no aparecen secretos, PII innecesaria ni logs operativos completos;
+- los gates existentes de Bloques 7 a 9 siguen pasando;
+- `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan;
+- no se declara cerrado el gate de piloto ni se simula aprobacion externa.
+
+Stopper externo de Teams que debe conservarse:
 Fecha: 2026-06-14
 Modulo: Canal Teams
 Decision requerida: Confirmar owner, plataforma, repositorio, autenticacion,
   permisos, tenant, ambientes, DLP, despliegue y mecanismo de acciones del bot
   corporativo existente.
-Evidencia: Contacto tecnico; configuracion o diagrama saneado; contrato de
-  autenticacion; ambiente de prueba; payloads de ejemplo sin datos reales;
-  proceso de despliegue y rollback.
 Impacto: Sin esta evidencia no puede validarse ni declararse completa la
   integracion corporativa del Bloque 9.
-Recomendacion: Mantener neutral `IConversationChannel` y no acoplar el dominio a
-  una plataforma no confirmada.
-Owner: Equipo actual del bot de Teams / Collaboration / Automation.
+
+Gates externos del Bloque 10:
+- UEMS y procedimiento de despliegue/retiro;
+- cuenta restringida del agente;
+- revision Security/Sophos;
+- identidad de usuario y dispositivo;
+- kill switch y owner operativo;
+- logs, retencion y respuesta ante compromiso;
+- paquete y confianza de publicador;
+- dos endpoints autorizados y criterio de restauracion.
 
 Gate base:
 .\scripts\Validate.ps1
@@ -130,8 +152,9 @@ corepack pnpm@11.5.3 audit --prod --audit-level high
 .\scripts\Test-Secrets.ps1
 
 Al terminar:
-- informa alcance implementado, archivos, contratos y pruebas;
+- informa alcance implementado, archivos, controles y pruebas;
 - lista riesgos y pendientes externos;
-- actualiza estado documental;
+- actualiza documento propietario, evidencia, `WORKFLOW.md`,
+  `CURRENT_CONTEXT.md` y el threat model;
 - recomienda un Conventional Commit;
 - no hagas commit ni push automaticamente.

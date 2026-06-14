@@ -3,9 +3,10 @@
 ## Estado
 
 Documento transversal de referencia; no es un bloque activo. Durante el
-Bloque 9 protege las fronteras del canal Teams y sus integraciones futuras. No
-autoriza OpenText, UEMS, Rescue, Power Automate ni operaciones productivas
-reales.
+Bloque 10 aporta requisitos operativos de despliegue, continuidad,
+deshabilitacion y retiro. El Bloque 9 permanece bloqueado por su integracion
+externa. Este documento no autoriza OpenText, UEMS, Rescue, Power Automate ni
+operaciones productivas reales.
 
 ## Topologia recomendada
 
