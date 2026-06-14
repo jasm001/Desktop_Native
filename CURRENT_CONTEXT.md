@@ -4,223 +4,54 @@ Fecha de ultima actualizacion: 2026-06-14.
 
 ## Objetivo inmediato
 
-Los Bloques 6 y 7 permanecen `completed`. El Bloque 8 es el unico bloque
-principal activo y esta `in_progress`.
+Los Bloques 0 a 8 estan `completed`. No hay bloque principal activo. El
+siguiente bloque desbloqueado es el Bloque 9: adaptar el canal Teams existente a
+la API compartida sin crear otro bot ni adelantar endurecimiento o portal.
 
-El primer incremento local del Bloque 8 agrega el caso operativo interno:
-`BotCase` uno a uno con `SupportRequest`, creacion transaccional, transiciones
-idempotentes por resultado, politica pura de 72 horas y consulta HTTP de solo
-lectura. El alcance vive en `docs/modules/case-foundation.md`.
-
-La segunda mitad debe agregar el evento de escalamiento, `ITicketingProvider`,
-el provider fake, `ExternalTicket` y su procesamiento por worker.
+El cierre tecnico del Bloque 8 vive en
+`docs/modules/case-foundation.md` y su gobierno en `modules/TICKETING.md`.
 
 ## Estado del repositorio
 
-- Repositorio independiente inicializado en `main`.
-- Remoto: `https://github.com/jasm001/Desktop_Native.git`.
-- Bloque 0 publicado en `e42fe2c`.
-- Bloque 1 publicado en `f18e8cf`; ajustes de toolchain y lockfiles publicados
-  en `5f6dae7` y `531faf6`.
-- Bloque 2 publicado en `0d1e315`.
-- Bloque 3 publicado en `b09f07a`.
-- Bloque 4 publicado en `b56bfcb`.
-- Bloque 5 publicado en `e3a0b8d`.
-- Incremento automatizado del Bloque 6 publicado en `f808425`.
-- Cierre documental y evidencia VM del Bloque 6 publicados en `bfb4a35`.
-- Fundacion del control plane del Bloque 7 publicada en `2b89a6b`.
-- Cierre del recorrido local del Bloque 7 publicado en `ed4789e`.
-- Los lockfiles Desktop/WindowsUi conservan solo el RID declarado `win-x64`.
-- Solucion .NET 10 y workspace pnpm creados por frontera.
-- `src/AdminWeb` es una aplicacion Next.js App Router con TypeScript estricto,
-  contratos HTTP v1 y modulos iniciales del control plane; no contiene portal.
-- `BotCase` se crea exactamente una vez dentro de la confirmacion existente y
-  conserva correlacion explicita con solicitud y trabajo.
-- Un resultado exitoso deja el caso en `attended_waiting_user`; un fallo lo deja
-  en `escalated`.
-- La politica de 72 horas solo calcula elegibilidad; no existe scheduler,
-  notificacion ni cierre automatico.
-- `ExternalTicket` y el provider fake todavia no estan implementados.
-- Identidad sintetica determinista habilitable solo en desarrollo.
-- Prisma/PostgreSQL con tres migraciones versionadas, timestamps gobernados por
-  la base, auditoria append-only y outbox transaccional.
-- La mutacion confirmada crea solicitud, trabajo, auditoria y outbox en una
-  transaccion, con idempotencia por clave y hash del payload.
-- `src/Worker` es un proceso Node separado y ejecutable con claim `SKIP LOCKED`,
-  lease, reintentos acotados y efectos sinteticos idempotentes.
-- El gate crea una base PostgreSQL efimera real, aplica migraciones, ejecuta
-  pruebas de AdminWeb/worker, levanta los procesos reales y elimina la base.
-- WinUI dispone de un cliente HTTP local, tipado y deshabilitado fuera del
-  perfil exacto de desarrollo.
-- El DeviceAgent inicia HTTP saliente hacia loopback, reclama solo trabajos
-  sinteticos allowlisted y reporta evidencia saneada.
-- El E2E verifica solicitud, despacho, simulacion, resultado y consulta final
-  con tres evidencias, sin ejecutar instalaciones reales.
-- Nullable, analyzers, warnings como errores y paquetes centralizados activos.
-- Pruebas unitarias, de contratos y de arquitectura iniciales activas.
-- Shell WinUI con cinco vistas, tema claro/oscuro, navegacion por teclado,
-  layout adaptable y datos sinteticos validada.
-- Dominio puro de catalogo con producto, version, licencia, estado,
-  alternativas, busqueda, filtros y decisiones tipadas.
-- Fixtures sinteticos cubren aprobado, comercial, no listado, EOL y prohibido.
-- La vista Catalogo consume el caso de uso mediante DI y no contiene reglas de
-  autorizacion.
-- Conversacion determinista con cinco estados, intenciones fijas, confirmacion
-  explicita, cancelacion e idempotencia por comando.
-- La referencia `SyntheticRequest` permanece local; en el perfil de desarrollo
-  la confirmacion tambien crea una solicitud sintetica del control plane, nunca
-  una solicitud corporativa.
-- La vista Asistente consume la maquina de estados mediante DI y mantiene el
-  texto libre deshabilitado.
-- Contrato IPC v1 con mensajes tipados para iniciar, consultar y cancelar
-  trabajos; no contiene comando ni argumentos libres.
-- DeviceAgent dividido entre host Worker y nucleo comprobable.
-- Named Pipe de desarrollo limitado al usuario actual y frames de hasta 64 KiB.
-- Autorizacion deny-by-default por version, mensaje, accion, target y version.
-- Trabajo simulado con progreso, cancelacion, evidencia saneada e idempotencia.
-- Estado local durable en SQLite y recuperacion de trabajos interrumpidos.
-- Snapshot diagnostico efimero por IPC con Windows, arquitectura,
-  almacenamiento agregado, memoria, red, dominio, version del agente y
-  prerrequisitos tipados.
-- Fallos parciales saneados, timeout de dominio y cancelacion cubiertos.
-- Los diagnosticos no persisten en SQLite ni exponen nombres internos, rutas,
-  archivos, IP o excepciones.
-- Ejecutable Desktop x64 autocontenido para desarrollo local.
-- SDK global `10.0.301` validado desde `C:\Program Files\dotnet`.
-- La CLI compila y ejecuta la shell. La depuracion en IDE requiere Visual Studio
-  2026 version 18.0 o posterior; Visual Studio 2022 no admite `net10.0`.
-- Gitleaks y CI de GitHub configurados.
-- Build Release y 113 pruebas pasan; la validacion completa del repositorio se
-  registra en `WORKFLOW.md`.
-- No existen secretos, datos corporativos ni integraciones productivas. La unica
-  accion privilegiada real permanece cerrada al perfil exacto `local-demo`.
-- Bloque 6 `completed` con manifiesto versionado para 7-Zip 26.01 x64 MSI,
-  SHA-256 obligatorio y perfil `local-demo` deshabilitado por defecto.
-- Acciones reales exactas de instalacion y desinstalacion seleccionan
-  `seven-zip.msi.v1`; IPC no acepta rutas, comandos, switches ni argumentos.
-- `Detect`, `Preflight`, `Install`, `Verify` y `Uninstall` estan implementados
-  con idempotencia, timeout de cinco minutos, codigos MSI tipados, verificacion
-  posterior y evidencia saneada.
-- La accion sintetica existente permanece disponible.
-- El token renovado mostro `S-1-5-32-578` habilitado y Hyper-V expuso una sola
-  VM de laboratorio con un checkpoint estandar.
-- La VM validada fue Windows 11 Pro Education build 26200 x64, generacion 2.
-- El MSI y `license.txt` conservaron longitud y SHA-256 fijados antes y dentro
-  de la VM.
-- Instalacion y desinstalacion reales terminaron con codigo MSI `0`; `Verify`
-  detecto la version exacta y las repeticiones fueron idempotentes.
-- Mirror ausente y hash corrupto fallaron cerrados con `ArtifactUnavailable` y
-  `ArtifactHashMismatch`.
-- El checkpoint fue restaurado y se confirmaron producto y artefactos de
-  laboratorio ausentes. El MSI nunca se ejecuto en la PC principal.
+- Rama principal `main`; remoto
+  `https://github.com/jasm001/Desktop_Native.git`.
+- La primera mitad del Bloque 8 esta publicada en `cb102f2`; el cierre completo
+  esta validado localmente y pendiente de commit del usuario.
+- `src/AdminWeb` es el control plane Next.js modular; no es el portal del
+  Bloque 11.
+- Prisma/PostgreSQL tiene cuatro migraciones versionadas.
+- Cada confirmacion crea una sola `SupportRequest`, `ExecutionJob` y `BotCase`.
+- Exito deja el caso en `attended_waiting_user` sin ticket.
+- Fallo deja el caso en `escalated` y publica
+  `bot-case.escalation-requested.v1` en la misma transaccion.
+- `src/Worker` valida el evento y usa `ITicketingProvider`.
+- `FakeTicketingProvider` es determinista, local, sin red y sin configuracion
+  corporativa.
+- `external_tickets` permite un solo ticket sintetico por caso.
+- La consulta HTTP del caso devuelve el ticket nullable sin efectos laterales.
+- La politica de 72 horas es pura; no existe scheduler ni cierre automatico.
+- Auditoria append-only, outbox, leases y reintentos acotados permanecen activos.
+- WinUI y DeviceAgent conservan el recorrido local del Bloque 7 y no recibieron
+  nuevas capacidades privilegiadas.
+- OpenText, Teams, Entra, UEMS, Hermes/RAG y portal productivos siguen
+  deshabilitados.
+- El gate completo mantiene 113 pruebas .NET; Node tiene 17 pruebas
+  unitarias/de contrato, 11 integraciones AdminWeb y 4 del Worker, mas el E2E
+  WinUI/DeviceAgent sobre PostgreSQL efimero.
 
 ## Siguiente reanudacion
 
-1. Confirmar que los Bloques 6 y 7 permanecen `completed` y el Bloque 8 es el
-   unico `in_progress`.
-2. Implementar el contrato de escalamiento y `ITicketingProvider` fake desde el
-   worker/outbox existente.
-3. Persistir `ExternalTicket` de forma idempotente y ampliar la consulta del
-   caso sin conectar OpenText real ni adelantar Teams o portal.
+1. Confirmar que los Bloques 0 a 8 permanecen `completed`.
+2. Leer el documento propietario del canal Teams antes de activar el Bloque 9.
+3. Reutilizar contratos y decisiones de la API compartida; no crear reglas de
+   catalogo, casos o ticketing dentro del canal.
+4. Mantener Teams y WinUI equivalentes para la misma entrada confirmada.
 
-## Alcance local acordado
+## Limites vigentes
 
-Puede avanzarse hasta una demostracion local de extremo a extremo en una VM
-Windows 11 personal:
-
-- DeviceAgent instalado como Windows Service de laboratorio;
-- WinUI mostrando diagnosticos reales por IPC;
-- primer adaptador real para software libre y redistribuible;
-- mirror local simulado con manifiesto y SHA-256;
-- API, PostgreSQL, worker, portal e identidad locales;
-- Hermes ejecutado localmente con API externa opcional y datos
-  publicos/sinteticos;
-- RAG, documentos e indice locales;
-- fallback determinista y operacion offline con politicas, autorizaciones,
-  acciones y artefactos ya disponibles;
-- UEMS, OpenText, Entra y Teams mediante adaptadores fake mientras no exista
-  aprobacion o acceso.
-
-Este alcance demuestra viabilidad tecnica. No equivale a piloto corporativo y
-no autoriza usar datos, credenciales, paquetes, mirrors o endpoints internos.
-Los limites tecnicos completos viven en `docs/modules/local-mvp-lab.md`.
-
-## Producto
-
-El sistema se compone de:
-
-- cliente WinUI 3 sin privilegios;
-- Windows Service restringido para acciones locales;
-- API compartida y worker;
-- canal Teams conectado posteriormente a la misma API;
-- portal administrativo web como plano de control.
-
-## Decisiones esenciales
-
-- C#/.NET 10 LTS, WinUI 3, Windows App SDK, MVVM y DI.
-- Next.js, TypeScript, Prisma y PostgreSQL para backend y portal.
-- UI, IA y Teams nunca ejecutan comandos privilegiados.
-- El agente acepta solo acciones tipadas y allowlisted.
-- Consultar no equivale a actuar: toda accion requiere propuesta y confirmacion.
-- El catalogo funciona sin IA.
-- OpenText, UEMS, Entra, IA externa y Azure se desarrollan primero mediante
-  contratos y adaptadores fake.
-- La prueba de viabilidad empieza con cliente/agente nativo y API compartida.
-- El bot de Teams existente se integra despues; no se crea otro bot.
-- El portal administrativo es el ultimo bloque funcional del plan inicial.
-
-## Alcance del primer recorrido
-
-El primer recorrido vertical usa datos sinteticos:
-
-1. abrir la app WinUI;
-2. consultar un catalogo local de prueba;
-3. seleccionar un software permitido;
-4. mostrar propuesta y pedir confirmacion;
-5. crear una solicitud idempotente;
-6. enviar un trabajo a un agente simulado;
-7. mostrar progreso y resultado;
-8. registrar evidencia local saneada.
-
-No instala software real durante este recorrido. WinUI crea y consulta una
-solicitud sintetica por HTTP; el agente la reclama de forma saliente y ejecuta
-solo la simulacion allowlisted. La shell no abre IPC para este flujo y no crea
-tickets ni solicitudes corporativas.
-
-## Pendientes que no bloquean el esqueleto
-
-- sede y equipos piloto;
-- acceso real a OpenText;
-- canal y requisitos definitivos de UEMS;
-- App Registration Entra;
-- hosting Azure;
-- proveedor de IA aprobado;
-- PKI/firma y reglas Sophos;
-- retencion corporativa.
-- perfil FortiClient EMS de maquina/pre-logon para una futura campana de
-  refresco de politicas;
-- prueba de alcance de dominio mediante Axis Atmos en el equipo fisico de
-  desarrollo.
-
-Estos pendientes bloquean integraciones o piloto, no la implementacion local.
-Los dos pendientes de conectividad de politicas tampoco bloquean el Bloque 6 ni
-el flujo principal; condicionan solo la mejora posterior descrita en
-`docs/modules/domain-policy-refresh.md`.
-
-El roadmap posterior tambien contempla autoservicio local, evidencia,
-reparaciones cerradas, almacenamiento, perifericos, mantenimiento, perfiles y
-reprovisionamiento. No modifica el Bloque 6 ni el plan principal. La direccion
-empresarial o independiente queda pendiente y se documenta en
-`docs/modules/endpoint-self-service.md` y
-`docs/modules/device-reprovisioning.md`.
-
-## Stopper
-
-Se considera stopper una decision que altere seguridad, privilegios, contratos
-publicos, persistencia, alcance o stack. Debe registrarse en `WORKFLOW.md` con:
-
-- evidencia;
-- alternativas;
-- impacto;
-- recomendacion;
-- decision requerida.
+- No usar datos, credenciales, endpoints ni identificadores corporativos.
+- No conectar OpenText real.
+- No permitir que Teams, WinUI, IA o portal ejecuten comandos.
+- No adelantar Bloques 10 u 11.
+- Registrar stopper en `WORKFLOW.md` si una decision cambia seguridad,
+  persistencia, contratos publicos, stack o alcance.

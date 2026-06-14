@@ -1,10 +1,14 @@
 import {
+  botCaseEscalationRequestedEventType,
+  botCaseEscalationRequestedEventV1Schema,
   executionJobResultRecordedEventType,
   executionJobResultRecordedEventV1Schema,
   supportRequestConfirmedEventType,
   supportRequestConfirmedEventV1Schema,
 } from "@it-support-native/control-plane-contracts";
 import type { Pool } from "pg";
+import type { ITicketingProvider } from "../ticketing/application/ticketing-provider.js";
+import { persistExternalTicket } from "../ticketing/infrastructure/external-ticket-store.js";
 import {
   claimNextOutboxEvent,
   completeOutboxEvent,
@@ -21,20 +25,30 @@ export type ProcessNextEventResult =
 export async function processNextOutboxEvent(
   pool: Pool,
   workerId: string,
+  ticketingProvider: ITicketingProvider,
 ): Promise<ProcessNextEventResult> {
   const event = await claimNextOutboxEvent(pool, workerId);
   if (event === null) {
     return { kind: "idle" };
   }
 
-  const effect = parseEffect(event);
-  if (effect === null) {
+  const parsedEvent = parseEvent(event);
+  if (parsedEvent === null) {
     return handleFailure(pool, event, "invalid_payload");
   }
 
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
+    const effect =
+      parsedEvent.kind === "ticket"
+        ? await createExternalTicketEffect(
+            client,
+            event,
+            ticketingProvider,
+            parsedEvent.escalation,
+          )
+        : parsedEvent;
     await completeOutboxEvent(
       client,
       event,
@@ -51,13 +65,27 @@ export async function processNextOutboxEvent(
   }
 }
 
-function parseEffect(
+type ParsedEvent =
+  | {
+      readonly kind: "effect";
+      readonly effectType: string;
+      readonly payload: unknown;
+    }
+  | {
+      readonly kind: "ticket";
+      readonly escalation: ReturnType<
+        typeof botCaseEscalationRequestedEventV1Schema.parse
+      >;
+    };
+
+function parseEvent(
   event: ClaimedOutboxEvent,
-): { readonly effectType: string; readonly payload: unknown } | null {
+): ParsedEvent | null {
   if (event.eventType === supportRequestConfirmedEventType) {
     const parsed = supportRequestConfirmedEventV1Schema.safeParse(event.payload);
     return parsed.success
       ? {
+          kind: "effect",
           effectType: "support-request.dispatch-ready.v1",
           payload: {
             requestId: parsed.data.requestId,
@@ -74,13 +102,54 @@ function parseEffect(
     );
     return parsed.success
       ? {
+          kind: "effect",
           effectType: "execution-job.result-recorded.v1",
           payload: parsed.data,
         }
       : null;
   }
 
+  if (event.eventType === botCaseEscalationRequestedEventType) {
+    const parsed = botCaseEscalationRequestedEventV1Schema.safeParse(
+      event.payload,
+    );
+    return parsed.success
+      ? {
+          kind: "ticket",
+          escalation: parsed.data,
+        }
+      : null;
+  }
+
   return null;
+}
+
+async function createExternalTicketEffect(
+  client: Parameters<typeof persistExternalTicket>[0],
+  event: ClaimedOutboxEvent,
+  ticketingProvider: ITicketingProvider,
+  escalation: ReturnType<
+    typeof botCaseEscalationRequestedEventV1Schema.parse
+  >,
+): Promise<{
+  readonly effectType: string;
+  readonly payload: unknown;
+}> {
+  const ticket = await persistExternalTicket(
+    client,
+    event,
+    ticketingProvider.createTicket(escalation),
+  );
+
+  return {
+    effectType: "bot-case.external-ticket-created.v1",
+    payload: {
+      ticketId: ticket.id,
+      caseId: ticket.caseId,
+      externalReference: ticket.externalReference,
+      result: "ticket_created",
+    },
+  };
 }
 
 async function handleFailure(

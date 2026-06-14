@@ -9,6 +9,7 @@ export class PrismaBotCaseRepository implements BotCaseRepository {
   public async findByRequestId(requestId: string): Promise<BotCase | null> {
     const botCase = await this.prisma.botCase.findUnique({
       where: { requestId },
+      include: { externalTicket: true },
     });
 
     return botCase === null ? null : mapBotCase(botCase);

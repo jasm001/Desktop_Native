@@ -1,95 +1,79 @@
-# Fundacion de casos internos
+# Casos internos y ticketing fake
 
 ## Estado
 
-Primer incremento del Bloque 8 implementado localmente. El bloque queda
-`in_progress`; ticketing fake y `ExternalTicket` permanecen para una unidad
-posterior.
+Bloque 8 `completed` el 2026-06-14.
 
-## Objetivo acotado
+## Alcance implementado
 
-Introducir el caso operativo interno sin conectar OpenText ni publicar eventos
-que el worker actual no pueda consumir.
-
-Este incremento incluye:
-
-- dominio tipado de `BotCase`;
-- relacion uno a uno con `SupportRequest`;
-- creacion del caso dentro de la transaccion confirmada existente;
-- transicion idempotente por resultado del agente;
-- politica pura de elegibilidad de cierre por falta de respuesta a las 72 horas;
-- persistencia PostgreSQL mediante migracion Prisma aditiva;
-- consulta HTTP v1 de solo lectura por solicitud;
+- un `BotCase` por `SupportRequest` confirmada, creado en la misma transaccion;
+- transiciones idempotentes de exito y fallo;
+- politica pura de elegibilidad de cierre a las 72 horas;
+- evento `bot-case.escalation-requested.v1` para resultados fallidos;
+- interfaz de aplicacion `ITicketingProvider`;
+- provider fake local, determinista y sin red;
+- un `ExternalTicket` sintetico por caso escalado;
+- procesamiento mediante claim, lease y retry del worker existente;
+- consulta HTTP v1 del caso y su ticket nullable;
 - auditoria append-only y payloads acotados.
 
 ## Relacion de entidades
 
-- `SupportRequest` representa la solicitud confirmada del usuario.
-- `ExecutionJob` representa la ejecucion tecnica asociada a esa solicitud.
-- `BotCase` representa el seguimiento operativo interno y existe exactamente
-  una vez por solicitud confirmada.
-- `ExternalTicket` representara una escalacion sintetica creada por el provider
-  fake; todavia no existe en persistencia.
+- `SupportRequest` conserva la solicitud confirmada.
+- `ExecutionJob` conserva la ejecucion tecnica.
+- `BotCase` conserva el seguimiento operativo interno.
+- `ExternalTicket` conserva la representacion sintetica del escalamiento.
 
-Los identificadores son independientes y la correlacion se conserva
-explicitamente. Repetir la misma idempotency key reutiliza la solicitud y el
-caso existentes.
+Los identificadores son independientes. Solicitud, trabajo, caso y ticket
+comparten correlacion explicita, pero no se sustituyen entre si.
 
-## Estados iniciales
+## Transiciones
 
-| Resultado tecnico | Estado del caso | Resultado del caso |
-| --- | --- | --- |
-| Pendiente | `open` | `pending` |
-| Exito | `attended_waiting_user` | `succeeded` |
-| Fallo | `escalated` | `failed` |
+| Resultado tecnico | Estado del caso | Resultado | Ticket |
+| --- | --- | --- | --- |
+| Pendiente | `open` | `pending` | ninguno |
+| Exito | `attended_waiting_user` | `succeeded` | ninguno |
+| Fallo | `escalated` | `failed` | uno, despues del worker |
 
-PostgreSQL exige combinaciones validas mediante un `CHECK`. Los timestamps de
-espera y escalamiento se asignan con `clock_timestamp()` dentro de la misma
-transaccion que actualiza solicitud, trabajo, auditoria y outbox de resultado.
+El fallo y la solicitud de escalamiento se escriben en la misma transaccion. El
+worker genera una referencia `FAKE-*`, una descripcion saneada y un ID
+determinista. La unicidad por `case_id` y la validacion del registro existente
+evitan duplicados ante reintentos.
 
-## Politica de 72 horas
+## Contratos
 
-La politica es una funcion pura y no cierra casos:
+El evento de escalamiento incluye solo:
 
-- solo aplica a `attended_waiting_user`;
-- requiere `waitingForUserSince`;
-- antes de 72 horas devuelve no elegible;
-- exactamente a las 72 horas y despues devuelve elegible.
+- IDs de caso, solicitud y trabajo;
+- correlacion;
+- categoria cerrada;
+- motivo tipado;
+- producto y version acotados.
 
-No se agregaron scheduler, cron, recordatorios, notificaciones ni mutaciones de
-cierre.
+No contiene comandos, scripts, rutas, logs, hostname, IP, credenciales, secretos
+ni texto operativo libre.
 
-## Superficie HTTP
-
-`GET /api/v1/requests/{requestId}/case` devuelve el caso relacionado sin crear
-auditoria, outbox, tickets ni otras mutaciones.
-
-El contrato usa enums y timestamps acotados. No acepta descripcion libre,
-comandos, scripts, rutas, logs ni campos desconocidos.
+`GET /api/v1/requests/{requestId}/case` es de solo lectura. Devuelve
+`externalTicket: null` antes del procesamiento y el ticket fake despues, sin
+crear auditoria, outbox ni otras mutaciones.
 
 ## Persistencia
 
-La migracion `20260614013000_bot_case_foundation` agrega:
+La migracion `20260614013000_bot_case_foundation` agrega `bot_cases`, estados,
+backfill y restricciones de consistencia.
 
-- enums `BotCaseCategory`, `BotCaseStatus` y `BotCaseResult`;
-- tabla `bot_cases`;
-- unicidad por `request_id`;
-- backfill de solicitudes existentes con estado derivado;
-- indices de correlacion y elegibilidad;
-- trigger de timestamps gobernados por PostgreSQL;
-- restriccion de estado consistente.
+La migracion `20260614090000_fake_ticketing` agrega:
 
-## Pendiente para la segunda mitad
+- enums `TicketingProvider` y `ExternalTicketStatus`;
+- tabla `external_tickets`;
+- unicidad por caso y referencia externa;
+- restriccion de motivos permitidos;
+- indice parcial que permite una sola publicacion de escalamiento por caso.
 
-- evento tipado de solicitud de escalamiento;
-- `ITicketingProvider`;
-- provider fake determinista e idempotente;
-- persistencia y consulta de `ExternalTicket`;
-- procesamiento de escalamiento mediante el worker y retry existente;
-- pruebas de no duplicacion del ticket fake.
+## Politica de 72 horas
 
-No se emite todavia un evento de ticket. Agregarlo sin consumidor haria que el
-worker actual agotara reintentos y marcara el outbox como fallido.
+La politica solo calcula elegibilidad para `attended_waiting_user`. No agrega
+scheduler, cron, recordatorios, notificaciones ni cierre automatico.
 
 ## Limites
 

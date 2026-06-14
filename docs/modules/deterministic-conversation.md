@@ -40,8 +40,8 @@ sesion.
 - autenticacion, autorizacion o ejecucion.
 
 El adaptador WinUI del Bloque 7 puede persistir una solicitud sintetica
-confirmada sin cambiar este dominio puro. El siguiente Bloque 8 agregara casos y
-ticketing fake fuera de `src/Conversation`.
+confirmada sin cambiar este dominio puro. El Bloque 8 agrego posteriormente
+casos y ticketing fake fuera de `src/Conversation`.
 
 ## Pruebas
 

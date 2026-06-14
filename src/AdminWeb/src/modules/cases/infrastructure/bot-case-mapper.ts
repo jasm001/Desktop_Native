@@ -1,7 +1,11 @@
 import type { BotCaseView } from "@it-support-native/control-plane-contracts";
-import type { BotCase as PrismaBotCase } from "../../../generated/prisma/client";
+import type { Prisma } from "../../../generated/prisma/client";
 
-export function mapBotCase(botCase: PrismaBotCase): BotCaseView {
+type BotCaseWithTicket = Prisma.BotCaseGetPayload<{
+  include: { externalTicket: true };
+}>;
+
+export function mapBotCase(botCase: BotCaseWithTicket): BotCaseView {
   return {
     id: botCase.id,
     requestId: botCase.requestId,
@@ -13,5 +17,23 @@ export function mapBotCase(botCase: PrismaBotCase): BotCaseView {
     escalatedAt: botCase.escalatedAt?.toISOString() ?? null,
     createdAt: botCase.createdAt.toISOString(),
     updatedAt: botCase.updatedAt.toISOString(),
+    externalTicket:
+      botCase.externalTicket === null
+        ? null
+        : {
+            id: botCase.externalTicket.id,
+            provider: "fake",
+            reference: botCase.externalTicket.externalReference,
+            category:
+              botCase.externalTicket.category.toLowerCase() as BotCaseView["category"],
+            status: "open",
+            correlationId: botCase.externalTicket.correlationId,
+            reasonCode:
+              botCase.externalTicket.reasonCode as NonNullable<
+                BotCaseView["externalTicket"]
+              >["reasonCode"],
+            description: botCase.externalTicket.description,
+            createdAt: botCase.externalTicket.createdAt.toISOString(),
+          },
   };
 }

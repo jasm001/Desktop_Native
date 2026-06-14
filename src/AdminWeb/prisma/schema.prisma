@@ -44,6 +44,14 @@ enum BotCaseResult {
   FAILED
 }
 
+enum TicketingProvider {
+  FAKE
+}
+
+enum ExternalTicketStatus {
+  OPEN
+}
+
 model Device {
   id          String   @id @db.VarChar(128)
   displayName String   @map("display_name") @db.VarChar(120)
@@ -92,11 +100,30 @@ model BotCase {
   createdAt           DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt           DateTime        @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  request SupportRequest @relation(fields: [requestId], references: [id], onDelete: Restrict)
+  request        SupportRequest  @relation(fields: [requestId], references: [id], onDelete: Restrict)
+  externalTicket ExternalTicket?
 
   @@index([status, waitingForUserSince])
   @@index([correlationId])
   @@map("bot_cases")
+}
+
+model ExternalTicket {
+  id                String               @id @db.Uuid
+  caseId            String               @unique @map("case_id") @db.Uuid
+  provider          TicketingProvider    @default(FAKE)
+  externalReference String               @unique @map("external_reference") @db.VarChar(64)
+  category          BotCaseCategory
+  status            ExternalTicketStatus @default(OPEN)
+  correlationId     String               @map("correlation_id") @db.VarChar(100)
+  reasonCode        String               @map("reason_code") @db.VarChar(64)
+  description       String               @db.VarChar(200)
+  createdAt         DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  botCase BotCase @relation(fields: [caseId], references: [id], onDelete: Restrict)
+
+  @@index([correlationId])
+  @@map("external_tickets")
 }
 
 model ExecutionJob {

@@ -1,6 +1,8 @@
 import { beforeAll, afterAll, describe, expect, it } from "vitest";
 import {
   apiErrorEnvelopeSchema,
+  botCaseEscalationRequestedEventType,
+  botCaseEscalationRequestedEventV1Schema,
   catalogResponseSchema,
   claimAgentJobResponseSchema,
   createSoftwareInstallationResponseSchema,
@@ -47,6 +49,7 @@ describe("control plane persistence", () => {
     await prisma.auditEvent.deleteMany();
     await prisma.executionEvidence.deleteMany();
     await prisma.executionJob.deleteMany();
+    await prisma.externalTicket.deleteMany();
     await prisma.botCase.deleteMany();
     await prisma.supportRequest.deleteMany();
     await prisma.device.upsert({
@@ -279,6 +282,7 @@ describe("control plane persistence", () => {
       requestId: existing.id,
       status: "open",
       result: "pending",
+      externalTicket: null,
     });
     expect(catalogResponse.status).toBe(200);
     expect(
@@ -477,6 +481,59 @@ describe("control plane persistence", () => {
     await expect(
       prisma.botCase.count({ where: { requestId: created.request.id } }),
     ).resolves.toBe(1);
+    const escalationEvents = await prisma.outboxEvent.findMany({
+      where: {
+        aggregateType: "bot-case",
+        eventType: botCaseEscalationRequestedEventType,
+        payload: {
+          path: ["requestId"],
+          equals: created.request.id,
+        },
+      },
+    });
+    expect(escalationEvents).toHaveLength(1);
+    const escalation = botCaseEscalationRequestedEventV1Schema.parse(
+      escalationEvents[0]?.payload,
+    );
+    expect(escalation).toMatchObject({
+      requestId: created.request.id,
+      jobId: claim.jobId,
+      reasonCode: "execution_failed",
+      productId: input.productId,
+      productVersion: input.productVersion,
+    });
+    await expect(prisma.externalTicket.count()).resolves.toBe(0);
+
+    const externalTicketId = crypto.randomUUID();
+    await prisma.externalTicket.create({
+      data: {
+        id: externalTicketId,
+        caseId: escalation.caseId,
+        externalReference: `FAKE-${externalTicketId.replaceAll("-", "").slice(0, 20).toUpperCase()}`,
+        category: "SOFTWARE_INSTALLATION",
+        correlationId: escalation.correlationId,
+        reasonCode: escalation.reasonCode,
+        description:
+          "Synthetic escalation for secure-transfer 6.5; human support review required.",
+      },
+    });
+    const caseResponse = await getBotCaseRoute(
+      new Request(
+        `http://localhost/api/v1/requests/${created.request.id}/case`,
+        { headers: { "x-correlation-id": "ticket-query-correlation" } },
+      ),
+      { params: Promise.resolve({ requestId: created.request.id }) },
+    );
+    expect(
+      getBotCaseResponseSchema.parse(await caseResponse.json()).data.case
+        .externalTicket,
+    ).toMatchObject({
+      id: externalTicketId,
+      provider: "fake",
+      category: "software_installation",
+      status: "open",
+      reasonCode: "execution_failed",
+    });
   });
 
   it("fails a job after three expired agent claims", async () => {
@@ -558,18 +615,29 @@ describe("control plane persistence", () => {
       where: { requestId: created.request.id },
     });
     expect(escalatedCase.escalatedAt).not.toBeNull();
+    const escalation = await prisma.outboxEvent.findFirstOrThrow({
+      where: {
+        aggregateId: escalatedCase.id,
+        eventType: botCaseEscalationRequestedEventType,
+      },
+    });
+    expect(
+      botCaseEscalationRequestedEventV1Schema.parse(escalation.payload)
+        .reasonCode,
+    ).toBe("claim_lease_exhausted");
   });
 
   async function mutationCounts() {
-    const [requests, jobs, cases, audits, outbox] = await Promise.all([
+    const [requests, jobs, cases, tickets, audits, outbox] = await Promise.all([
       prisma.supportRequest.count(),
       prisma.executionJob.count(),
       prisma.botCase.count(),
+      prisma.externalTicket.count(),
       prisma.auditEvent.count(),
       prisma.outboxEvent.count(),
     ]);
 
-    return { requests, jobs, cases, audits, outbox };
+    return { requests, jobs, cases, tickets, audits, outbox };
   }
 
   function agentRequest(

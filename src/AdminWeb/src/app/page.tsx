@@ -3,14 +3,18 @@ const implementedCapabilities = [
   "PostgreSQL transactions with append-only audit and outbox",
   "One internal BotCase for every confirmed support request",
   "Idempotent success and failure transitions",
+  "Typed escalation event emitted with the failed result",
+  "Deterministic ITicketingProvider fake",
+  "One synthetic ExternalTicket per escalated case",
+  "Worker retry processing without duplicate tickets",
   "Pure 72-hour no-response eligibility policy",
 ] as const;
 
-const pendingCapabilities = [
-  "Typed escalation event",
-  "Deterministic ITicketingProvider fake",
-  "Synthetic ExternalTicket persistence",
-  "Worker processing for fake ticket creation",
+const protectedBoundaries = [
+  "No OpenText network connection or corporate identifiers",
+  "No Teams channel implementation before Block 9",
+  "No administrative portal behavior before Block 11",
+  "No privileged command execution from the control plane",
 ] as const;
 
 export default function ControlPlaneStatusPage() {
@@ -18,12 +22,12 @@ export default function ControlPlaneStatusPage() {
     <main className="status-page">
       <header className="status-header">
         <p className="eyebrow">IT Support Native</p>
-        <p className="status-badge">Block 8 in progress</p>
-        <h1>Internal case foundation</h1>
+        <p className="status-badge">Block 8 completed</p>
+        <h1>Internal cases and fake ticketing</h1>
         <p className="lede">
-          The local control plane now creates and tracks one typed internal case
-          for every confirmed synthetic request. This is an engineering status
-          surface, not the administrative portal.
+          The local control plane tracks each confirmed synthetic request,
+          escalates failed execution through the durable worker, and exposes one
+          deterministic fake ticket. This remains an engineering status surface.
         </p>
       </header>
 
@@ -39,10 +43,10 @@ export default function ControlPlaneStatusPage() {
         </article>
 
         <article>
-          <p className="section-label">Next increment</p>
-          <h2>Fake ticketing</h2>
+          <p className="section-label">Protected</p>
+          <h2>Current boundaries</h2>
           <ul>
-            {pendingCapabilities.map((capability) => (
+            {protectedBoundaries.map((capability) => (
               <li key={capability}>{capability}</li>
             ))}
           </ul>
@@ -55,9 +59,8 @@ export default function ControlPlaneStatusPage() {
           GET /api/v1/requests/&#123;requestId&#125;/case
         </code>
         <p>
-          This endpoint is read-only. No OpenText connection, Teams channel,
-          administrative portal, UEMS integration, or privileged command
-          execution is enabled.
+          This endpoint is read-only and returns the synthetic ticket only after
+          worker processing. Block 9 is the next planned unit.
         </p>
       </section>
     </main>

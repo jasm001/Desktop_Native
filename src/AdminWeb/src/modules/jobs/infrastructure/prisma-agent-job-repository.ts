@@ -1,6 +1,8 @@
 import {
+  botCaseEscalationRequestedEventType,
   executionJobResultRecordedEventType,
   supportRequestConfirmedEventType,
+  type BotCaseEscalationRequestedEventV1,
   type ClaimedAgentJob,
   type ExecutionJobResultRecordedEventV1,
   type ReportAgentJobResultRequest,
@@ -46,6 +48,8 @@ interface ExpiredRow {
   readonly request_id: string;
   readonly correlation_id: string;
   readonly device_id: string;
+  readonly product_id: string;
+  readonly product_version: string;
 }
 
 export class PrismaAgentJobRepository implements AgentJobRepository {
@@ -314,6 +318,19 @@ export class PrismaAgentJobRepository implements AgentJobRepository {
           deviceId: existing.request.deviceId,
           result: result.result,
         });
+        if (result.result === "failed") {
+          await insertEscalationOutbox(transaction, {
+            version: 1,
+            caseId: botCase.id,
+            requestId: existing.requestId,
+            jobId,
+            correlationId,
+            category: "software_installation",
+            reasonCode: "execution_failed",
+            productId: existing.request.productId,
+            productVersion: existing.request.productVersion,
+          });
+        }
 
         const request = await loadRequest(transaction, existing.requestId);
         return { request: mapSupportRequest(request), replayed: false };
@@ -349,7 +366,9 @@ async function failExhaustedClaims(
         job.id,
         request.id AS request_id,
         request.correlation_id,
-        request.device_id
+        request.device_id,
+        request.product_id,
+        request.product_version
       FROM execution_jobs AS job
       JOIN support_requests AS request ON request.id = job.request_id
       WHERE job.status = 'RUNNING'
@@ -375,7 +394,9 @@ async function failExhaustedClaims(
       job.id AS job_id,
       candidate.request_id,
       candidate.correlation_id,
-      candidate.device_id
+      candidate.device_id,
+      candidate.product_id,
+      candidate.product_version
   `;
 
   for (const row of expired) {
@@ -447,6 +468,17 @@ async function failExhaustedClaims(
       deviceId: row.device_id,
       result: "failed",
     });
+    await insertEscalationOutbox(transaction, {
+      version: 1,
+      caseId: botCase.id,
+      requestId: row.request_id,
+      jobId: row.job_id,
+      correlationId: row.correlation_id,
+      category: "software_installation",
+      reasonCode: "claim_lease_exhausted",
+      productId: row.product_id,
+      productVersion: row.product_version,
+    });
   }
 }
 
@@ -506,6 +538,36 @@ async function insertResultOutbox(
       'execution-job',
       ${event.jobId},
       ${executionJobResultRecordedEventType},
+      ${JSON.stringify(event)}::jsonb,
+      'PENDING',
+      0,
+      clock_timestamp(),
+      clock_timestamp()
+    )
+  `;
+}
+
+async function insertEscalationOutbox(
+  transaction: Prisma.TransactionClient,
+  event: BotCaseEscalationRequestedEventV1,
+): Promise<void> {
+  await transaction.$executeRaw`
+    INSERT INTO outbox_events (
+      id,
+      aggregate_type,
+      aggregate_id,
+      event_type,
+      payload,
+      status,
+      attempt_count,
+      available_at,
+      created_at
+    )
+    VALUES (
+      ${randomUUID()}::uuid,
+      'bot-case',
+      ${event.caseId},
+      ${botCaseEscalationRequestedEventType},
       ${JSON.stringify(event)}::jsonb,
       'PENDING',
       0,

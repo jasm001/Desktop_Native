@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
+  botCaseEscalationRequestedEventV1Schema,
   botCaseViewSchema,
   claimAgentJobRequestSchema,
   createSoftwareInstallationRequestSchema,
@@ -84,6 +85,7 @@ describe("HTTP v1 contracts", () => {
       escalatedAt: null,
       createdAt: "2026-06-13T18:00:00.000Z",
       updatedAt: "2026-06-13T18:30:00.000Z",
+      externalTicket: null,
     });
 
     expect(result.success).toBe(true);
@@ -93,5 +95,58 @@ describe("HTTP v1 contracts", () => {
         description: "unbounded operational detail",
       }).success,
     ).toBe(false);
+  });
+
+  it("accepts only a sanitized typed escalation event", () => {
+    const event = {
+      version: 1,
+      caseId: randomUUID(),
+      requestId: randomUUID(),
+      jobId: randomUUID(),
+      correlationId: "correlation-1",
+      category: "software_installation",
+      reasonCode: "execution_failed",
+      productId: "secure-transfer",
+      productVersion: "6.5",
+    };
+
+    expect(
+      botCaseEscalationRequestedEventV1Schema.safeParse(event).success,
+    ).toBe(true);
+    expect(
+      botCaseEscalationRequestedEventV1Schema.safeParse({
+        ...event,
+        logs: "untrusted diagnostic output",
+      }).success,
+    ).toBe(false);
+  });
+
+  it("accepts a bounded synthetic external ticket view", () => {
+    const result = botCaseViewSchema.safeParse({
+      id: randomUUID(),
+      requestId: randomUUID(),
+      correlationId: "correlation-1",
+      category: "software_installation",
+      status: "escalated",
+      result: "failed",
+      waitingForUserSince: null,
+      escalatedAt: "2026-06-14T08:00:00.000Z",
+      createdAt: "2026-06-14T07:55:00.000Z",
+      updatedAt: "2026-06-14T08:00:00.000Z",
+      externalTicket: {
+        id: randomUUID(),
+        provider: "fake",
+        reference: "FAKE-1234567890ABCDEF",
+        category: "software_installation",
+        status: "open",
+        correlationId: "correlation-1",
+        reasonCode: "execution_failed",
+        description:
+          "Synthetic escalation for secure-transfer 6.5; human support review required.",
+        createdAt: "2026-06-14T08:00:01.000Z",
+      },
+    });
+
+    expect(result.success).toBe(true);
   });
 });

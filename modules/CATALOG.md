@@ -45,8 +45,8 @@ Las reglas vigentes del incremento son:
 
 Una propuesta sigue siendo solo una decision de catalogo. No crea solicitud,
 ticket, trabajo ni instalacion. El Bloque 7 implemento la solicitud y el trabajo
-sinteticos confirmados; el siguiente Bloque 8 modelara `BotCase`, escalamiento y
-ticketing fake sin cambiar estas reglas de catalogo.
+sinteticos confirmados; el Bloque 8 agrego `BotCase`, escalamiento y ticketing
+fake sin cambiar estas reglas de catalogo.
 
 ## Regla
 

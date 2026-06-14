@@ -1,26 +1,32 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
+  botCaseEscalationRequestedEventType,
   executionJobResultRecordedEventType,
+  type BotCaseEscalationRequestedEventV1,
   type ExecutionJobResultRecordedEventV1,
   supportRequestConfirmedEventType,
   type SupportRequestConfirmedEventV1,
 } from "@it-support-native/control-plane-contracts";
 import { closeWorkerPool, getWorkerPool } from "../../src/platform/database";
 import { processNextOutboxEvent } from "../../src/outbox/process-next-event";
+import { FakeTicketingProvider } from "../../src/ticketing/infrastructure/fake-ticketing-provider";
 
 describe("outbox worker", () => {
   const pool = getWorkerPool();
+  const ticketingProvider = new FakeTicketingProvider();
+  const requestId = crypto.randomUUID();
+  const jobId = crypto.randomUUID();
+  const caseId = crypto.randomUUID();
 
   beforeAll(async () => {
     await pool.query("DELETE FROM synthetic_outbox_effects");
     await pool.query("DELETE FROM outbox_events");
     await pool.query("DELETE FROM execution_evidence");
     await pool.query("DELETE FROM execution_jobs");
+    await pool.query("DELETE FROM external_tickets");
     await pool.query("DELETE FROM bot_cases");
     await pool.query("DELETE FROM support_requests");
 
-    const requestId = crypto.randomUUID();
-    const jobId = crypto.randomUUID();
     const event: SupportRequestConfirmedEventV1 = {
       version: 1,
       requestId,
@@ -136,7 +142,7 @@ describe("outbox worker", () => {
               clock_timestamp()
             )
         `,
-        [crypto.randomUUID(), requestId, event.correlationId],
+        [caseId, requestId, event.correlationId],
       );
       await client.query(
         `
@@ -201,10 +207,12 @@ describe("outbox worker", () => {
     const first = await processNextOutboxEvent(
       pool,
       "worker-integration-test",
+      ticketingProvider,
     );
     const second = await processNextOutboxEvent(
       pool,
       "worker-integration-test",
+      ticketingProvider,
     );
     const effects = await pool.query<{ count: string }>(
       `
@@ -274,11 +282,23 @@ describe("outbox worker", () => {
       ],
     );
 
-    const first = await processNextOutboxEvent(pool, "worker-retry-test");
+    const first = await processNextOutboxEvent(
+      pool,
+      "worker-retry-test",
+      ticketingProvider,
+    );
     await makeAvailable(invalidEventId);
-    const second = await processNextOutboxEvent(pool, "worker-retry-test");
+    const second = await processNextOutboxEvent(
+      pool,
+      "worker-retry-test",
+      ticketingProvider,
+    );
     await makeAvailable(invalidEventId);
-    const third = await processNextOutboxEvent(pool, "worker-retry-test");
+    const third = await processNextOutboxEvent(
+      pool,
+      "worker-retry-test",
+      ticketingProvider,
+    );
     const state = await pool.query<{
       status: string;
       attempt_count: number;
@@ -337,8 +357,16 @@ describe("outbox worker", () => {
       ],
     );
 
-    const first = await processNextOutboxEvent(pool, "worker-result-test");
-    const second = await processNextOutboxEvent(pool, "worker-result-test");
+    const first = await processNextOutboxEvent(
+      pool,
+      "worker-result-test",
+      ticketingProvider,
+    );
+    const second = await processNextOutboxEvent(
+      pool,
+      "worker-result-test",
+      ticketingProvider,
+    );
     const effects = await pool.query<{
       count: string;
       effect_type: string;
@@ -359,6 +387,111 @@ describe("outbox worker", () => {
         effect_type: "execution-job.result-recorded.v1",
       },
     ]);
+  });
+
+  it("creates one external ticket when the escalation event is retried", async () => {
+    const escalationEventId = crypto.randomUUID();
+    const escalation: BotCaseEscalationRequestedEventV1 = {
+      version: 1,
+      caseId,
+      requestId,
+      jobId,
+      correlationId: "worker-integration-correlation",
+      category: "software_installation",
+      reasonCode: "execution_failed",
+      productId: "secure-transfer",
+      productVersion: "6.5",
+    };
+    await pool.query(
+      `
+        UPDATE bot_cases
+        SET
+          status = 'ESCALATED',
+          result = 'FAILED',
+          waiting_for_user_since = NULL,
+          escalated_at = clock_timestamp()
+        WHERE id = $1
+      `,
+      [caseId],
+    );
+    await pool.query(
+      `
+        INSERT INTO outbox_events (
+          id,
+          aggregate_type,
+          aggregate_id,
+          event_type,
+          payload,
+          status,
+          attempt_count,
+          available_at,
+          created_at
+        )
+        VALUES ($1, 'bot-case', $2, $3, $4::jsonb, 'PENDING', 0, now(), now())
+      `,
+      [
+        escalationEventId,
+        caseId,
+        botCaseEscalationRequestedEventType,
+        JSON.stringify(escalation),
+      ],
+    );
+
+    const first = await processNextOutboxEvent(
+      pool,
+      "worker-ticket-test",
+      ticketingProvider,
+    );
+    await pool.query(
+      `
+        UPDATE outbox_events
+        SET
+          status = 'PENDING',
+          completed_at = NULL,
+          available_at = clock_timestamp()
+        WHERE id = $1
+      `,
+      [escalationEventId],
+    );
+    const retry = await processNextOutboxEvent(
+      pool,
+      "worker-ticket-test",
+      ticketingProvider,
+    );
+    const tickets = await pool.query<{
+      external_reference: string;
+      reason_code: string;
+      description: string;
+    }>(
+      `
+        SELECT external_reference, reason_code, description
+        FROM external_tickets
+        WHERE case_id = $1
+      `,
+      [caseId],
+    );
+    const audits = await pool.query<{ count: string }>(
+      `
+        SELECT count(*)::text AS count
+        FROM audit_events
+        WHERE event_type = 'external-ticket.created'
+          AND entity_id = (SELECT id::text FROM external_tickets WHERE case_id = $1)
+      `,
+      [caseId],
+    );
+
+    expect(first.kind).toBe("completed");
+    expect(retry.kind).toBe("completed");
+    expect(tickets.rows).toHaveLength(1);
+    expect(tickets.rows[0]).toMatchObject({
+      reason_code: "execution_failed",
+      description:
+        "Synthetic escalation for secure-transfer 6.5; human support review required.",
+    });
+    expect(tickets.rows[0]?.external_reference).toMatch(
+      /^FAKE-[A-F0-9]{20}$/u,
+    );
+    expect(audits.rows[0]?.count).toBe("1");
   });
 
   async function makeAvailable(eventId: string): Promise<void> {

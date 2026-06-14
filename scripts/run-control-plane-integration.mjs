@@ -234,6 +234,7 @@ async function resetBusinessData(connectionString) {
     await client.query("DELETE FROM outbox_events");
     await client.query("DELETE FROM execution_evidence");
     await client.query("DELETE FROM execution_jobs");
+    await client.query("DELETE FROM external_tickets");
     await client.query("DELETE FROM bot_cases");
     await client.query("DELETE FROM support_requests");
   } finally {
@@ -260,6 +261,7 @@ async function verifyEndToEndState(connectionString) {
             ) AS attended_cases,
             (SELECT count(*) FROM execution_jobs WHERE status = 'COMPLETED') AS completed_jobs,
             (SELECT count(*) FROM execution_evidence) AS evidence,
+            (SELECT count(*) FROM external_tickets) AS external_tickets,
             (SELECT count(*) FROM outbox_events WHERE status = 'COMPLETED') AS completed_outbox,
             (SELECT count(*) FROM synthetic_outbox_effects) AS effects
         `,
@@ -271,6 +273,7 @@ async function verifyEndToEndState(connectionString) {
         row.attended_cases === "1" &&
         row.completed_jobs === "1" &&
         row.evidence === "3" &&
+        row.external_tickets === "0" &&
         row.completed_outbox === "2" &&
         row.effects === "2"
       ) {

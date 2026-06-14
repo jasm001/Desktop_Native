@@ -125,7 +125,7 @@ No permitido:
 
 ## Limite de avance
 
-Los Bloques 6 y 7 ya cerraron sus gates locales. El Bloque 8 es el siguiente y
+Los Bloques 6, 7 y 8 ya cerraron sus gates locales. El Bloque 9 es el siguiente y
 los Bloques 8-11 pueden preparar sus dominios, UI, persistencia y adaptadores
 locales/fake. Ninguno puede declararse corporativamente validado mientras
 falten:

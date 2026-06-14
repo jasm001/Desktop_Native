@@ -1,10 +1,12 @@
 import { setTimeout as delay } from "node:timers/promises";
 import { closeWorkerPool, getWorkerPool } from "./platform/database.js";
 import { processNextOutboxEvent } from "./outbox/process-next-event.js";
+import { FakeTicketingProvider } from "./ticketing/infrastructure/fake-ticketing-provider.js";
 
 const workerId = `worker-${crypto.randomUUID()}`;
 const runOnce = process.argv.includes("--once");
 const pool = getWorkerPool();
+const ticketingProvider = new FakeTicketingProvider();
 const shutdown = new AbortController();
 
 process.once("SIGINT", () => {
@@ -16,7 +18,11 @@ process.once("SIGTERM", () => {
 
 try {
   for (;;) {
-    const result = await processNextOutboxEvent(pool, workerId);
+    const result = await processNextOutboxEvent(
+      pool,
+      workerId,
+      ticketingProvider,
+    );
     if (runOnce || shutdown.signal.aborted) {
       break;
     }

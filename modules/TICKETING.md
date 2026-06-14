@@ -2,11 +2,12 @@
 
 ## Estado
 
-Documento propietario del Bloque 8 `in_progress`.
+Documento propietario del Bloque 8 `completed` el 2026-06-14.
 
-El primer incremento acotado implementa la fundacion de `BotCase`, su relacion
-uno a uno con `SupportRequest`, las transiciones por resultado, la consulta de
-solo lectura y la politica pura de 72 horas. La evidencia tecnica vive en
+La implementacion local incluye `BotCase`, transiciones por resultado, consulta
+de solo lectura, politica pura de 72 horas, evento tipado de escalamiento,
+`ITicketingProvider`, provider fake, `ExternalTicket` y procesamiento
+idempotente por worker. La evidencia tecnica vive en
 `../docs/modules/case-foundation.md`.
 
 El Bloque 8 usa `ITicketingProvider` fake y datos sinteticos. No conecta
@@ -27,9 +28,20 @@ Durante el Bloque 8, `ExternalTicket` es una representacion sintetica producida
 por el provider fake. Las referencias a estados, campos y flujos de OpenText en
 este documento definen el contrato futuro; no autorizan una conexion real.
 
-La segunda mitad del bloque debe agregar el evento de escalamiento,
-`ITicketingProvider`, el provider fake, `ExternalTicket` y su procesamiento por
-worker. Hasta entonces no se publica un evento de ticket sin consumidor.
+El evento de escalamiento solo se publica para un caso fallido y ya tiene un
+consumidor local. El provider fake no usa red ni configuracion corporativa y
+crea una unica representacion sintetica por caso.
+
+## Implementacion local cerrada
+
+1. El resultado fallido deja `BotCase` en `escalated`.
+2. La misma transaccion publica `bot-case.escalation-requested.v1`.
+3. El worker valida el payload y llama `ITicketingProvider`.
+4. `FakeTicketingProvider` deriva ID, referencia y descripcion saneada.
+5. PostgreSQL persiste un solo `ExternalTicket` por `case_id`.
+6. El endpoint del caso expone el ticket cuando el worker termina.
+
+El resultado exitoso nunca publica escalamiento ni crea ticket.
 
 ## Modelo recomendado
 

@@ -140,6 +140,20 @@ export const botCaseResultSchema = z.enum([
   "failed",
 ]);
 
+export const externalTicketViewSchema = z
+  .object({
+    id: requestIdSchema,
+    provider: z.literal("fake"),
+    reference: boundedIdentifierSchema,
+    category: botCaseCategorySchema,
+    status: z.literal("open"),
+    correlationId: correlationIdSchema,
+    reasonCode: z.enum(["execution_failed", "claim_lease_exhausted"]),
+    description: z.string().min(1).max(200),
+    createdAt: z.iso.datetime(),
+  })
+  .strict();
+
 export const botCaseViewSchema = z
   .object({
     id: requestIdSchema,
@@ -152,6 +166,7 @@ export const botCaseViewSchema = z
     escalatedAt: z.iso.datetime().nullable(),
     createdAt: z.iso.datetime(),
     updatedAt: z.iso.datetime(),
+    externalTicket: externalTicketViewSchema.nullable(),
   })
   .strict();
 

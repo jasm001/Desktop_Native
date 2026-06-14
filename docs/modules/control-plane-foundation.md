@@ -115,6 +115,7 @@ PostgreSQL 18 local, `DATABASE_URL` conecta correctamente y el rol tiene
 
 ## Siguiente bloque
 
-El Bloque 8 esta desbloqueado y permanece `pending`. Debe agregar casos,
+Al cierre de este documento el Bloque 8 estaba desbloqueado. Posteriormente
+quedo `completed` y agrego casos,
 escalamiento y `ITicketingProvider` fake sobre estas fronteras sin conectar
 OpenText real.

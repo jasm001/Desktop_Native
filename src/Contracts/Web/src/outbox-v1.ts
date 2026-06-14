@@ -9,6 +9,8 @@ export const supportRequestConfirmedEventType =
   "support-request.confirmed.v1" as const;
 export const executionJobResultRecordedEventType =
   "execution-job.result-recorded.v1" as const;
+export const botCaseEscalationRequestedEventType =
+  "bot-case.escalation-requested.v1" as const;
 
 export const supportRequestConfirmedEventV1Schema = z
   .object({
@@ -41,4 +43,27 @@ export const executionJobResultRecordedEventV1Schema = z
 
 export type ExecutionJobResultRecordedEventV1 = z.infer<
   typeof executionJobResultRecordedEventV1Schema
+>;
+
+export const botCaseEscalationReasonSchema = z.enum([
+  "execution_failed",
+  "claim_lease_exhausted",
+]);
+
+export const botCaseEscalationRequestedEventV1Schema = z
+  .object({
+    version: z.literal(1),
+    caseId: requestIdSchema,
+    requestId: requestIdSchema,
+    jobId: requestIdSchema,
+    correlationId: correlationIdSchema,
+    category: z.literal("software_installation"),
+    reasonCode: botCaseEscalationReasonSchema,
+    productId: boundedIdentifierSchema,
+    productVersion: boundedIdentifierSchema,
+  })
+  .strict();
+
+export type BotCaseEscalationRequestedEventV1 = z.infer<
+  typeof botCaseEscalationRequestedEventV1Schema
 >;

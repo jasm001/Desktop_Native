@@ -9,8 +9,8 @@ and durable synthetic jobs. Block 5 adds bounded read-only device diagnostics
 with partial typed results. Block 6 adds one closed 7-Zip MSI adapter validated
 only in a disposable Windows 11 VM. Block 7 completes the shared control plane,
 PostgreSQL persistence, durable worker, and local simulated-agent flow. Block 8
-is in progress with the internal `BotCase` foundation. No production
-integration or administrative portal behavior is implemented.
+completes internal `BotCase` tracking and deterministic fake ticketing. No
+production integration or administrative portal behavior is implemented.
 
 ## Current Status
 
@@ -26,11 +26,11 @@ integration or administrative portal behavior is implemented.
 - Block 6: closed 7-Zip 26.01 x64 adapter and disposable VM matrix completed.
 - Block 7: shared API, PostgreSQL persistence, transactional outbox, durable
   worker, and local WinUI-to-simulated-agent flow completed.
-- Block 8: in progress. The first increment adds one internal `BotCase` per
-  confirmed request, result transitions, a pure 72-hour eligibility policy,
-  PostgreSQL persistence, and a read-only HTTP query.
-- Next increment: typed escalation, deterministic fake `ITicketingProvider`,
-  and synthetic `ExternalTicket`; real OpenText remains disabled.
+- Block 8: internal cases, typed escalation, deterministic fake
+  `ITicketingProvider`, synthetic `ExternalTicket`, worker idempotency, and the
+  pure 72-hour eligibility policy completed.
+- Next block: Block 9, adapting the existing Teams channel to the shared API;
+  real OpenText remains disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes/RAG. This
   profile is not a corporate pilot.
