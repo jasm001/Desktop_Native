@@ -40,7 +40,8 @@ production integration or administrative portal behavior is implemented.
 The implementation sequence and gates are defined in
 [`DEVELOPMENT_PLAN.md`](DEVELOPMENT_PLAN.md). Current execution state is recorded
 in [`WORKFLOW.md`](WORKFLOW.md). The bounded local demonstration is defined in
-[`docs/modules/local-mvp-lab.md`](docs/modules/local-mvp-lab.md).
+[`docs/modules/local-mvp-lab.md`](docs/modules/local-mvp-lab.md). Block 9 is
+owned by [`modules/TEAMS.md`](modules/TEAMS.md).
 
 ## Documentation Precedence
 
@@ -66,7 +67,7 @@ stopper before implementation.
 - .NET SDK 10.0.301 or a compatible 10.0 feature band.
 - Node.js 24 LTS.
 - Corepack.
-- PostgreSQL 18 for the Block 7 integration gate. `DATABASE_URL` must target a
+- PostgreSQL 18 for the control-plane integration gate. `DATABASE_URL` must target a
   non-production database and the role must have `CREATEDB`.
 - Gitleaks 8.x for local secret scanning.
 - Visual Studio Community 2026 version 18.0 or later for interactive WinUI

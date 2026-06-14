@@ -20,10 +20,11 @@ Los incrementos de adaptador y control plane del laboratorio estan completados:
 - restauracion del checkpoint y confirmacion del estado inicial.
 - API Next.js, PostgreSQL y worker locales;
 - recorrido WinUI -> API -> agente simulado -> evidencia validado.
+- casos internos, evento de escalamiento y ticketing fake idempotente.
 
 El Windows Service instalado, la conexion IPC de Salud desde WinUI, Hermes/RAG y
 el portal siguen siendo componentes previstos. No forman parte de los gates
-cerrados de los Bloques 6 y 7.
+cerrados de los Bloques 6, 7 y 8.
 
 ## Perfil `local-demo`
 
@@ -126,7 +127,7 @@ No permitido:
 ## Limite de avance
 
 Los Bloques 6, 7 y 8 ya cerraron sus gates locales. El Bloque 9 es el siguiente y
-los Bloques 8-11 pueden preparar sus dominios, UI, persistencia y adaptadores
+los Bloques 9-11 pueden preparar sus dominios, UI, persistencia y adaptadores
 locales/fake. Ninguno puede declararse corporativamente validado mientras
 falten:
 

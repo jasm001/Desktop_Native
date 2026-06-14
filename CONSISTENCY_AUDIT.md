@@ -1,70 +1,87 @@
 # Auditoria de consistencia documental
 
-Fecha: 2026-06-11.
+Fecha: 2026-06-14.
 
 ## Cobertura
 
-Se contrastaron los documentos operativos, el plan modular, las decisiones
-normativas, los estandares de entrega, el modulo de catalogo, la documentacion
-del shell WinUI, el codigo actual, los lockfiles y los commits publicados.
+Se contrastaron:
+
+- `README.md`, `CURRENT_CONTEXT.md`, `WORKFLOW.md`, `DEVELOPMENT_PLAN.md` y
+  `MASTER_PROMPT.md`;
+- documentos normativos de `core/` y `standards/`;
+- documentos propietarios de `modules/`;
+- evidencia tecnica en `docs/modules/`;
+- contexto historico y solicitudes de informacion sobre Teams;
+- estado Git y commits publicados.
 
 ## Precedencia
 
-La precedencia documental esta definida en `README.md`. `MASTER_PROMPT.md` es
-solo un mecanismo de handoff y no puede modificar alcance, stack, arquitectura,
-seguridad o decisiones cerradas.
+La precedencia vigente permanece definida en `README.md`:
 
-Ante una contradiccion material:
+1. seguridad y decisiones cerradas;
+2. alcance, stack y arquitectura;
+3. estandares;
+4. documento propietario del modulo;
+5. plan de desarrollo;
+6. contexto y workflow actuales;
+7. referencia e historia.
 
-1. no elegir silenciosamente;
-2. conservar evidencia;
-3. registrar alternativas e impacto en `WORKFLOW.md`;
-4. detener solo la parte afectada hasta obtener decision.
+`MASTER_PROMPT.md` es un mecanismo de handoff, no una fuente normativa.
 
 ## Estado verificado
 
-- Bloque 0 completado y publicado en `e42fe2c`.
-- Bloque 1 completado y publicado en `f18e8cf`.
-- Toolchain .NET 10 publicado en `5f6dae7`.
-- El commit `531faf6` agrego RIDs no declarados a dos lockfiles. El handoff
-  actual los regenero para `win-x64` y `scripts/Validate.ps1` vuelve a pasar.
-- Bloque 2 es la siguiente unidad; no existe otro bloque principal activo.
-- La shell WinUI contiene cinco vistas y solo datos sinteticos.
-- No existen instalaciones, tickets, solicitudes, diagnosticos reales, IPC o
-  integraciones productivas.
-- El portal administrativo permanece reservado para el Bloque 11.
-- La CLI con SDK global .NET `10.0.301` restaura, compila, prueba y ejecuta el
-  cliente.
-- El gate completo valida restore bloqueado, formato, build Release sin
-  warnings, 6 pruebas, workspace pnpm y Gitleaks.
-- Visual Studio 2022 no admite `net10.0`; el IDE compatible es Visual Studio
-  2026 version 18.0 o posterior.
+- Bloques 0 a 8: `completed`.
+- Cierre del Bloque 8 publicado en `cf262b4`.
+- Bloque principal activo: ninguno.
+- Siguiente unidad desbloqueada: Bloque 9, canal Teams existente.
+- Documento propietario del Bloque 9: `modules/TEAMS.md`.
+- Bloques 10 y 11 permanecen `pending`.
+- Gate completo vigente: 113 pruebas .NET, 17 pruebas Node unitarias/de
+  contrato, 11 integraciones AdminWeb, 4 del Worker, cuatro migraciones
+  PostgreSQL y E2E local.
 
-## Consistencia del siguiente bloque
+## Alineacion del Bloque 9
 
-El Bloque 2 debe implementar dominio y casos de uso puros para catalogo
-sintetico:
+Hechos confirmados:
 
-- producto, version, licencia y estado;
-- aprobado, comercial, no listado, EOL y prohibido;
-- alternativas;
-- busqueda y filtros;
-- decisiones `informar`, `proponer`, `escalar` y `rechazar`.
+- existe un bot corporativo de Teams;
+- se amplia ese bot; no se crea otro;
+- Teams y WinUI comparten backend y decisiones;
+- Teams no ejecuta comandos ni llama al DeviceAgent.
 
-El dominio no depende de WinUI, Prisma, IA, backend ni integraciones externas.
-El Excel corporativo no se importa todavia y nunca se interpreta directamente
-como allowlist ejecutable.
+Pendientes externos:
+
+- owner y plataforma del bot;
+- repositorio y proceso de despliegue;
+- autenticacion, permisos, tenant y ambientes;
+- mecanismo de acciones o tarjetas;
+- capacidad real de consumir la API compartida.
+
+La falta de esos datos no bloquea contratos, un adaptador local fake/recorded ni
+pruebas de paridad. El stopper para conectar el bot real sin esa evidencia esta
+registrado en `WORKFLOW.md`.
+
+## Correcciones realizadas
+
+- se eliminaron referencias actuales que dejaban al Bloque 8 como siguiente;
+- `WORKFLOW.md` y `CURRENT_CONTEXT.md` ahora reconocen `cf262b4`;
+- `modules/ADMIN_PORTAL.md` protege el portal durante Bloques 9 y 10;
+- `modules/OPERATIONS.md` protege las fronteras de Teams durante Bloque 9;
+- documentos historicos de fundacion y adaptador senalan Bloque 9 como siguiente;
+- el laboratorio permite preparacion local de Bloques 9-11, no 8-11;
+- se creo `modules/TEAMS.md` con alcance, limites y gate;
+- `MASTER_PROMPT.md` se preparo para iniciar el primer incremento del Bloque 9.
 
 ## Diferencias intencionales
 
-- El mockup React/Vite es referencia visual, no base de producto.
-- `reference/` conserva material historico y tiene menor precedencia.
-- El portal pertenece al producto, pero se implementa al final del plan.
-- Las integraciones faltantes se representan con contratos y fakes solo cuando
-  el bloque activo los necesita.
+- `context/` y `reference/` conservan respuestas e historia y no representan el
+  estado de ejecucion actual.
+- Documentos de bloques cerrados pueden mencionar cual era su siguiente gate,
+  siempre que lo identifiquen como contexto historico.
+- El perfil local puede usar fakes; eso no declara validada una integracion
+  corporativa.
 
-## Incertidumbres externas
+## Resultado
 
-Sede piloto, OpenText, UEMS, Entra, Azure, proveedor de IA, PKI, Sophos y
-retencion corporativa siguen pendientes. No bloquean el Bloque 2 y no autorizan
-inventar credenciales, permisos, endpoints o reglas corporativas.
+No queda una contradiccion material conocida sobre bloque activo, siguiente
+bloque, estado del ticketing fake, limites del portal o frontera Teams.

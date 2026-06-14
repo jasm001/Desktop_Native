@@ -24,9 +24,10 @@ No mezclar dos objetivos distintos:
 Toda interaccion operativa crea un `BotCase` interno. Solo algunas crean un
 `ExternalTicket` en OpenText.
 
-Durante el Bloque 8, `ExternalTicket` es una representacion sintetica producida
-por el provider fake. Las referencias a estados, campos y flujos de OpenText en
-este documento definen el contrato futuro; no autorizan una conexion real.
+La implementacion cerrada del Bloque 8 usa `ExternalTicket` como representacion
+sintetica producida por el provider fake. Las referencias a estados, campos y
+flujos de OpenText en este documento definen el contrato futuro; no autorizan
+una conexion real.
 
 El evento de escalamiento solo se publica para un caso fallido y ya tiene un
 consumidor local. El provider fake no usa red ni configuracion corporativa y

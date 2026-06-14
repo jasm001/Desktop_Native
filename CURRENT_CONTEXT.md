@@ -10,13 +10,13 @@ la API compartida sin crear otro bot ni adelantar endurecimiento o portal.
 
 El cierre tecnico del Bloque 8 vive en
 `docs/modules/case-foundation.md` y su gobierno en `modules/TICKETING.md`.
+El documento propietario del siguiente bloque es `modules/TEAMS.md`.
 
 ## Estado del repositorio
 
 - Rama principal `main`; remoto
   `https://github.com/jasm001/Desktop_Native.git`.
-- La primera mitad del Bloque 8 esta publicada en `cb102f2`; el cierre completo
-  esta validado localmente y pendiente de commit del usuario.
+- El Bloque 8 esta publicado y cerrado en `cf262b4`.
 - `src/AdminWeb` es el control plane Next.js modular; no es el portal del
   Bloque 11.
 - Prisma/PostgreSQL tiene cuatro migraciones versionadas.
@@ -42,10 +42,12 @@ El cierre tecnico del Bloque 8 vive en
 ## Siguiente reanudacion
 
 1. Confirmar que los Bloques 0 a 8 permanecen `completed`.
-2. Leer el documento propietario del canal Teams antes de activar el Bloque 9.
+2. Leer `modules/TEAMS.md` antes de activar el Bloque 9.
 3. Reutilizar contratos y decisiones de la API compartida; no crear reglas de
    catalogo, casos o ticketing dentro del canal.
 4. Mantener Teams y WinUI equivalentes para la misma entrada confirmada.
+5. Registrar un stopper si se intenta conectar el bot real sin owner,
+   plataforma, autenticacion, permisos y ambiente aprobados.
 
 ## Limites vigentes
 

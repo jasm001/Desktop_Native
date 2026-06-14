@@ -3,8 +3,9 @@
 ## Estado
 
 Documento transversal de referencia; no es un bloque activo. Durante el
-Bloque 8 solo protege fronteras de escalamiento y ticketing fake. No autoriza
-OpenText, UEMS, Rescue, Power Automate ni operaciones productivas reales.
+Bloque 9 protege las fronteras del canal Teams y sus integraciones futuras. No
+autoriza OpenText, UEMS, Rescue, Power Automate ni operaciones productivas
+reales.
 
 ## Topologia recomendada
 

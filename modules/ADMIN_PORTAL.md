@@ -3,7 +3,7 @@
 ## Estado
 
 Reservado para el Bloque 11. No es el siguiente bloque y no debe ampliarse
-durante el Bloque 8.
+durante los Bloques 9 o 10.
 
 ## Responsabilidad
 
