@@ -112,8 +112,9 @@ PostgreSQL 18 local, `DATABASE_URL` conecta correctamente y el rol tiene
 - No se han definido todavia retencion, observabilidad productiva, despliegue,
   autenticacion corporativa ni escalado horizontal de produccion.
 - El portal administrativo no forma parte de esta evidencia del Bloque 7. El
-  Bloque 11 esta ahora `in_progress`, pero aun no ha implementado capacidades
-  de portal.
+  Bloque 11 esta ahora `in_progress` y ya implementa capacidades locales de
+  solo lectura, pero siguen fuera del alcance y evidencia historica de este
+  incremento.
 
 ## Evolucion posterior
 

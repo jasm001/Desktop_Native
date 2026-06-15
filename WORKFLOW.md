@@ -6,7 +6,7 @@
 - Bloque activo: Bloque 11, portal administrativo web, `in_progress`. Los
   Bloques 9 y 10 permanecen `blocked`.
 - Los Bloques 0 a 8 estan `completed`.
-- Ultimo resultado publicado: cierre local del Bloque 10 en `be6c4fc`.
+- Ultimo resultado publicado: segunda unidad local del Bloque 11 en `17e7581`.
 - Ultimo resultado funcional validado: segunda unidad local del Bloque 11 con
   cuatro rutas protegidas, navegacion real y lecturas limitadas de catalogo,
   operaciones y auditoria. El bloque completo sigue abierto.
@@ -43,7 +43,7 @@
 - Las pruebas del adaptador usan dobles y no ejecutan el MSI en el host.
 - Named Pipe real: correcto fuera del sandbox con ACL del usuario actual.
 - `corepack pnpm@11.5.3 run check`: correcto.
-- Contratos/Node: 29 pruebas unitarias y de contrato; lint, TypeScript estricto
+- Contratos/Node: 35 pruebas unitarias y de contrato; lint, TypeScript estricto
   y builds de Contracts, AdminWeb y Worker correctos.
 - Portal local: 22 pruebas unitarias cubren identidad separada, ambiente o flag
   invalido, rol/capability desconocidos, cuatro capabilities permitidas y

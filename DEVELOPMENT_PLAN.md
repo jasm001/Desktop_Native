@@ -237,11 +237,13 @@ Gate: autorización server-side, Playwright por rol, migraciones y auditoria.
 
 Estado: `in_progress`. Es el unico bloque principal activo. Parte del control
 plane modular existente en `src/AdminWeb`, cuya pagina actual sigue siendo una
-superficie tecnica del Bloque 8. No existen aun login de portal, RBAC
-server-side, Fluent UI, rutas administrativas ni Playwright. La primera unidad
-local debe establecer una identidad de desarrollo separada y fail-closed,
-autorizacion server-side y un shell administrativo minimo con datos sinteticos,
-sin Entra, OpenText, Teams, Rescue, UEMS ni usuarios corporativos.
+superficie tecnica del Bloque 8. Las dos primeras unidades locales ya
+establecen identidad de portal separada y fail-closed, cuatro capabilities de
+lectura, navegacion `/admin/*`, catalogo sintetico y proyecciones Prisma
+limitadas para operaciones y auditoria. No existen aun OIDC/Entra, sesiones,
+RBAC productivo, Fluent UI, mutaciones, Testing Library ni Playwright. La
+tercera unidad debe permanecer pequena y local, sin Entra, OpenText, Teams,
+Rescue, UEMS, roles/scopes inventados ni usuarios corporativos.
 
 ## Regla de escalamiento
 

@@ -1,6 +1,6 @@
 # Auditoria de consistencia documental
 
-Fecha: 2026-06-14.
+Fecha: 2026-06-15.
 
 ## Cobertura
 
@@ -33,16 +33,17 @@ La precedencia vigente permanece definida en `README.md`:
 - Bloques 0 a 8: `completed`.
 - Incremento local del Bloque 9 publicado en `0448a42`.
 - Cierre local del Bloque 10 publicado en `be6c4fc`.
+- Segunda unidad local del Bloque 11 publicada en `17e7581`.
 - Bloques 9 y 10: `blocked` por evidencia externa.
 - Bloque 11: unico bloque principal `in_progress`.
 - Documento propietario del Bloque 9: `modules/TEAMS.md`.
 - Documento propietario del Bloque 10: `modules/PILOT_HARDENING.md`.
 - Documento propietario del Bloque 11: `modules/ADMIN_PORTAL.md`.
-- Gate completo vigente: 136 pruebas .NET, 29 pruebas Node unitarias/de
-  contrato, 11 integraciones AdminWeb, 4 del Worker, cuatro migraciones
+- Gate completo vigente: 136 pruebas .NET, 35 pruebas Node unitarias/de
+  contrato, 12 integraciones AdminWeb, 4 del Worker, cuatro migraciones
   PostgreSQL y E2E local.
-- Primera unidad del Bloque 11 implementada sin cambiar esos contratos,
-  migraciones o integraciones.
+- Dos unidades locales del Bloque 11 implementadas sin cambiar contratos
+  publicos, migraciones o integraciones corporativas.
 
 ## Alineacion del Bloque 9
 
@@ -89,8 +90,11 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `modules/ADMIN_PORTAL.md` es el documento propietario y define el gate.
 - `src/AdminWeb` conserva el control plane modular, cuatro migraciones y la
   superficie tecnica `/` del Bloque 8.
-- `/admin` implementa la primera unidad con identidad sintetica separada,
-  autorizacion server-side fail-closed y shell accesible de solo lectura.
+- `/admin`, `/admin/catalog`, `/admin/operations` y `/admin/audit` implementan
+  identidad sintetica separada, cuatro capabilities fail-closed, navegacion
+  accesible y lecturas limitadas de solo lectura.
+- Las consultas administrativas toman como maximo 25 registros, usan
+  selecciones explicitas y omiten payloads de auditoria.
 - No estan instalados ni implementados Fluent UI, Testing Library, Playwright,
   OIDC/Entra, sesiones, RBAC productivo o mutaciones administrativas.
 - Los roles de produccion son un modelo objetivo; no representan owners,
@@ -98,13 +102,15 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - El portal no llama directamente al DeviceAgent ni ejecuta comandos.
 - `docs/modules/admin-portal-foundation.md` registra contratos, alternativas,
   evidencia, sustitucion futura por OIDC/Entra y riesgos residuales.
+- `docs/modules/admin-portal-read-model.md` registra las rutas, proyecciones,
+  limites, pruebas de no mutacion y QA adaptable de la segunda unidad.
 
 ## Correcciones realizadas
 
 - `README.md`, `CURRENT_CONTEXT.md`, `WORKFLOW.md` y `DEVELOPMENT_PLAN.md`
   registran a los Bloques 9 y 10 `blocked` y al Bloque 11 como unico
   `in_progress`;
-- `WORKFLOW.md` registra `be6c4fc` como ultimo resultado publicado y conserva
+- `WORKFLOW.md` registra `17e7581` como ultimo resultado publicado y conserva
   stoppers separados para Teams y hardening;
 - `modules/PILOT_HARDENING.md` define alcance, limites y gate del Bloque 10;
 - `docs/threat-model/README.md` contiene el inventario inicial verificable;
@@ -116,18 +122,24 @@ proveedores locales sin declarar cerrada la integracion Teams.
   inventario y los puntos de sustitucion;
 - `modules/TEAMS.md` conserva el incremento local y el gate corporativo;
 - `modules/ADMIN_PORTAL.md`, `modules/WEB_DELIVERY.md`, `src/AdminWeb/README.md`
-  y `tests/AdminWeb/README.md` distinguen el control plane existente del portal
-  todavia no implementado;
+  y `tests/AdminWeb/README.md` distinguen las lecturas locales ya implementadas
+  del portal productivo todavia pendiente;
+- `docs/modules/repository-foundation.md`,
+  `docs/modules/control-plane-foundation.md` y
+  `docs/modules/local-mvp-lab.md` conservan su evidencia historica sin afirmar
+  que el portal actual sigue ausente;
 - las evidencias de bloques cerrados que contenian referencias al bloque activo
   fueron convertidas en contexto historico;
-- `MASTER_PROMPT.md` se actualiza al final como handoff del Bloque 11.
+- `MASTER_PROMPT.md` queda como handoff para elegir una tercera unidad local del
+  Bloque 11 desde la linea base publicada en `17e7581`.
 
 ## Diferencias intencionales
 
 - `context/` y `reference/` conservan respuestas e historia y no representan el
   estado de ejecucion actual.
 - Documentos de bloques cerrados pueden mencionar cual era su siguiente gate,
-  siempre que lo identifiquen como contexto historico.
+  o conteos de pruebas de ese momento, siempre que lo identifiquen como
+  contexto historico.
 - El perfil local puede usar fakes; eso no declara validada una integracion
   corporativa.
 - `blocked` en el Bloque 9 significa que su siguiente avance depende de
@@ -135,11 +147,13 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `blocked` en el Bloque 10 significa que el trabajo local reproducible termino,
   pero no existe revision Security ni ensayo en dos endpoints; no equivale a
   `completed`.
-- `in_progress` en el Bloque 11 significa que puede iniciar una unidad local
-  reemplazable; no implica Entra, RBAC productivo ni portal terminado.
+- `in_progress` en el Bloque 11 significa que puede continuar con unidades
+  locales reemplazables; no implica Entra, RBAC productivo ni portal terminado.
 
 ## Resultado
 
-No queda una contradiccion material conocida sobre bloque activo, estado de
-Teams, alcance de hardening, estado del ticketing fake o linea base del portal.
-Los enlaces Markdown relativos vigentes fueron comprobados sin hallazgos.
+No queda una contradiccion material conocida sobre bloque activo, commits
+publicados, conteos vigentes, estado de Teams, alcance de hardening, ticketing
+fake o linea base del portal. Los conteos anteriores permanecen solo dentro de
+evidencias historicas identificables. Los enlaces Markdown relativos vigentes
+fueron comprobados sin hallazgos.

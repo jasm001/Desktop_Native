@@ -7,13 +7,15 @@ inspirada en el mockup, sin simular Windows ni copiar el frontend Vite existente
 
 El Bloque 7 implementa solo la API, persistencia y estructura modular de
 `src/AdminWeb`, junto con el gate local del control plane. La interfaz
-administrativa, Fluent UI, Playwright y telemetria forman parte del Bloque 11
-`in_progress` y aun no se consideran implementadas.
+administrativa forma parte del Bloque 11 `in_progress`. Sus dos primeras
+unidades ya implementan shell, navegacion y lecturas protegidas. Fluent UI,
+Testing Library, Playwright, telemetria y mutaciones aun no se consideran
+implementados.
 
 La pagina `/` existente es una superficie de estado tecnico del Bloque 8. La
-primera unidad del portal debe introducir una frontera de identidad de usuario y
-autorizacion server-side fail-closed antes de agregar mutaciones
-administrativas.
+frontera de identidad de portal y autorizacion server-side fail-closed ya
+protege `/admin`, `/admin/catalog`, `/admin/operations` y `/admin/audit`. Las
+mutaciones administrativas permanecen fuera del alcance actual.
 
 ## Stack
 

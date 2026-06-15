@@ -22,9 +22,10 @@ Los incrementos de adaptador y control plane del laboratorio estan completados:
 - recorrido WinUI -> API -> agente simulado -> evidencia validado.
 - casos internos, evento de escalamiento y ticketing fake idempotente.
 
-El Windows Service instalado, la conexion IPC de Salud desde WinUI, Hermes/RAG y
-el portal siguen siendo componentes previstos. No forman parte de los gates
-cerrados de los Bloques 6, 7 y 8.
+El Windows Service instalado, la conexion IPC de Salud desde WinUI y Hermes/RAG
+siguen siendo componentes previstos. El portal ya tiene dos unidades locales de
+solo lectura, pero no forma parte de los gates cerrados de los Bloques 6, 7 y 8
+ni representa una integracion corporativa.
 
 ## Perfil `local-demo`
 
@@ -130,9 +131,9 @@ Los Bloques 6, 7 y 8 ya cerraron sus gates locales. El Bloque 9 completo su
 incremento local y esta `blocked` por la integracion corporativa de Teams. El
 Bloque 10 completo su trabajo local acotado y esta `blocked`; el MVP conserva
 hardening, evidencia y runbooks locales/fake conforme a D-072. El Bloque 11
-esta `in_progress` con identidad y datos sinteticos, sin integraciones
-corporativas. Ningun bloque puede declararse corporativamente validado mientras
-falten:
+esta `in_progress` con identidad sintetica, navegacion y lecturas
+administrativas acotadas, sin integraciones corporativas. Ningun bloque puede
+declararse corporativamente validado mientras falten:
 
 - UEMS y proceso de distribucion/retiro;
 - cuenta e identidad restringida del servicio;

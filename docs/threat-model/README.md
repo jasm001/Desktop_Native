@@ -27,9 +27,9 @@ Fuera del alcance conectado actual:
 - autenticacion, sesiones, mutaciones e integraciones productivas del portal
   administrativo.
 
-La ruta local `/admin` del Bloque 11 se incorpora solo para registrar su nueva
-frontera de identidad/autorizacion. No se usa como evidencia para cerrar el
-Bloque 10.
+Las rutas locales `/admin/*` del Bloque 11 se incorporan solo para registrar su
+frontera de identidad, autorizacion y lectura limitada. No se usan como
+evidencia para cerrar el Bloque 10.
 
 ## Activos
 

@@ -21,6 +21,7 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 
 - Rama principal `main`; remoto
   `https://github.com/jasm001/Desktop_Native.git`.
+- La segunda unidad local del Bloque 11 esta publicada en `17e7581`.
 - El cierre local del Bloque 10 esta publicado en `be6c4fc`.
 - El Bloque 9 local esta publicado en `0448a42`; su integracion corporativa no
   esta completada.

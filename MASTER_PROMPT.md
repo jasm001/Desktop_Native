@@ -15,7 +15,7 @@ Estado confirmado:
 - Bloque 10, endurecimiento para piloto, esta `blocked`; su cierre local esta
   publicado en `be6c4fc`.
 - Bloque 11, portal administrativo web, esta `in_progress` y es el unico bloque
-  principal activo.
+  principal activo; su segunda unidad local esta publicada en `17e7581`.
 - `modules/TEAMS.md`, `modules/PILOT_HARDENING.md` y
   `modules/ADMIN_PORTAL.md` son los documentos propietarios de los Bloques 9,
   10 y 11 respectivamente.
@@ -26,9 +26,10 @@ Estado confirmado:
 - AdminWeb ya contiene APIs v1, identidad sintetica de desarrollo,
   Prisma/PostgreSQL, auditoria append-only, outbox, solicitudes, trabajos,
   `BotCase` y ticketing fake.
-- `/admin` contiene la primera unidad local: identidad de portal sintetica
-  separada, autorizacion server-side fail-closed y shell accesible de solo
-  lectura.
+- `/admin`, `/admin/catalog`, `/admin/operations` y `/admin/audit` contienen
+  las dos primeras unidades locales: identidad de portal sintetica separada,
+  autorizacion server-side fail-closed, navegacion real y lecturas limitadas
+  de catalogo, operaciones y auditoria.
 - No existen aun OIDC/Entra, sesiones productivas, RBAC productivo, mutaciones,
   Fluent UI, Testing Library ni Playwright.
 - `src/Worker` conserva el proceso Node durable separado.
@@ -44,10 +45,11 @@ Estado confirmado:
 - OpenText real, Teams corporativo, Entra, UEMS, Sophos, PKI, Rescue,
   Hermes/RAG productivo y portal administrativo productivo siguen
   deshabilitados.
-- Ultimo gate completo: 136 pruebas .NET, 29 pruebas Node unitarias/de contrato,
-  11 integraciones AdminWeb, 4 del Worker, cuatro migraciones PostgreSQL y E2E.
+- Ultimo gate completo: 136 pruebas .NET, 35 pruebas Node unitarias/de contrato,
+  12 integraciones AdminWeb, 4 del Worker, cuatro migraciones PostgreSQL y E2E.
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
-- La documentacion vigente fue auditada y alineada para iniciar el Bloque 11;
+- La documentacion vigente fue auditada y alineada para continuar el Bloque 11
+  desde sus dos unidades locales publicadas;
   `context/` y `reference/` conservan historia y no definen el estado actual.
 
 Antes de editar:
@@ -61,7 +63,9 @@ Antes de editar:
 5. lee completos `standards/CODING_STANDARDS.md` y `standards/DELIVERY.md`;
 6. lee completos `modules/ADMIN_PORTAL.md`, `modules/WEB_DELIVERY.md`,
    `modules/OPERATIONS.md`, `modules/PILOT_HARDENING.md` y `modules/TEAMS.md`;
-7. lee completos `docs/modules/control-plane-foundation.md`,
+7. lee completos `docs/modules/admin-portal-foundation.md`,
+   `docs/modules/admin-portal-read-model.md`,
+   `docs/modules/control-plane-foundation.md`,
    `docs/modules/control-plane-local-flow.md`,
    `docs/modules/local-mvp-lab.md`, `docs/threat-model/README.md` y
    `project-management/INFORMATION_REQUESTS.md`;
@@ -98,42 +102,41 @@ Reglas no negociables:
   asignaciones confirmadas;
 - no conviertas la identidad sintetica en autenticacion productiva;
 - no reabras ni declares completados los Bloques 9 o 10;
-- no declares completado el Bloque 11 con una sola unidad local;
+- no declares completado el Bloque 11 mientras falte cualquier gate de su
+  documento propietario;
 - no agregues dependencias salvo las aprobadas por `core/STACK.md` y necesarias
   para la unidad; conserva versiones fijadas y lockfile reproducible;
 - no declares terminada una unidad sin ejecutar los gates aplicables.
 
 Tarea:
-Inicia el Bloque 11 con una primera unidad local pequena y completa sobre
-`src/AdminWeb`: frontera de identidad/autorizacion server-side fail-closed y
-shell administrativo minimo, accesible y de solo lectura.
+Continua el Bloque 11 desde las dos unidades locales publicadas. Elige una
+tercera unidad pequena, completa y verificable sobre `src/AdminWeb` que no
+requiera identidad, owners, roles, scopes, datos o integraciones corporativas.
 
 Antes de implementar:
-- contrasta la identidad sintetica existente con una identidad de portal;
-- evita reutilizar la identidad del agente como identidad de usuario;
-- define en `docs/modules/admin-portal-foundation.md` alcance exacto,
-  alternativas, contratos internos, evidencia y criterio de aceptacion;
-- decide, siguiendo los patrones actuales, la ruta y abstraccion minimas para
-  el portal sin mover reglas de dominio a componentes React;
-- identifica si Fluent UI React y Playwright son necesarios en esta unidad;
-  si se agregan, usa solo las dependencias aprobadas y actualiza el lockfile;
+- verifica que las cuatro rutas, capabilities y proyecciones actuales coinciden
+  con `docs/modules/admin-portal-read-model.md`;
+- conserva la identidad de portal separada de usuario de API y agente;
+- define el alcance exacto, alternativas, evidencia y criterio de aceptacion
+  de la tercera unidad en un documento modular;
+- decide si la siguiente brecha local prioritaria es prueba de componentes,
+  Playwright, Fluent UI o una mejora de lectura acotada; no agregues una
+  tecnologia solo para marcar una casilla;
+- si agregas dependencias, usa solo las aprobadas por `core/STACK.md`, fija
+  versiones y actualiza el lockfile;
 - registra un stopper solo si la solucion exige alterar una frontera normativa
   o depende de una decision externa no documentada.
 
 Alcance minimo esperado:
-- identidad de portal local, sintetica y separada de la identidad del agente;
-- habilitacion solo con `IT_SUPPORT_ENVIRONMENT=development` y configuracion
-  explicita equivalente;
-- rechazo server-side fuera del perfil permitido, sin render parcial;
-- politica de autorizacion deny-by-default para rol o capability conocida;
-- shell administrativo minimo con navegacion accesible y datos sinteticos o de
-  solo lectura;
-- ninguna mutacion administrativa en esta primera unidad;
+- mantener identidad local, autorizacion server-side y deny-by-default;
+- conservar `/admin/*` accesible, adaptable y de solo lectura;
+- ninguna mutacion administrativa sin cumplir el gate completo de identidad,
+  confirmacion, correlacion, idempotencia y auditoria;
 - sin cambios a contratos IPC, acciones del DeviceAgent o worker durable;
-- pruebas unitarias y/o integracion de acceso permitido, acceso denegado,
-  ambiente invalido y ausencia de efectos laterales;
-- verificacion de teclado, foco, layout adaptable y semantica basica;
-- punto de sustitucion documentado para OIDC/Entra futuro;
+- pruebas proporcionales de acceso permitido/denegado, limites y ausencia de
+  efectos laterales;
+- verificacion de teclado, foco, layout adaptable y semantica;
+- conservar el punto de sustitucion documentado para OIDC/Entra futuro;
 - riesgos residuales y gates externos claramente separados.
 
 Criterios de aceptacion:
@@ -149,6 +152,7 @@ Criterios de aceptacion:
 - `src/AdminWeb` conserva sus APIs y modulos existentes;
 - el worker Node sigue separado;
 - las cuatro migraciones existentes no se modifican retroactivamente;
+- las cuatro rutas administrativas actuales siguen protegidas y operativas;
 - los gates de los Bloques 7 a 10 siguen pasando;
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan;
 - no se simula Entra, aprobacion Security ni un portal productivo completo.
@@ -181,7 +185,8 @@ Gates externos futuros del Bloque 11:
 - OpenText/Rescue y sus mecanismos de enlace o adaptador;
 - datos, ambientes y proceso de despliegue aprobados.
 
-Estos gates no bloquean la primera unidad local sintetica.
+Estos gates no bloquean una tercera unidad local sintetica que respete las
+fronteras actuales.
 
 Gate base:
 .\scripts\Validate.ps1
@@ -194,8 +199,8 @@ Al terminar:
 - informa alcance implementado, archivos, autorizacion y pruebas;
 - lista riesgos y pendientes externos;
 - actualiza `modules/ADMIN_PORTAL.md`,
-  `docs/modules/admin-portal-foundation.md`, `WORKFLOW.md`,
-  `CURRENT_CONTEXT.md`, `README.md` y el threat model si cambia la superficie;
+  el documento modular de la unidad, `WORKFLOW.md`, `CURRENT_CONTEXT.md`,
+  `README.md` y el threat model si cambia la superficie;
 - actualiza `CONSISTENCY_AUDIT.md` si cambia el estado o una frontera;
 - recomienda un Conventional Commit;
 - no hagas commit ni push automaticamente.

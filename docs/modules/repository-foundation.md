@@ -14,8 +14,8 @@ implementing product behavior.
 - `src/Contracts`: versioned cross-process and HTTP contracts.
 - `src/BuildingBlocks`: shared primitives with no executable dependencies.
 - `src/AdminWeb`: boundary reserved by Block 0 and activated in Block 7 for the
-  shared API and persistence; Block 11 is now active, but portal UI is not yet
-  implemented.
+  shared API and persistence; Block 11 is now active with bounded read-only
+  portal routes, outside the evidence of this foundation block.
 - `src/Worker`: boundary reserved by Block 0 and activated in Block 7 as a
   separate durable Node.js process.
 
@@ -39,5 +39,5 @@ Block 1 may replace the desktop placeholder with the WinUI 3 shell while
 preserving the project boundary and quality controls.
 
 This was the next gate when Block 0 closed. Blocks 1 through 8 are now complete,
-Block 9 is blocked on its corporate integration, and Block 10 is the current
+Blocks 9 and 10 are blocked on external evidence, and Block 11 is the current
 active block.
