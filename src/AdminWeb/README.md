@@ -8,13 +8,13 @@ identity, modular application boundaries, Prisma/PostgreSQL infrastructure and
 one `BotCase` per confirmed request. Failed results publish a typed escalation
 event that the separate worker resolves through a deterministic fake provider
 into one synthetic `ExternalTicket`. There is no OpenText connection or
-administrative portal. Portal UI, production identity and RBAC are owned by
-Block 11 and are not implemented.
+production administrative portal.
 
-Block 11 is now `in_progress`, but no portal capability has been implemented
-yet. The current root page remains an engineering status surface. The first
-bounded unit will add a development-only portal identity and fail-closed
-server-side authorization boundary before administrative mutations.
+Block 11 is `in_progress`. The root page remains an engineering status surface.
+The `/admin` route now provides the first bounded unit: a separate synthetic
+portal identity, fail-closed server-side authorization for one read capability,
+and an accessible read-only shell. It does not add OIDC/Entra, production RBAC,
+Fluent UI, database reads, mutations, or corporate integrations.
 
 Local runtime configuration is documented in `.env.example`. Values are not
 committed in `.env`.

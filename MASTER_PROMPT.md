@@ -26,8 +26,11 @@ Estado confirmado:
 - AdminWeb ya contiene APIs v1, identidad sintetica de desarrollo,
   Prisma/PostgreSQL, auditoria append-only, outbox, solicitudes, trabajos,
   `BotCase` y ticketing fake.
-- No existen aun autenticacion de portal, OIDC/Entra, RBAC server-side, rutas
-  administrativas, Fluent UI, Testing Library ni Playwright.
+- `/admin` contiene la primera unidad local: identidad de portal sintetica
+  separada, autorizacion server-side fail-closed y shell accesible de solo
+  lectura.
+- No existen aun OIDC/Entra, sesiones productivas, RBAC productivo, mutaciones,
+  Fluent UI, Testing Library ni Playwright.
 - `src/Worker` conserva el proceso Node durable separado.
 - Prisma/PostgreSQL tiene cuatro migraciones versionadas.
 - Cada confirmacion crea una `SupportRequest`, un `ExecutionJob` y un
@@ -41,7 +44,7 @@ Estado confirmado:
 - OpenText real, Teams corporativo, Entra, UEMS, Sophos, PKI, Rescue,
   Hermes/RAG productivo y portal administrativo productivo siguen
   deshabilitados.
-- Ultimo gate completo: 136 pruebas .NET, 20 pruebas Node unitarias/de contrato,
+- Ultimo gate completo: 136 pruebas .NET, 29 pruebas Node unitarias/de contrato,
   11 integraciones AdminWeb, 4 del Worker, cuatro migraciones PostgreSQL y E2E.
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
 - La documentacion vigente fue auditada y alineada para iniciar el Bloque 11;

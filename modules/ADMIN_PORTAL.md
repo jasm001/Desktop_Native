@@ -15,11 +15,15 @@ proveedores locales reemplazables sin cerrar esos gates.
 Prisma/PostgreSQL, identidad sintetica de desarrollo, auditoria, outbox,
 solicitudes, trabajos, casos y ticketing fake.
 
+La primera unidad local agrega `/admin`, una identidad sintetica de portal
+separada, autorizacion server-side fail-closed para
+`portal.dashboard.read` y un shell accesible de solo lectura. La pagina `/`
+permanece como superficie tecnica.
+
 Todavia no contiene:
 
-- autenticacion de portal ni abstraccion OIDC para usuarios;
-- autorizacion server-side por rol y scope;
-- rutas o navegacion administrativas;
+- autenticacion OIDC/Entra, sesiones productivas ni MFA;
+- RBAC productivo, scopes por sede/area ni asignaciones reales;
 - Fluent UI React;
 - formularios, tablas o mutaciones administrativas;
 - Playwright, Testing Library o pruebas por rol;
@@ -31,7 +35,7 @@ confundirse con el portal administrativo terminado.
 
 ## Primera unidad local
 
-La primera unidad debe ser pequena y no mutante:
+La primera unidad esta implementada y permanece pequena y no mutante:
 
 1. definir una identidad de portal separada de la identidad del agente;
 2. permitir una identidad sintetica solo con ambiente de desarrollo y
@@ -44,6 +48,8 @@ La primera unidad debe ser pequena y no mutante:
 
 No se crean aun usuarios, roles o scopes corporativos. Los nombres de roles
 productivos de este documento son el modelo objetivo, no asignaciones reales.
+La especificacion y evidencia viven en
+`../docs/modules/admin-portal-foundation.md`.
 
 ## Responsabilidad
 

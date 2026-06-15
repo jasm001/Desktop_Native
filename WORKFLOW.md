@@ -7,12 +7,13 @@
   Bloques 9 y 10 permanecen `blocked`.
 - Los Bloques 0 a 8 estan `completed`.
 - Ultimo resultado publicado: cierre local del Bloque 10 en `be6c4fc`.
-- Ultimo resultado funcional validado: cierre local del Bloque 10 con kill switch,
-  confinamiento fail-closed de `local-demo`, eventos de fallo saneados y runbook
-  de retiro. El gate corporativo no esta cerrado.
-- Estado inicial del Bloque 11: `src/AdminWeb` conserva APIs, Prisma y la pagina
-  tecnica existente; aun no hay portal, autenticacion de portal, RBAC
-  server-side, Fluent UI ni Playwright.
+- Ultimo resultado funcional validado: primera unidad local del Bloque 11 con
+  identidad de portal separada, autorizacion server-side fail-closed y shell
+  `/admin` accesible de solo lectura. El bloque completo sigue abierto.
+- Primera unidad local del Bloque 11: `/admin` usa una identidad de portal
+  sintetica separada, autorizacion server-side fail-closed y un shell accesible
+  de solo lectura. No hay OIDC/Entra, RBAC productivo, Fluent UI, mutaciones ni
+  Playwright.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.
@@ -43,8 +44,14 @@
 - Las pruebas del adaptador usan dobles y no ejecutan el MSI en el host.
 - Named Pipe real: correcto fuera del sandbox con ACL del usuario actual.
 - `corepack pnpm@11.5.3 run check`: correcto.
-- Contratos/Node: 20 pruebas unitarias y de contrato; lint, TypeScript estricto
+- Contratos/Node: 29 pruebas unitarias y de contrato; lint, TypeScript estricto
   y builds de Contracts, AdminWeb y Worker correctos.
+- Portal local: 6 pruebas nuevas cubren identidad separada, ambiente o flag
+  invalido, rol desconocido, capability desconocida, acceso permitido y datos
+  en memoria sin I/O. `/admin` queda como ruta dinamica server-rendered.
+- QA visual: escritorio `1440x1000` y movil `390x844` sin overflow; primer foco
+  en el enlace para saltar contenido; perfil `production` muestra solo acceso
+  no disponible, sin heading, identidad ni secciones protegidas.
 - Canal Teams local: contrato estricto C#/Zod, acciones allowlisted, rechazo de
   campos ejecutables, adaptador recorded, correlacion, idempotencia, estado,
   caso y paridad con WinUI cubiertos.
@@ -146,7 +153,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 8. Casos, tickets y OpenText fake | completed | `BotCase`, politica de 72 horas, evento de escalamiento, `ITicketingProvider` fake, `ExternalTicket`, worker idempotente y consulta HTTP validados sobre PostgreSQL real efimero; `cf262b4`. |
 | 9. Canal Teams existente | blocked | Incremento local publicado en `0448a42`: contrato v1 estricto, `IConversationChannel`, adaptador recorded, API compartida y paridad Teams/WinUI. Integracion corporativa bloqueada por evidencia externa. |
 | 10. Endurecimiento para piloto | blocked | Trabajo local acotado: threat model trazable, kill switch apagado por defecto, perfil `local-demo` confinado a `Development`, fallos del host saneados y runbook de retiro. Revision externa y ensayo en dos endpoints pendientes. |
-| 11. Portal administrativo web | in_progress | Activado sobre el control plane existente. Primera unidad local: identidad/autorizacion server-side fail-closed y shell administrativo minimo con datos sinteticos; sin Entra ni integraciones corporativas. |
+| 11. Portal administrativo web | in_progress | Primera unidad local implementada: identidad de portal separada, capability de lectura server-side y shell `/admin` accesible con datos sinteticos; sin Entra, mutaciones ni integraciones corporativas. |
 
 ## Alcance del MVP local
 

@@ -38,9 +38,11 @@ La precedencia vigente permanece definida en `README.md`:
 - Documento propietario del Bloque 9: `modules/TEAMS.md`.
 - Documento propietario del Bloque 10: `modules/PILOT_HARDENING.md`.
 - Documento propietario del Bloque 11: `modules/ADMIN_PORTAL.md`.
-- Gate completo vigente: 136 pruebas .NET, 20 pruebas Node unitarias/de
+- Gate completo vigente: 136 pruebas .NET, 29 pruebas Node unitarias/de
   contrato, 11 integraciones AdminWeb, 4 del Worker, cuatro migraciones
   PostgreSQL y E2E local.
+- Primera unidad del Bloque 11 implementada sin cambiar esos contratos,
+  migraciones o integraciones.
 
 ## Alineacion del Bloque 9
 
@@ -86,14 +88,16 @@ proveedores locales sin declarar cerrada la integracion Teams.
 
 - `modules/ADMIN_PORTAL.md` es el documento propietario y define el gate.
 - `src/AdminWeb` conserva el control plane modular, cuatro migraciones y la
-  superficie tecnica del Bloque 8; no existe aun portal administrativo.
+  superficie tecnica `/` del Bloque 8.
+- `/admin` implementa la primera unidad con identidad sintetica separada,
+  autorizacion server-side fail-closed y shell accesible de solo lectura.
 - No estan instalados ni implementados Fluent UI, Testing Library, Playwright,
-  login de portal, OIDC/Entra, RBAC server-side o rutas administrativas.
-- La primera unidad local queda limitada a identidad sintetica fail-closed,
-  autorizacion server-side y shell accesible de solo lectura.
+  OIDC/Entra, sesiones, RBAC productivo o mutaciones administrativas.
 - Los roles de produccion son un modelo objetivo; no representan owners,
   permisos ni asignaciones corporativas confirmadas.
 - El portal no llama directamente al DeviceAgent ni ejecuta comandos.
+- `docs/modules/admin-portal-foundation.md` registra contratos, alternativas,
+  evidencia, sustitucion futura por OIDC/Entra y riesgos residuales.
 
 ## Correcciones realizadas
 

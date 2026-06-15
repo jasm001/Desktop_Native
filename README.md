@@ -13,8 +13,9 @@ completes internal `BotCase` tracking and deterministic fake ticketing. Block 9
 has a validated local channel boundary and is blocked on the existing corporate
 Teams bot. Block 10 has completed its bounded local hardening work and is
 blocked on external pilot evidence. Block 11 is active for the bounded local
-administrative portal foundation. No production integration or administrative
-portal behavior is implemented yet.
+administrative portal foundation. Its first local unit adds a protected,
+read-only `/admin` shell; no production integration or corporate identity is
+implemented.
 
 ## Current Status
 
@@ -42,13 +43,13 @@ portal behavior is implemented yet.
   completed, until external review and deployment/removal evidence exist for
   two authorized endpoints.
 - Block 11: `in_progress` as the only active block. The current `src/AdminWeb`
-  remains the modular control plane and engineering status surface; portal
-  authentication, server-side RBAC, Fluent UI, administrative routes and
-  Playwright role tests are not implemented.
-- Next gate: establish a development-only, fail-closed portal identity and
-  authorization boundary plus a minimal administrative shell over synthetic
-  data. UEMS, Entra, Security/Sophos, publisher trust, real Teams and OpenText
-  remain disabled.
+  remains the modular control plane. `/` is the engineering status surface and
+  `/admin` is a development-only shell protected by a separate portal identity
+  and server-side read capability. OIDC/Entra, productive RBAC, Fluent UI,
+  mutations and Playwright role tests are not implemented.
+- Next gate: extend the portal through another bounded unit without weakening
+  the fail-closed boundary. UEMS, Entra, Security/Sophos, publisher trust, real
+  Teams and OpenText remain disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes/RAG. This
   profile is not a corporate pilot.
