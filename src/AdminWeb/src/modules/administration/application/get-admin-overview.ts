@@ -53,7 +53,8 @@ const adminOverview: AdminOverview = {
     },
     {
       title: "Bloque 11",
-      detail: "Identidad, autorización y shell de solo lectura.",
+      detail:
+        "Identidad, navegacion protegida y lecturas administrativas acotadas.",
       state: "In progress",
     },
     {

@@ -1,7 +1,12 @@
 export const portalRoles = ["DeveloperAllAccess"] as const;
 export type PortalRole = (typeof portalRoles)[number];
 
-export const portalCapabilities = ["portal.dashboard.read"] as const;
+export const portalCapabilities = [
+  "portal.dashboard.read",
+  "portal.catalog.read",
+  "portal.operations.read",
+  "portal.audit.read",
+] as const;
 export type PortalCapability = (typeof portalCapabilities)[number];
 
 export interface PortalPrincipal {

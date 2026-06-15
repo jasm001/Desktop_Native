@@ -1,6 +1,6 @@
 # Contexto actual
 
-Fecha de ultima actualizacion: 2026-06-14.
+Fecha de ultima actualizacion: 2026-06-15.
 
 ## Objetivo inmediato
 
@@ -24,11 +24,12 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 - El cierre local del Bloque 10 esta publicado en `be6c4fc`.
 - El Bloque 9 local esta publicado en `0448a42`; su integracion corporativa no
   esta completada.
-- `src/AdminWeb` es el control plane Next.js modular sobre el que se construira
-  el Bloque 11. `/` sigue siendo la superficie tecnica del Bloque 8. `/admin`
-  agrega una identidad de portal sintetica separada, autorizacion server-side
-  fail-closed para lectura y un shell accesible con datos en memoria. No existen
-  OIDC/Entra, RBAC productivo, Fluent UI, mutaciones ni Playwright.
+- `src/AdminWeb` es el control plane Next.js modular sobre el que se construye
+  el Bloque 11. `/` sigue siendo la superficie tecnica del Bloque 8. Las rutas
+  `/admin`, `/admin/catalog`, `/admin/operations` y `/admin/audit` usan una
+  identidad sintetica separada, capabilities server-side fail-closed y lecturas
+  limitadas. No existen OIDC/Entra, RBAC productivo, Fluent UI, mutaciones ni
+  Playwright.
 - Prisma/PostgreSQL tiene cuatro migraciones versionadas.
 - Cada confirmacion crea una sola `SupportRequest`, `ExecutionJob` y `BotCase`.
 - Exito deja el caso en `attended_waiting_user` sin ticket.
@@ -71,17 +72,20 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 - La primera unidad del Bloque 11 vive en
   `docs/modules/admin-portal-foundation.md`; no modifica APIs, Prisma,
   migraciones, worker ni DeviceAgent.
+- La segunda unidad vive en `docs/modules/admin-portal-read-model.md`; agrega
+  navegacion real, catalogo sintetico y proyecciones Prisma de solicitudes y
+  auditoria limitadas a 25 registros, sin payloads ni efectos laterales.
 - OpenText, Teams, Entra, UEMS, Hermes/RAG y portal productivos siguen
   deshabilitados.
-- El gate completo mantiene 136 pruebas .NET; Node tiene 29 pruebas
-  unitarias/de contrato, 11 integraciones AdminWeb y 4 del Worker, mas el E2E
+- El gate completo mantiene 136 pruebas .NET; Node tiene 35 pruebas
+  unitarias/de contrato, 12 integraciones AdminWeb y 4 del Worker, mas el E2E
   WinUI/DeviceAgent sobre PostgreSQL efimero.
 
 ## Siguiente reanudacion
 
 1. Mantener los Bloques 9 y 10 `blocked` y el Bloque 11 `in_progress`.
-2. Mantener validada la primera unidad local del Bloque 11 y elegir una segunda
-   unidad pequena sin agregar integraciones o mutaciones prematuras.
+2. Mantener validadas las dos unidades locales del Bloque 11 y elegir una
+   tercera unidad pequena sin agregar integraciones o mutaciones prematuras.
 3. Conservar la identidad de portal solo en entorno local; Entra, MFA,
    grupos y usuarios corporativos permanecen deshabilitados.
 4. Reanudar el Bloque 10 solo cuando exista evidencia saneada de UEMS, cuenta

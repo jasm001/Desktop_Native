@@ -14,7 +14,7 @@ const knownRoles = new Set<string>(portalRoles);
 const knownCapabilities = new Set<string>(portalCapabilities);
 const roleCapabilities: Readonly<Record<PortalRole, ReadonlySet<PortalCapability>>> =
   {
-    DeveloperAllAccess: new Set<PortalCapability>(["portal.dashboard.read"]),
+    DeveloperAllAccess: new Set<PortalCapability>(portalCapabilities),
   };
 
 export function authorizePortalCapability(
@@ -53,4 +53,19 @@ export function requireDevelopmentPortalAccess(
   const principal = getDevelopmentPortalIdentity(environment);
   authorizePortalCapability(principal, capability);
   return principal;
+}
+
+export function resolveDevelopmentPortalAccess(
+  capability: PortalCapability,
+  environment: Readonly<Record<string, string | undefined>> = process.env,
+): PortalPrincipal | null {
+  try {
+    return requireDevelopmentPortalAccess(capability, environment);
+  } catch (error) {
+    if (error instanceof PortalAccessError) {
+      return null;
+    }
+
+    throw error;
+  }
 }

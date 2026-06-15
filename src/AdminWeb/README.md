@@ -11,10 +11,11 @@ into one synthetic `ExternalTicket`. There is no OpenText connection or
 production administrative portal.
 
 Block 11 is `in_progress`. The root page remains an engineering status surface.
-The `/admin` route now provides the first bounded unit: a separate synthetic
-portal identity, fail-closed server-side authorization for one read capability,
-and an accessible read-only shell. It does not add OIDC/Entra, production RBAC,
-Fluent UI, database reads, mutations, or corporate integrations.
+The protected `/admin`, `/admin/catalog`, `/admin/operations`, and
+`/admin/audit` routes use a separate synthetic portal identity, fail-closed
+server-side read capabilities, bounded Prisma projections, and an accessible
+read-only shell. They do not add OIDC/Entra, production RBAC, Fluent UI,
+mutations, or corporate integrations.
 
 Local runtime configuration is documented in `.env.example`. Values are not
 committed in `.env`.

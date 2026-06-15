@@ -17,6 +17,11 @@ import { GET as getBotCaseRoute } from "@/app/api/v1/requests/[requestId]/case/r
 import { GET as getRequestRoute } from "@/app/api/v1/requests/[requestId]/route";
 import { POST as createRequestRoute } from "@/app/api/v1/requests/software-installations/route";
 import { listCatalogProducts } from "@/modules/catalog/application/list-catalog-products";
+import {
+  getRecentAdminAuditEvents,
+  getRecentAdminOperations,
+} from "@/modules/administration/application/get-admin-read-model";
+import { PrismaAdminReadRepository } from "@/modules/administration/infrastructure/prisma-admin-read-repository";
 import { CreateConfirmedInstallation } from "@/modules/requests/application/create-confirmed-installation";
 import { GetSupportRequest } from "@/modules/requests/application/get-support-request";
 import { PrismaSupportRequestRepository } from "@/modules/requests/infrastructure/prisma-support-request-repository";
@@ -189,6 +194,37 @@ describe("control plane persistence", () => {
       id: existing.id,
     });
 
+    await expect(mutationCounts()).resolves.toEqual(countsBefore);
+  });
+
+  it("serves bounded administrative read models without side effects", async () => {
+    const adminRepository = new PrismaAdminReadRepository(prisma);
+    const countsBefore = await mutationCounts();
+    const [operations, auditEvents] = await Promise.all([
+      getRecentAdminOperations(adminRepository),
+      getRecentAdminAuditEvents(adminRepository),
+    ]);
+
+    expect(operations.length).toBeGreaterThan(0);
+    expect(operations.length).toBeLessThanOrEqual(25);
+    expect(operations[0]).toEqual(
+      expect.objectContaining({
+        reference: expect.any(String),
+        deviceName: "Synthetic Windows 11 device",
+        createdAt: expect.any(Date),
+      }),
+    );
+    expect(auditEvents.length).toBeGreaterThan(0);
+    expect(auditEvents.length).toBeLessThanOrEqual(25);
+    expect(auditEvents[0]).toEqual(
+      expect.objectContaining({
+        eventType: expect.any(String),
+        entityType: expect.any(String),
+        correlationId: expect.any(String),
+        createdAt: expect.any(Date),
+      }),
+    );
+    expect(auditEvents[0]).not.toHaveProperty("payload");
     await expect(mutationCounts()).resolves.toEqual(countsBefore);
   });
 

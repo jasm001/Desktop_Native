@@ -5,7 +5,9 @@ import type { PortalPrincipal } from "@/modules/identity/domain/portal-principal
 import {
   authorizePortalCapability,
   requireDevelopmentPortalAccess,
+  resolveDevelopmentPortalAccess,
 } from "@/modules/identity/application/portal-authorization";
+import { portalCapabilities } from "@/modules/identity/domain/portal-principal";
 
 const validEnvironment = {
   IT_SUPPORT_ENVIRONMENT: "development",
@@ -53,13 +55,22 @@ describe("development portal identity", () => {
 });
 
 describe("portal authorization", () => {
-  it("allows the known read-only dashboard capability", () => {
+  it.each(portalCapabilities)(
+    "allows the known read-only capability %s",
+    (capability) => {
+      expect(
+        requireDevelopmentPortalAccess(capability, validEnvironment),
+      ).toMatchObject({ role: "DeveloperAllAccess" });
+    },
+  );
+
+  it("returns no principal when route access fails closed", () => {
     expect(
-      requireDevelopmentPortalAccess(
-        "portal.dashboard.read",
-        validEnvironment,
-      ),
-    ).toMatchObject({ role: "DeveloperAllAccess" });
+      resolveDevelopmentPortalAccess("portal.dashboard.read", {
+        ...validEnvironment,
+        IT_SUPPORT_ENVIRONMENT: "production",
+      }),
+    ).toBeNull();
   });
 
   it("rejects unknown capabilities and roles", () => {

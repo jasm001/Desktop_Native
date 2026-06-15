@@ -16,16 +16,17 @@ Prisma/PostgreSQL, identidad sintetica de desarrollo, auditoria, outbox,
 solicitudes, trabajos, casos y ticketing fake.
 
 La primera unidad local agrega `/admin`, una identidad sintetica de portal
-separada, autorizacion server-side fail-closed para
-`portal.dashboard.read` y un shell accesible de solo lectura. La pagina `/`
-permanece como superficie tecnica.
+separada y autorizacion server-side fail-closed. La segunda unidad agrega
+navegacion real hacia `/admin/catalog`, `/admin/operations` y `/admin/audit`,
+capabilities de lectura separadas y proyecciones Prisma limitadas. La pagina
+`/` permanece como superficie tecnica.
 
 Todavia no contiene:
 
 - autenticacion OIDC/Entra, sesiones productivas ni MFA;
 - RBAC productivo, scopes por sede/area ni asignaciones reales;
 - Fluent UI React;
-- formularios, tablas o mutaciones administrativas;
+- formularios o mutaciones administrativas;
 - Playwright, Testing Library o pruebas por rol;
 - Entra, MFA, grupos, usuarios o datos corporativos;
 - OpenText, Rescue, Teams o UEMS reales.
@@ -50,6 +51,22 @@ No se crean aun usuarios, roles o scopes corporativos. Los nombres de roles
 productivos de este documento son el modelo objetivo, no asignaciones reales.
 La especificacion y evidencia viven en
 `../docs/modules/admin-portal-foundation.md`.
+
+## Segunda unidad local
+
+La segunda unidad permanece de solo lectura:
+
+1. separa capabilities para dashboard, catalogo, operaciones y auditoria;
+2. protege cada ruta en servidor antes de resolver datos;
+3. usa el catalogo sintetico ya existente;
+4. consulta como maximo 25 solicitudes y 25 eventos recientes;
+5. selecciona campos explicitos y excluye el payload de auditoria;
+6. mantiene vacios accesibles cuando PostgreSQL no tiene actividad;
+7. prueba limites y ausencia de efectos laterales sobre PostgreSQL real.
+
+No se crean roles, scopes, asignaciones, tablas ni migraciones nuevas. El unico
+rol local sigue siendo `DeveloperAllAccess`. La evidencia vive en
+`../docs/modules/admin-portal-read-model.md`.
 
 ## Responsabilidad
 
@@ -174,7 +191,7 @@ El bloque solo puede declararse `completed` cuando:
 - no hay secretos, PII innecesaria ni identidades corporativas en fixtures;
 - los gates completos del repositorio siguen pasando.
 
-La primera unidad local no cierra este gate.
+Las unidades locales actuales no cierran este gate.
 
 ## Referencias
 
