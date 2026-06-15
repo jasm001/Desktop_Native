@@ -10,37 +10,42 @@ Repositorio:
 
 Estado confirmado:
 - Bloques 0 a 8 estan `completed`.
-- El incremento local del Bloque 9 esta publicado en `0448a42`.
-- Bloque 9, canal Teams existente, esta `blocked` hasta disponer de evidencia
-  para integrar y validar el bot corporativo real.
-- `modules/TEAMS.md` conserva el gobierno del Bloque 9.
-- Bloque 10, endurecimiento para piloto, esta `blocked` porque el trabajo local
-  reproducible termino y solo resta evidencia externa.
-- `modules/PILOT_HARDENING.md` es el documento propietario del Bloque 10.
-- La primera unidad local del Bloque 10 agrega un kill switch fail-closed del
-  DeviceAgent y un runbook de deshabilitacion, rollback y retiro.
-- La unidad local final confina `local-demo` a `Development`, rechaza
-  configuraciones contradictorias y sanea los eventos genericos de fallo del
-  DeviceAgent.
-- `docs/threat-model/README.md` es el threat model de trabajo y aun no tiene
-  revision ni aprobacion de Security.
-- Bloque 11, portal administrativo web, permanece `pending`.
-- `src/AdminWeb` es el control plane Next.js modular, no el portal del
-  Bloque 11.
-- `src/Worker` es un proceso Node durable separado.
+- Bloque 9, canal Teams existente, esta `blocked`; su incremento local esta
+  publicado en `0448a42`.
+- Bloque 10, endurecimiento para piloto, esta `blocked`; su cierre local esta
+  publicado en `be6c4fc`.
+- Bloque 11, portal administrativo web, esta `in_progress` y es el unico bloque
+  principal activo.
+- `modules/TEAMS.md`, `modules/PILOT_HARDENING.md` y
+  `modules/ADMIN_PORTAL.md` son los documentos propietarios de los Bloques 9,
+  10 y 11 respectivamente.
+- `src/AdminWeb` es el control plane Next.js modular sobre el que se construye
+  el Bloque 11.
+- La pagina `/` actual de AdminWeb sigue siendo una superficie tecnica del
+  Bloque 8; no es el portal administrativo terminado.
+- AdminWeb ya contiene APIs v1, identidad sintetica de desarrollo,
+  Prisma/PostgreSQL, auditoria append-only, outbox, solicitudes, trabajos,
+  `BotCase` y ticketing fake.
+- No existen aun autenticacion de portal, OIDC/Entra, RBAC server-side, rutas
+  administrativas, Fluent UI, Testing Library ni Playwright.
+- `src/Worker` conserva el proceso Node durable separado.
 - Prisma/PostgreSQL tiene cuatro migraciones versionadas.
-- WinUI y DeviceAgent conservan IPC tipado, allowlist cerrada, idempotencia,
-  evidencia saneada y recuperacion local.
-- Cada confirmacion crea una `SupportRequest`, un `ExecutionJob` y un `BotCase`.
+- Cada confirmacion crea una `SupportRequest`, un `ExecutionJob` y un
+  `BotCase`.
 - Los fallos publican `bot-case.escalation-requested.v1`; el worker crea un solo
   `ExternalTicket` fake por caso.
-- Teams local usa `conversation-channel.v1`,
-  `IConversationChannel` y un adaptador recorded sin red.
-- OpenText real, Teams corporativo, Entra, UEMS, Sophos, PKI, Hermes/RAG
-  productivo y portal administrativo siguen deshabilitados.
+- Teams local usa `conversation-channel.v1`, `IConversationChannel` y un
+  adaptador recorded sin red.
+- DeviceAgent conserva IPC tipado, allowlist cerrada, idempotencia, evidencia
+  saneada, kill switch y confinamiento de `local-demo` a `Development`.
+- OpenText real, Teams corporativo, Entra, UEMS, Sophos, PKI, Rescue,
+  Hermes/RAG productivo y portal administrativo productivo siguen
+  deshabilitados.
 - Ultimo gate completo: 136 pruebas .NET, 20 pruebas Node unitarias/de contrato,
   11 integraciones AdminWeb, 4 del Worker, cuatro migraciones PostgreSQL y E2E.
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
+- La documentacion vigente fue auditada y alineada para iniciar el Bloque 11;
+  `context/` y `reference/` conservan historia y no definen el estado actual.
 
 Antes de editar:
 1. ejecuta `git status --branch --short`, `git log -5 --oneline` y verifica el
@@ -51,82 +56,99 @@ Antes de editar:
 4. lee completos `core/SECURITY.md`, `core/DECISIONS.md`, `core/SCOPE.md`,
    `core/STACK.md` y `core/ARCHITECTURE.md`;
 5. lee completos `standards/CODING_STANDARDS.md` y `standards/DELIVERY.md`;
-6. lee completos `modules/PILOT_HARDENING.md`, `modules/OPERATIONS.md`,
-   `modules/TEAMS.md` y `modules/ADMIN_PORTAL.md`;
-7. lee completos `docs/threat-model/README.md`,
-   `docs/modules/local-mvp-lab.md`,
-   `project-management/PILOT_ASSESSMENT.md` y
+6. lee completos `modules/ADMIN_PORTAL.md`, `modules/WEB_DELIVERY.md`,
+   `modules/OPERATIONS.md`, `modules/PILOT_HARDENING.md` y `modules/TEAMS.md`;
+7. lee completos `docs/modules/control-plane-foundation.md`,
+   `docs/modules/control-plane-local-flow.md`,
+   `docs/modules/local-mvp-lab.md`, `docs/threat-model/README.md` y
    `project-management/INFORMATION_REQUESTS.md`;
-8. inspecciona `src/Desktop`, `src/DeviceAgent`, `src/AdminWeb`, `src/Worker`,
-   `src/Contracts`, `deploy`, `scripts` y sus pruebas;
-9. identifica controles implementados, evidencia recibida y brechas reales
-   antes de reanudar el Bloque 10.
+8. inspecciona completos `src/AdminWeb/package.json`, `src/AdminWeb/src/app`,
+   `src/AdminWeb/src/modules/identity`, `src/AdminWeb/src/platform`,
+   `src/AdminWeb/tests`, `src/AdminWeb/prisma`, `src/Contracts/Web` y
+   `src/Worker`;
+9. confirma que la pagina actual, dependencias, identidad y pruebas coinciden
+   con la linea base documentada antes de elegir la implementacion.
 
 Reglas no negociables:
 - no cambies stack, alcance, arquitectura, persistencia, seguridad o contratos
   publicos sin registrar un stopper en `WORKFLOW.md`;
-- conserva Next.js/TypeScript/Prisma/PostgreSQL como control plane;
+- conserva Next.js App Router, TypeScript estricto, Prisma y PostgreSQL como
+  control plane;
 - conserva el worker Node como proceso durable separado;
-- conserva WinUI sin privilegios y DeviceAgent como frontera privilegiada;
-- no aceptes comandos, scripts, rutas, argumentos o texto operativo libre;
-- toda mutacion requiere identidad, autorizacion, confirmacion, correlacion e
-  idempotencia;
-- payloads desconocidos, versiones no soportadas y acciones no allowlisted
-  fallan cerrados;
+- no agregues un backend ASP.NET ni microservicios;
+- el portal no ejecuta comandos, scripts, rutas, argumentos ni texto operativo;
+- el portal nunca llama directamente al DeviceAgent;
+- toda autorizacion se aplica server-side y falla cerrada;
+- identidades, roles, scopes, payloads o versiones desconocidos se rechazan;
+- una identidad de desarrollo solo puede habilitarse con ambiente local exacto
+  y configuracion explicita;
+- `DeveloperAllAccess` nunca se acepta fuera de desarrollo;
+- toda mutacion futura requiere identidad, autorizacion, confirmacion,
+  correlacion, idempotencia y auditoria;
 - no uses datos, credenciales, endpoints, tenant, certificados ni
   identificadores corporativos;
-- no conectes OpenText, Teams, Microsoft 365, Entra, UEMS, Sophos o PKI reales;
-- no inventes owners, cuentas de servicio, permisos, politicas, excepciones,
-  firma, publicador, retencion ni mecanismos de despliegue;
-- no solicites ni implementes una exclusion antivirus general;
-- no presentes `local-demo` como piloto corporativo;
-- no reabras ni declares completado el Bloque 9 sin integrar el bot real;
-- no adelantes el portal administrativo del Bloque 11;
-- no agregues dependencias si las APIs y herramientas actuales son suficientes;
-- no declares completado el Bloque 10 sin threat model revisado y ensayo
-  autorizado de despliegue/retiro en dos endpoints;
+- no conectes Entra, Microsoft 365, Teams, OpenText, Rescue, UEMS, Sophos, PKI
+  ni servicios productivos;
+- no inventes owners, asignaciones de rol, scopes corporativos, cuentas de
+  servicio, permisos, retencion, excepciones ni mecanismos de despliegue;
+- los roles productivos de `modules/ADMIN_PORTAL.md` son un modelo objetivo, no
+  asignaciones confirmadas;
+- no conviertas la identidad sintetica en autenticacion productiva;
+- no reabras ni declares completados los Bloques 9 o 10;
+- no declares completado el Bloque 11 con una sola unidad local;
+- no agregues dependencias salvo las aprobadas por `core/STACK.md` y necesarias
+  para la unidad; conserva versiones fijadas y lockfile reproducible;
 - no declares terminada una unidad sin ejecutar los gates aplicables.
 
 Tarea:
-Conserva el Bloque 10 `blocked` y el MVP local sin cambios hasta recibir
-evidencia externa. Reanuda hardening solo para integrar y validar una decision
-documentada sobre proveedores corporativos o propios; no promociones ni
-renombres `local-demo` y no adelantes el Bloque 11.
+Inicia el Bloque 11 con una primera unidad local pequena y completa sobre
+`src/AdminWeb`: frontera de identidad/autorizacion server-side fail-closed y
+shell administrativo minimo, accesible y de solo lectura.
 
 Antes de implementar:
-- mapea las amenazas de `docs/threat-model/README.md` a codigo, configuracion y
-  pruebas existentes;
-- contrasta identidad del agente, IPC, replay, artefactos, logs, evidencia,
-  perdida de red, deshabilitacion y retiro;
-- confirma que la evidencia corresponde al stopper vigente del Bloque 10;
-- define una unidad separada para el perfil empresarial y sus proveedores;
-- registra un stopper nuevo solo si aparece una decision externa diferente o
-  una alteracion de frontera normativa.
+- contrasta la identidad sintetica existente con una identidad de portal;
+- evita reutilizar la identidad del agente como identidad de usuario;
+- define en `docs/modules/admin-portal-foundation.md` alcance exacto,
+  alternativas, contratos internos, evidencia y criterio de aceptacion;
+- decide, siguiendo los patrones actuales, la ruta y abstraccion minimas para
+  el portal sin mover reglas de dominio a componentes React;
+- identifica si Fluent UI React y Playwright son necesarios en esta unidad;
+  si se agregan, usa solo las dependencias aprobadas y actualiza el lockfile;
+- registra un stopper solo si la solucion exige alterar una frontera normativa
+  o depende de una decision externa no documentada.
 
 Alcance minimo esperado:
-- inventario trazable de controles existentes y brechas del threat model;
-- una unidad tecnica pequena y completa para integrar solo la evidencia o
-  proveedor ya decidido;
-- fallo cerrado y configuracion segura por defecto;
-- pruebas unitarias, de contrato o integracion proporcionales al cambio;
-- evidencia de que no se amplian comandos, privilegios ni datos recolectados;
-- documentacion del punto de sustitucion o configuracion para piloto;
-- runbook actualizado de deshabilitacion, rollback o retiro relacionado;
-- riesgos residuales y evidencia externa requerida para dos endpoints.
+- identidad de portal local, sintetica y separada de la identidad del agente;
+- habilitacion solo con `IT_SUPPORT_ENVIRONMENT=development` y configuracion
+  explicita equivalente;
+- rechazo server-side fuera del perfil permitido, sin render parcial;
+- politica de autorizacion deny-by-default para rol o capability conocida;
+- shell administrativo minimo con navegacion accesible y datos sinteticos o de
+  solo lectura;
+- ninguna mutacion administrativa en esta primera unidad;
+- sin cambios a contratos IPC, acciones del DeviceAgent o worker durable;
+- pruebas unitarias y/o integracion de acceso permitido, acceso denegado,
+  ambiente invalido y ausencia de efectos laterales;
+- verificacion de teclado, foco, layout adaptable y semantica basica;
+- punto de sustitucion documentado para OIDC/Entra futuro;
+- riesgos residuales y gates externos claramente separados.
 
 Criterios de aceptacion:
 - Bloques 0 a 8 permanecen `completed`;
-- Bloque 9 permanece `blocked`;
-- Bloque 10 permanece `blocked` hasta cumplir su gate externo;
-- Bloque 11 permanece `pending`;
+- Bloques 9 y 10 permanecen `blocked`;
+- Bloque 11 permanece como unico bloque `in_progress`;
 - no se crea ninguna conexion o identidad corporativa;
-- el control agregado falla cerrado y es verificable localmente;
-- WinUI, Teams e IA siguen sin ejecutar contenido privilegiado;
-- DeviceAgent conserva acciones tipadas y allowlisted;
-- no aparecen secretos, PII innecesaria ni logs operativos completos;
-- los gates existentes de Bloques 7 a 9 siguen pasando;
+- la identidad local falla cerrada fuera de desarrollo;
+- la autorizacion ocurre en servidor antes de mostrar contenido protegido;
+- roles o capabilities desconocidos se rechazan;
+- el shell no ejecuta comandos ni llama al DeviceAgent;
+- no se agregan mutaciones, secretos, PII o datos corporativos;
+- `src/AdminWeb` conserva sus APIs y modulos existentes;
+- el worker Node sigue separado;
+- las cuatro migraciones existentes no se modifican retroactivamente;
+- los gates de los Bloques 7 a 10 siguen pasando;
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan;
-- no se declara cerrado el gate de piloto ni se simula aprobacion externa.
+- no se simula Entra, aprobacion Security ni un portal productivo completo.
 
 Stopper externo de Teams que debe conservarse:
 Fecha: 2026-06-14
@@ -137,15 +159,26 @@ Decision requerida: Confirmar owner, plataforma, repositorio, autenticacion,
 Impacto: Sin esta evidencia no puede validarse ni declararse completa la
   integracion corporativa del Bloque 9.
 
-Gates externos del Bloque 10:
-- UEMS y procedimiento de despliegue/retiro;
-- cuenta restringida del agente;
-- revision Security/Sophos;
-- identidad de usuario y dispositivo;
-- kill switch y owner operativo;
-- logs, retencion y respuesta ante compromiso;
-- paquete y confianza de publicador;
-- dos endpoints autorizados y criterio de restauracion.
+Stopper externo de hardening que debe conservarse:
+Fecha: 2026-06-14
+Modulo: Endurecimiento para piloto
+Decision requerida: Confirmar UEMS, cuenta restringida, identidad de usuario y
+  dispositivo, revision Security/Sophos, owner del kill switch, logs y
+  retencion, respuesta ante compromiso, paquete/confianza de publicador y dos
+  endpoints autorizados con criterio de restauracion.
+Impacto: Sin esta evidencia no puede declararse `completed` el Bloque 10 ni
+  iniciarse un piloto corporativo.
+
+Gates externos futuros del Bloque 11:
+- App Registration, tenant y contrato OIDC/Entra;
+- owners y asignaciones reales de roles/scopes;
+- matriz de segregacion de funciones;
+- hosting, secretos, observabilidad y retencion;
+- revision Security del portal y sesiones;
+- OpenText/Rescue y sus mecanismos de enlace o adaptador;
+- datos, ambientes y proceso de despliegue aprobados.
+
+Estos gates no bloquean la primera unidad local sintetica.
 
 Gate base:
 .\scripts\Validate.ps1
@@ -155,9 +188,11 @@ corepack pnpm@11.5.3 audit --prod --audit-level high
 .\scripts\Test-Secrets.ps1
 
 Al terminar:
-- informa alcance implementado, archivos, controles y pruebas;
+- informa alcance implementado, archivos, autorizacion y pruebas;
 - lista riesgos y pendientes externos;
-- actualiza documento propietario, evidencia, `WORKFLOW.md`,
-  `CURRENT_CONTEXT.md` y el threat model;
+- actualiza `modules/ADMIN_PORTAL.md`,
+  `docs/modules/admin-portal-foundation.md`, `WORKFLOW.md`,
+  `CURRENT_CONTEXT.md`, `README.md` y el threat model si cambia la superficie;
+- actualiza `CONSISTENCY_AUDIT.md` si cambia el estado o una frontera;
 - recomienda un Conventional Commit;
 - no hagas commit ni push automaticamente.

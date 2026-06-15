@@ -218,8 +218,8 @@ trazable, kill switch fail-closed, runbook de retiro, confinamiento de
 payloads. La configuracion invalida termina antes de construir el host con
 mensaje fijo. El bloque no se declara `completed` hasta que Security revise el
 threat model y se ensayen despliegue, deshabilitacion, rollback y retiro en dos
-endpoints autorizados. No queda un bloque principal `in_progress`; el Bloque 11
-permanece `pending`.
+endpoints autorizados. El Bloque 11 puede avanzar localmente conforme a D-072
+sin cerrar ni debilitar este gate.
 
 ## Bloque 11: portal administrativo web
 
@@ -234,6 +234,14 @@ Construir el portal sobre contratos ya usados por WinUI y Teams:
 7. enlaces OpenText/Rescue.
 
 Gate: autorización server-side, Playwright por rol, migraciones y auditoria.
+
+Estado: `in_progress`. Es el unico bloque principal activo. Parte del control
+plane modular existente en `src/AdminWeb`, cuya pagina actual sigue siendo una
+superficie tecnica del Bloque 8. No existen aun login de portal, RBAC
+server-side, Fluent UI, rutas administrativas ni Playwright. La primera unidad
+local debe establecer una identidad de desarrollo separada y fail-closed,
+autorizacion server-side y un shell administrativo minimo con datos sinteticos,
+sin Entra, OpenText, Teams, Rescue, UEMS ni usuarios corporativos.
 
 ## Regla de escalamiento
 

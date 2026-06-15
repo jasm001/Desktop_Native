@@ -157,4 +157,5 @@ Validacion local del 2026-06-13:
 La matriz VM y la restauracion estan completas. El Bloque 6 queda `completed`;
 esto no promueve el adaptador fuera de `local-demo`. Los Bloques 7 y 8 y el
 incremento local del Bloque 9 se completaron posteriormente. La integracion
-corporativa de Teams esta `blocked` y el Bloque 10 es el bloque activo actual.
+corporativa de Teams y el gate de piloto del Bloque 10 estan `blocked`. El
+Bloque 11 es el bloque activo actual y no cambia esta evidencia historica.

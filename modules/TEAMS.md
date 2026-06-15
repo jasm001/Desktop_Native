@@ -4,9 +4,9 @@
 
 Documento propietario del Bloque 9 `blocked`.
 
-Los Bloques 0 a 8 estan `completed`. El Bloque 10 es el unico bloque principal
-`in_progress`; el Bloque 9 conserva su incremento local y espera evidencia
-externa.
+Los Bloques 0 a 8 estan `completed`. El Bloque 11 es el unico bloque principal
+`in_progress`; los Bloques 9 y 10 permanecen `blocked`. El Bloque 9 conserva su
+incremento local y espera evidencia externa.
 
 El primer incremento local fue implementado y validado el 2026-06-14. Su
 evidencia tecnica vive en

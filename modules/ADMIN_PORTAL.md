@@ -2,8 +2,48 @@
 
 ## Estado
 
-Reservado para el Bloque 11. No es el bloque activo y no debe ampliarse durante
-el Bloque 10.
+Documento propietario del Bloque 11 `in_progress`, unico bloque principal
+activo.
+
+Los Bloques 0 a 8 estan `completed`. Los Bloques 9 y 10 permanecen `blocked`
+por evidencia externa. D-072 permite avanzar este bloque con identidad, datos y
+proveedores locales reemplazables sin cerrar esos gates.
+
+## Linea base real
+
+`src/AdminWeb` ya contiene el control plane Next.js modular, APIs v1,
+Prisma/PostgreSQL, identidad sintetica de desarrollo, auditoria, outbox,
+solicitudes, trabajos, casos y ticketing fake.
+
+Todavia no contiene:
+
+- autenticacion de portal ni abstraccion OIDC para usuarios;
+- autorizacion server-side por rol y scope;
+- rutas o navegacion administrativas;
+- Fluent UI React;
+- formularios, tablas o mutaciones administrativas;
+- Playwright, Testing Library o pruebas por rol;
+- Entra, MFA, grupos, usuarios o datos corporativos;
+- OpenText, Rescue, Teams o UEMS reales.
+
+La pagina `/` actual es una superficie tecnica del Bloque 8. No debe
+confundirse con el portal administrativo terminado.
+
+## Primera unidad local
+
+La primera unidad debe ser pequena y no mutante:
+
+1. definir una identidad de portal separada de la identidad del agente;
+2. permitir una identidad sintetica solo con ambiente de desarrollo y
+   configuracion explicita;
+3. negar acceso por defecto fuera de ese perfil;
+4. aplicar autorizacion server-side antes de renderizar una ruta administrativa;
+5. crear un shell minimo y accesible con datos sinteticos o de solo lectura;
+6. probar acceso permitido, denegado y ausencia de efectos laterales;
+7. documentar el punto de sustitucion por OIDC/Entra sin conectarlo.
+
+No se crean aun usuarios, roles o scopes corporativos. Los nombres de roles
+productivos de este documento son el modelo objetivo, no asignaciones reales.
 
 ## Responsabilidad
 
@@ -40,7 +80,7 @@ Los roles se pueden combinar solo cuando la segregacion de funciones lo permita.
 En desarrollo existe `DeveloperAllAccess`; el backend rechaza ese rol fuera de
 `Development`.
 
-## Provisionamiento MVP
+## Provisionamiento objetivo
 
 - Sin auto-registro.
 - Un super admin invita por correo empresarial.
@@ -51,10 +91,11 @@ En desarrollo existe `DeveloperAllAccess`; el backend rechaza ese rol fuera de
 - Alta, baja, cambio de rol, reset y exportacion quedan auditados.
 - Acceso puede limitarse por pais, sede, area, grupo y proyecto.
 
-El MVP integra Microsoft Entra para login corporativo y MFA. La aplicacion no
-recibe la contrasena: redirige al login Microsoft mediante OIDC. Los roles se
-asignan manualmente en la base de datos durante el MVP. Grupos Entra,
-provisionamiento automatico y roles corporativos quedan para despues.
+El piloto corporativo debera integrar Microsoft Entra para login y MFA. La
+aplicacion no recibe la contrasena: redirige al login Microsoft mediante OIDC.
+Los roles se asignaran manualmente en la base de datos durante el MVP. Grupos
+Entra, provisionamiento automatico y roles corporativos quedan para despues.
+Nada de esta integracion esta habilitado en el perfil local.
 
 ## Modulos
 
@@ -111,3 +152,29 @@ Nadie puede crear el paquete, aprobarlo y publicarlo a produccion por si solo.
 - Alertas por cada inicio de sesion o cambio realizado.
 - Sin uso para soporte diario.
 - Revision periodica de asignaciones y sesiones.
+
+## Gate del Bloque 11
+
+El bloque solo puede declararse `completed` cuando:
+
+- autenticacion y autorizacion se aplican server-side y fallan cerradas;
+- roles y scopes tienen pruebas de acceso permitido y denegado;
+- las mutaciones administrativas requieren identidad, autorizacion,
+  confirmacion, correlacion e idempotencia;
+- migraciones y auditoria cubren los datos nuevos;
+- Playwright valida recorridos principales por rol y accesibilidad;
+- el portal no ejecuta comandos ni llama directamente al DeviceAgent;
+- OpenText y Rescue usan adaptadores o enlaces aprobados, no bypasses;
+- no hay secretos, PII innecesaria ni identidades corporativas en fixtures;
+- los gates completos del repositorio siguen pasando.
+
+La primera unidad local no cierra este gate.
+
+## Referencias
+
+- `../core/SECURITY.md`
+- `../core/ARCHITECTURE.md`
+- `../core/STACK.md`
+- `WEB_DELIVERY.md`
+- `../docs/modules/control-plane-foundation.md`
+- `../docs/modules/control-plane-local-flow.md`

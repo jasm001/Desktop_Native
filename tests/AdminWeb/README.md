@@ -6,4 +6,5 @@ The Block 7 control-plane tests live with the Node packages:
 - `src/AdminWeb/tests` for unit and PostgreSQL integration tests;
 - `src/Worker/tests` for worker unit and PostgreSQL integration tests.
 
-Portal component and Playwright role tests remain reserved for Block 11.
+Block 11 is `in_progress`. Portal component and Playwright role tests do not
+exist yet and must be introduced with the portal capabilities they verify.

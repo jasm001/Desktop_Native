@@ -6,24 +6,28 @@ Fecha de ultima actualizacion: 2026-06-14.
 
 Los Bloques 0 a 8 estan `completed`. El Bloque 9 queda `blocked` por la
 integracion corporativa del bot existente. El trabajo local acotado del Bloque
-10 termino y el bloque queda `blocked` por gates externos. No hay un bloque
-principal `in_progress`; el Bloque 11 permanece `pending`.
+10 termino y el bloque queda `blocked` por gates externos. El Bloque 11,
+portal administrativo web, es el unico bloque principal `in_progress`.
 
 El cierre tecnico del Bloque 8 vive en
 `docs/modules/case-foundation.md` y su gobierno en `modules/TICKETING.md`.
 El Bloque 9 conserva su gobierno en `modules/TEAMS.md` y la evidencia local en
 `docs/modules/teams-channel-local-increment.md`. El documento propietario del
 Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
-`docs/threat-model/README.md`.
+`docs/threat-model/README.md`. El documento propietario del Bloque 11 es
+`modules/ADMIN_PORTAL.md`.
 
 ## Estado del repositorio
 
 - Rama principal `main`; remoto
   `https://github.com/jasm001/Desktop_Native.git`.
+- El cierre local del Bloque 10 esta publicado en `be6c4fc`.
 - El Bloque 9 local esta publicado en `0448a42`; su integracion corporativa no
   esta completada.
-- `src/AdminWeb` es el control plane Next.js modular; no es el portal del
-  Bloque 11.
+- `src/AdminWeb` es el control plane Next.js modular sobre el que se construira
+  el Bloque 11. Su pagina actual sigue siendo una superficie tecnica del Bloque
+  8; no existen login de portal, RBAC server-side, Fluent UI, rutas
+  administrativas ni Playwright.
 - Prisma/PostgreSQL tiene cuatro migraciones versionadas.
 - Cada confirmacion crea una sola `SupportRequest`, `ExecutionJob` y `BotCase`.
 - Exito deja el caso en `attended_waiting_user` sin ticket.
@@ -71,13 +75,18 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 
 ## Siguiente reanudacion
 
-1. Mantener los Bloques 9 y 10 `blocked` y el Bloque 11 `pending`.
-2. Reanudar el Bloque 10 solo cuando exista evidencia saneada de UEMS, cuenta
+1. Mantener los Bloques 9 y 10 `blocked` y el Bloque 11 `in_progress`.
+2. Iniciar una sola unidad local del Bloque 11: frontera de identidad y
+   autorizacion server-side fail-closed, mas shell administrativo minimo con
+   datos sinteticos.
+3. Conservar la identidad de desarrollo solo en entorno local; Entra, MFA,
+   grupos y usuarios corporativos permanecen deshabilitados.
+4. Reanudar el Bloque 10 solo cuando exista evidencia saneada de UEMS, cuenta
    restringida, identidad, Security/Sophos, owner del kill switch, logs y
    retencion, paquete/publicador y dos endpoints autorizados.
-3. Definir un perfil empresarial nuevo despues de decidir si los proveedores
+5. Definir un perfil empresarial nuevo despues de decidir si los proveedores
    seran corporativos o propios; no promover ni renombrar `local-demo`.
-4. Mantener por separado el stopper de Teams; reanudar el Bloque 9 solo cuando
+6. Mantener por separado el stopper de Teams; reanudar el Bloque 9 solo cuando
    exista evidencia saneada del bot corporativo.
 
 ## Limites vigentes
@@ -87,6 +96,9 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 - No permitir que Teams, WinUI, IA o portal ejecuten comandos.
 - No presentar el trabajo local del Bloque 10 como piloto corporativo ni
   declarar su gate cerrado sin revision externa y ensayo en dos endpoints.
-- No adelantar el Bloque 11.
+- No convertir la identidad de desarrollo en autenticacion productiva ni
+  inventar roles, scopes, owners o permisos corporativos.
+- El portal no ejecuta comandos, no llama directamente al DeviceAgent y no
+  conecta Entra, OpenText, Teams, Rescue o UEMS reales.
 - Registrar stopper en `WORKFLOW.md` si una decision cambia seguridad,
   persistencia, contratos publicos, stack o alcance.

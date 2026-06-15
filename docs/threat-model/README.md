@@ -24,7 +24,8 @@ Fuera del alcance conectado actual:
 - UEMS, Entra, Sophos, PKI y confianza corporativa;
 - OpenText, Teams y Microsoft 365 reales;
 - IA productiva y RAG con datos corporativos;
-- portal administrativo del Bloque 11.
+- portal administrativo del Bloque 11, activo como trabajo local pero fuera del
+  alcance de este threat model del Bloque 10.
 
 ## Activos
 
@@ -61,7 +62,7 @@ Fuera del alcance conectado actual:
 | Perdida de red durante una operacion | alta | SQLite conserva trabajos; estados `running` vuelven a `queued`; control plane usa leases, retries e idempotencia; pruebas de recuperacion y claims agotados | Ensayo de interrupcion antes/durante/despues en dos endpoints |
 | Manipulacion de auditoria u outbox | alta | Trigger PostgreSQL impide update/delete de auditoria; request/job/case/outbox son transaccionales; worker usa claims y retries acotados; integraciones verifican append-only | Acceso operativo, alertas, backup y retencion |
 | Integracion de tickets comprometida | alta | `ITicketingProvider` fake separado, evento v1 estricto, ticket unico por caso y descripcion acotada; pruebas de retry | OpenText real: autenticacion, rate limits, sandbox, soporte y revocacion |
-| Administrador interno abusivo | alta | Portal del Bloque 11 no implementado; control plane actual solo expone flujos locales acotados | RBAC, segregacion, alertas y revision del Bloque 11 |
+| Administrador interno abusivo | alta | Bloque 11 activo, pero portal aun no implementado; control plane actual solo expone flujos locales acotados e identidad sintetica de desarrollo | Autorizacion server-side, RBAC, scopes, segregacion, alertas y pruebas por rol |
 | Exclusion antivirus excesiva | alta | `core/SECURITY.md` prohibe exclusion general; no existe configuracion de exclusion en codigo o deploy | Resultado Sophos; excepcion especifica y expirable solo si fuera necesaria |
 | Promocion accidental de `local-demo` | alta | Perfil `disabled` por defecto; politica de inicio acepta `local-demo` solo en `Development` y rechaza capacidades habilitadas con perfil `disabled`; URL limitada a loopback; manifiesto `development-only`; pruebas focalizadas | Configuracion administrada, paquete por ambiente y perfil empresarial explicito |
 | Deshabilitacion o retiro incompletos | alta | `JobExecutionEnabled=false` por defecto; `AgentJobExecutionGate` bloquea admision, claim e inicio/reanudacion; pruebas focalizadas; runbook local | Owner, configuracion protegida, revocacion, retencion y ensayo UEMS en dos endpoints |

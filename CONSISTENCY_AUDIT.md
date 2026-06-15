@@ -32,12 +32,12 @@ La precedencia vigente permanece definida en `README.md`:
 
 - Bloques 0 a 8: `completed`.
 - Incremento local del Bloque 9 publicado en `0448a42`.
-- Bloque 9, canal Teams existente: `blocked` por evidencia externa.
+- Cierre local del Bloque 10 publicado en `be6c4fc`.
 - Bloques 9 y 10: `blocked` por evidencia externa.
-- No existe un bloque principal `in_progress`.
+- Bloque 11: unico bloque principal `in_progress`.
 - Documento propietario del Bloque 9: `modules/TEAMS.md`.
 - Documento propietario del Bloque 10: `modules/PILOT_HARDENING.md`.
-- Bloque 11 permanece `pending`.
+- Documento propietario del Bloque 11: `modules/ADMIN_PORTAL.md`.
 - Gate completo vigente: 136 pruebas .NET, 20 pruebas Node unitarias/de
   contrato, 11 integraciones AdminWeb, 4 del Worker, cuatro migraciones
   PostgreSQL y E2E local.
@@ -62,8 +62,8 @@ Pendientes externos:
 La falta de esos datos no bloquea contratos, un adaptador local fake/recorded ni
 pruebas de paridad, que ya fueron implementados. El stopper para conectar el bot
 real sin esa evidencia esta registrado en `WORKFLOW.md` y mantiene el bloque
-`blocked`. D-072 permite continuar el Bloque 10 con proveedores locales sin
-declarar cerrada la integracion Teams.
+`blocked`. D-072 permite continuar el Bloque 11 con identidad, datos y
+proveedores locales sin declarar cerrada la integracion Teams.
 
 ## Alineacion del Bloque 10
 
@@ -80,14 +80,27 @@ declarar cerrada la integracion Teams.
   endpoints corporativos.
 - El gate externo sigue exigiendo revision del threat model y ensayo de
   despliegue/retiro en dos endpoints autorizados.
-- El portal administrativo permanece reservado para el Bloque 11.
+- El Bloque 11 activo no se usa como evidencia para cerrar hardening.
+
+## Alineacion del Bloque 11
+
+- `modules/ADMIN_PORTAL.md` es el documento propietario y define el gate.
+- `src/AdminWeb` conserva el control plane modular, cuatro migraciones y la
+  superficie tecnica del Bloque 8; no existe aun portal administrativo.
+- No estan instalados ni implementados Fluent UI, Testing Library, Playwright,
+  login de portal, OIDC/Entra, RBAC server-side o rutas administrativas.
+- La primera unidad local queda limitada a identidad sintetica fail-closed,
+  autorizacion server-side y shell accesible de solo lectura.
+- Los roles de produccion son un modelo objetivo; no representan owners,
+  permisos ni asignaciones corporativas confirmadas.
+- El portal no llama directamente al DeviceAgent ni ejecuta comandos.
 
 ## Correcciones realizadas
 
 - `README.md`, `CURRENT_CONTEXT.md`, `WORKFLOW.md` y `DEVELOPMENT_PLAN.md`
-  registran a los Bloques 9 y 10 `blocked`, sin bloque principal
-  `in_progress`, y al Bloque 11 `pending`;
-- `WORKFLOW.md` registra `04b6738` como ultimo resultado publicado y conserva
+  registran a los Bloques 9 y 10 `blocked` y al Bloque 11 como unico
+  `in_progress`;
+- `WORKFLOW.md` registra `be6c4fc` como ultimo resultado publicado y conserva
   stoppers separados para Teams y hardening;
 - `modules/PILOT_HARDENING.md` define alcance, limites y gate del Bloque 10;
 - `docs/threat-model/README.md` contiene el inventario inicial verificable;
@@ -98,8 +111,12 @@ declarar cerrada la integracion Teams.
   `docs/modules/pilot-hardening-local-closure.md` conservan la unidad final, el
   inventario y los puntos de sustitucion;
 - `modules/TEAMS.md` conserva el incremento local y el gate corporativo;
-- `MASTER_PROMPT.md` conserva el Bloque 10 `blocked`, sus gates externos y la
-  proteccion de los Bloques 9 y 11.
+- `modules/ADMIN_PORTAL.md`, `modules/WEB_DELIVERY.md`, `src/AdminWeb/README.md`
+  y `tests/AdminWeb/README.md` distinguen el control plane existente del portal
+  todavia no implementado;
+- las evidencias de bloques cerrados que contenian referencias al bloque activo
+  fueron convertidas en contexto historico;
+- `MASTER_PROMPT.md` se actualiza al final como handoff del Bloque 11.
 
 ## Diferencias intencionales
 
@@ -114,9 +131,11 @@ declarar cerrada la integracion Teams.
 - `blocked` en el Bloque 10 significa que el trabajo local reproducible termino,
   pero no existe revision Security ni ensayo en dos endpoints; no equivale a
   `completed`.
+- `in_progress` en el Bloque 11 significa que puede iniciar una unidad local
+  reemplazable; no implica Entra, RBAC productivo ni portal terminado.
 
 ## Resultado
 
-No queda una contradiccion material conocida sobre ausencia de bloque activo,
-estado de Teams, alcance de hardening, estado del ticketing fake o limites del
-portal.
+No queda una contradiccion material conocida sobre bloque activo, estado de
+Teams, alcance de hardening, estado del ticketing fake o linea base del portal.
+Los enlaces Markdown relativos vigentes fueron comprobados sin hallazgos.

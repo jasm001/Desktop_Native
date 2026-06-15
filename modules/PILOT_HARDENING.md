@@ -5,10 +5,9 @@
 Documento propietario del Bloque 10 `blocked`.
 
 Los Bloques 0 a 8 estan `completed`. El Bloque 9 esta `blocked` por la
-integracion corporativa del bot existente y el Bloque 11 permanece `pending`.
-El trabajo de este bloque no convierte `local-demo` en un piloto corporativo.
-No queda un bloque principal `in_progress`: el Bloque 10 conserva sus controles
-locales y espera exclusivamente evidencia externa. El Bloque 11 no se adelanta.
+integracion corporativa del bot existente. El Bloque 11 esta `in_progress` bajo
+su propio documento propietario. El trabajo de este bloque no convierte
+`local-demo` ni el portal local en un piloto corporativo.
 
 ## Objetivo
 
@@ -48,7 +47,8 @@ No se puede:
 - crear una exclusion antivirus general;
 - distribuir una clave privada o confiar en un publicador ficticio;
 - declarar aprobacion de Security, identidad corporativa o despliegue real;
-- ampliar el portal administrativo del Bloque 11.
+- usar el portal local del Bloque 11 como evidencia de identidad, despliegue o
+  aprobacion corporativa.
 
 ## Fronteras a proteger
 

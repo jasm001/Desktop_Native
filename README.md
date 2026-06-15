@@ -12,8 +12,9 @@ PostgreSQL persistence, durable worker, and local simulated-agent flow. Block 8
 completes internal `BotCase` tracking and deterministic fake ticketing. Block 9
 has a validated local channel boundary and is blocked on the existing corporate
 Teams bot. Block 10 has completed its bounded local hardening work and is
-blocked on external pilot evidence. No production integration or administrative
-portal behavior is implemented.
+blocked on external pilot evidence. Block 11 is active for the bounded local
+administrative portal foundation. No production integration or administrative
+portal behavior is implemented yet.
 
 ## Current Status
 
@@ -40,9 +41,14 @@ portal behavior is implemented.
   runtime failure events, and a removal runbook. The block is `blocked`, not
   completed, until external review and deployment/removal evidence exist for
   two authorized endpoints.
-- Next gate: obtain the external Block 10 evidence before defining an explicit
-  enterprise profile. UEMS, Entra, Security/Sophos, publisher trust, real Teams,
-  and OpenText remain disabled. Block 11 remains pending.
+- Block 11: `in_progress` as the only active block. The current `src/AdminWeb`
+  remains the modular control plane and engineering status surface; portal
+  authentication, server-side RBAC, Fluent UI, administrative routes and
+  Playwright role tests are not implemented.
+- Next gate: establish a development-only, fail-closed portal identity and
+  authorization boundary plus a minimal administrative shell over synthetic
+  data. UEMS, Entra, Security/Sophos, publisher trust, real Teams and OpenText
+  remain disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes/RAG. This
   profile is not a corporate pilot.
@@ -54,7 +60,8 @@ The implementation sequence and gates are defined in
 in [`WORKFLOW.md`](WORKFLOW.md). The bounded local demonstration is defined in
 [`docs/modules/local-mvp-lab.md`](docs/modules/local-mvp-lab.md). Block 9 is
 owned by [`modules/TEAMS.md`](modules/TEAMS.md), and Block 10 is owned by
-[`modules/PILOT_HARDENING.md`](modules/PILOT_HARDENING.md).
+[`modules/PILOT_HARDENING.md`](modules/PILOT_HARDENING.md). Block 11 is owned by
+[`modules/ADMIN_PORTAL.md`](modules/ADMIN_PORTAL.md).
 
 ## Documentation Precedence
 

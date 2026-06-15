@@ -3,9 +3,9 @@
 ## Estado
 
 Documento transversal de referencia; no es un bloque activo. Durante el
-Bloque 10 aporta requisitos operativos de despliegue, continuidad,
-deshabilitacion y retiro. El Bloque 9 permanece bloqueado por su integracion
-externa. Este documento no autoriza OpenText, UEMS, Rescue, Power Automate ni
+Bloque 11 aporta limites para identidad, observabilidad, despliegue y operacion
+del portal. Los Bloques 9 y 10 permanecen bloqueados por evidencia externa.
+Este documento no autoriza OpenText, UEMS, Rescue, Power Automate, Entra ni
 operaciones productivas reales.
 
 ## Topologia recomendada

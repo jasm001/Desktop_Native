@@ -3,13 +3,16 @@
 ## Estado
 
 - Fase actual: capacidades locales controladas para Windows 11.
-- Bloque activo: ninguno. Los Bloques 9 y 10 estan `blocked`; el Bloque 11 sigue
-  `pending`.
+- Bloque activo: Bloque 11, portal administrativo web, `in_progress`. Los
+  Bloques 9 y 10 permanecen `blocked`.
 - Los Bloques 0 a 8 estan `completed`.
-- Ultimo resultado publicado: kill switch local del Bloque 10 en `04b6738`.
-- Ultimo resultado funcional: cierre local del Bloque 10 con kill switch,
+- Ultimo resultado publicado: cierre local del Bloque 10 en `be6c4fc`.
+- Ultimo resultado funcional validado: cierre local del Bloque 10 con kill switch,
   confinamiento fail-closed de `local-demo`, eventos de fallo saneados y runbook
   de retiro. El gate corporativo no esta cerrado.
+- Estado inicial del Bloque 11: `src/AdminWeb` conserva APIs, Prisma y la pagina
+  tecnica existente; aun no hay portal, autenticacion de portal, RBAC
+  server-side, Fluent UI ni Playwright.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.
@@ -143,14 +146,15 @@ Solo un bloque principal puede estar `in_progress`.
 | 8. Casos, tickets y OpenText fake | completed | `BotCase`, politica de 72 horas, evento de escalamiento, `ITicketingProvider` fake, `ExternalTicket`, worker idempotente y consulta HTTP validados sobre PostgreSQL real efimero; `cf262b4`. |
 | 9. Canal Teams existente | blocked | Incremento local publicado en `0448a42`: contrato v1 estricto, `IConversationChannel`, adaptador recorded, API compartida y paridad Teams/WinUI. Integracion corporativa bloqueada por evidencia externa. |
 | 10. Endurecimiento para piloto | blocked | Trabajo local acotado: threat model trazable, kill switch apagado por defecto, perfil `local-demo` confinado a `Development`, fallos del host saneados y runbook de retiro. Revision externa y ensayo en dos endpoints pendientes. |
-| 11. Portal administrativo web | pending | |
+| 11. Portal administrativo web | in_progress | Activado sobre el control plane existente. Primera unidad local: identidad/autorizacion server-side fail-closed y shell administrativo minimo con datos sinteticos; sin Entra ni integraciones corporativas. |
 
 ## Alcance del MVP local
 
 El MVP local permanece utilizable con proveedores locales o fake aunque los
 Bloques 9 y 10 esten bloqueados. D-072 permite conservar unidades locales
-reemplazables sin cerrar gates externos, pero no autoriza iniciar el Bloque 11
-ni promover `local-demo`. La referencia tecnica es
+reemplazables sin cerrar gates externos y permite iniciar el Bloque 11 con
+identidad y datos exclusivamente sinteticos. No autoriza promover `local-demo`
+ni declarar cerrado un gate corporativo. La referencia tecnica es
 `docs/modules/local-mvp-lab.md`.
 
 Permitido antes de la decision corporativa:
@@ -219,7 +223,8 @@ Alternativas: Mantener el MVP `local-demo` en `Development`; decidir despues
 Impacto: Sin esta evidencia no puede declararse `completed` el Bloque 10 ni
   iniciar un piloto corporativo.
 Recomendacion: Mantener el Bloque 10 `blocked` y reanudarlo solo con el paquete
-  minimo de evidencia externa. No adelantar el Bloque 11 para simular el gate.
+  minimo de evidencia externa. El trabajo local del Bloque 11 puede continuar
+  bajo D-072 sin presentarse como evidencia de piloto.
 Owner: Por confirmar mediante las solicitudes de informacion vigentes.
 ```
 

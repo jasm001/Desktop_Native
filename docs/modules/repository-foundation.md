@@ -14,7 +14,8 @@ implementing product behavior.
 - `src/Contracts`: versioned cross-process and HTTP contracts.
 - `src/BuildingBlocks`: shared primitives with no executable dependencies.
 - `src/AdminWeb`: boundary reserved by Block 0 and activated in Block 7 for the
-  shared API and persistence; portal UI remains deferred to Block 11.
+  shared API and persistence; Block 11 is now active, but portal UI is not yet
+  implemented.
 - `src/Worker`: boundary reserved by Block 0 and activated in Block 7 as a
   separate durable Node.js process.
 
