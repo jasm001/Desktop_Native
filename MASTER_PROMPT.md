@@ -109,19 +109,33 @@ Reglas no negociables:
 - no declares terminada una unidad sin ejecutar los gates aplicables.
 
 Tarea:
-Continua el Bloque 11 desde las dos unidades locales publicadas. Elige una
-tercera unidad pequena, completa y verificable sobre `src/AdminWeb` que no
-requiera identidad, owners, roles, scopes, datos o integraciones corporativas.
+Continua el Bloque 11 desde las dos unidades locales publicadas y cierra lo
+pendiente no bloqueante del esquema local del portal administrativo. La unidad
+debe enfocarse en calidad verificable del portal existente, no en conectarlo a
+servicios corporativos ni en inventar gobierno productivo.
+
+Pendientes locales no bloqueantes priorizados:
+
+1. pruebas de componentes del portal con Testing Library o una alternativa
+   equivalente aprobada si encaja mejor con Next Server Components;
+2. recorridos de navegador para `/admin`, `/admin/catalog`, `/admin/operations`,
+   `/admin/audit` y acceso denegado, cubriendo escritorio, movil, teclado,
+   estados activos y ausencia de overflow;
+3. pruebas de roles/capabilities sinteticas permitidas y denegadas sin crear
+   roles productivos, owners ni scopes corporativos;
+4. revision de accesibilidad local del shell, tablas y estados vacios;
+5. evaluar Fluent UI React solo como adopcion minima y justificada. Si agregarlo
+   aumenta riesgo, deuda o reescritura, documentar por que se difiere y cerrar
+   primero las pruebas locales.
 
 Antes de implementar:
 - verifica que las cuatro rutas, capabilities y proyecciones actuales coinciden
   con `docs/modules/admin-portal-read-model.md`;
 - conserva la identidad de portal separada de usuario de API y agente;
 - define el alcance exacto, alternativas, evidencia y criterio de aceptacion
-  de la tercera unidad en un documento modular;
-- decide si la siguiente brecha local prioritaria es prueba de componentes,
-  Playwright, Fluent UI o una mejora de lectura acotada; no agregues una
-  tecnologia solo para marcar una casilla;
+  de esta unidad de cierre local en un documento modular;
+- decide la estrategia exacta de pruebas de UI/navegador usando el stack
+  aprobado. No agregues una tecnologia solo para marcar una casilla;
 - si agregas dependencias, usa solo las aprobadas por `core/STACK.md`, fija
   versiones y actualiza el lockfile;
 - registra un stopper solo si la solucion exige alterar una frontera normativa
@@ -130,6 +144,9 @@ Antes de implementar:
 Alcance minimo esperado:
 - mantener identidad local, autorizacion server-side y deny-by-default;
 - conservar `/admin/*` accesible, adaptable y de solo lectura;
+- cubrir con pruebas automatizadas la navegacion y los estados protegidos del
+  portal actual;
+- cubrir denegacion fail-closed para perfiles invalidos sin filtrar contenido;
 - ninguna mutacion administrativa sin cumplir el gate completo de identidad,
   confirmacion, correlacion, idempotencia y auditoria;
 - sin cambios a contratos IPC, acciones del DeviceAgent o worker durable;
@@ -149,6 +166,9 @@ Criterios de aceptacion:
 - roles o capabilities desconocidos se rechazan;
 - el shell no ejecuta comandos ni llama al DeviceAgent;
 - no se agregan mutaciones, secretos, PII o datos corporativos;
+- los recorridos automatizados verifican que las cuatro vistas administrativas
+  renderizan, navegan y mantienen solo lectura;
+- la ruta protegida con identidad invalida muestra solo acceso no disponible;
 - `src/AdminWeb` conserva sus APIs y modulos existentes;
 - el worker Node sigue separado;
 - las cuatro migraciones existentes no se modifican retroactivamente;
@@ -185,8 +205,8 @@ Gates externos futuros del Bloque 11:
 - OpenText/Rescue y sus mecanismos de enlace o adaptador;
 - datos, ambientes y proceso de despliegue aprobados.
 
-Estos gates no bloquean una tercera unidad local sintetica que respete las
-fronteras actuales.
+Estos gates no bloquean cerrar pruebas, accesibilidad y calidad local de la
+superficie sintetica actual.
 
 Gate base:
 .\scripts\Validate.ps1
@@ -199,7 +219,7 @@ Al terminar:
 - informa alcance implementado, archivos, autorizacion y pruebas;
 - lista riesgos y pendientes externos;
 - actualiza `modules/ADMIN_PORTAL.md`,
-  el documento modular de la unidad, `WORKFLOW.md`, `CURRENT_CONTEXT.md`,
+  el documento modular de esta unidad, `WORKFLOW.md`, `CURRENT_CONTEXT.md`,
   `README.md` y el threat model si cambia la superficie;
 - actualiza `CONSISTENCY_AUDIT.md` si cambia el estado o una frontera;
 - recomienda un Conventional Commit;
