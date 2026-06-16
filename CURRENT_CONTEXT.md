@@ -1,6 +1,6 @@
 # Contexto actual
 
-Fecha de ultima actualizacion: 2026-06-15.
+Fecha de ultima actualizacion: 2026-06-16.
 
 ## Objetivo inmediato
 
@@ -21,7 +21,9 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 
 - Rama principal `main`; remoto
   `https://github.com/jasm001/Desktop_Native.git`.
-- La segunda unidad local del Bloque 11 esta publicada en `17e7581`.
+- La segunda unidad local del Bloque 11 esta publicada en `17e7581`; la tercera
+  unidad local de calidad del portal esta implementada localmente y pendiente de
+  publicacion.
 - El cierre local del Bloque 10 esta publicado en `be6c4fc`.
 - El Bloque 9 local esta publicado en `0448a42`; su integracion corporativa no
   esta completada.
@@ -29,8 +31,9 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   el Bloque 11. `/` sigue siendo la superficie tecnica del Bloque 8. Las rutas
   `/admin`, `/admin/catalog`, `/admin/operations` y `/admin/audit` usan una
   identidad sintetica separada, capabilities server-side fail-closed y lecturas
-  limitadas. No existen OIDC/Entra, RBAC productivo, Fluent UI, mutaciones ni
-  Playwright.
+  limitadas. Testing Library/jsdom cubre componentes locales y Playwright cubre
+  recorridos desktop/movil de las cuatro rutas y acceso denegado. No existen
+  OIDC/Entra, RBAC productivo, Fluent UI ni mutaciones.
 - Prisma/PostgreSQL tiene cuatro migraciones versionadas.
 - Cada confirmacion crea una sola `SupportRequest`, `ExecutionJob` y `BotCase`.
 - Exito deja el caso en `attended_waiting_user` sin ticket.
@@ -76,17 +79,21 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 - La segunda unidad vive en `docs/modules/admin-portal-read-model.md`; agrega
   navegacion real, catalogo sintetico y proyecciones Prisma de solicitudes y
   auditoria limitadas a 25 registros, sin payloads ni efectos laterales.
+- La tercera unidad vive en `docs/modules/admin-portal-local-quality-gate.md`;
+  agrega pruebas de componentes y recorridos Playwright sobre PostgreSQL
+  efimero, sin ampliar roles, contratos, migraciones o mutaciones.
 - OpenText, Teams, Entra, UEMS, Hermes/RAG y portal productivos siguen
   deshabilitados.
-- El gate completo mantiene 136 pruebas .NET; Node tiene 35 pruebas
-  unitarias/de contrato, 12 integraciones AdminWeb y 4 del Worker, mas el E2E
-  WinUI/DeviceAgent sobre PostgreSQL efimero.
+- El gate completo mantiene 136 pruebas .NET; Node tiene 40 pruebas
+  unitarias/de contrato/componente, 12 integraciones AdminWeb y 4 del Worker,
+  mas el E2E WinUI/DeviceAgent sobre PostgreSQL efimero. El portal agrega 12
+  recorridos Playwright locales.
 
 ## Siguiente reanudacion
 
 1. Mantener los Bloques 9 y 10 `blocked` y el Bloque 11 `in_progress`.
-2. Mantener validadas las dos unidades locales del Bloque 11 y elegir una
-   tercera unidad pequena sin agregar integraciones o mutaciones prematuras.
+2. Mantener validadas las tres unidades locales del Bloque 11 y elegir una
+   siguiente unidad pequena sin agregar integraciones o mutaciones prematuras.
 3. Conservar la identidad de portal solo en entorno local; Entra, MFA,
    grupos y usuarios corporativos permanecen deshabilitados.
 4. Reanudar el Bloque 10 solo cuando exista evidencia saneada de UEMS, cuenta

@@ -9,8 +9,9 @@ El Bloque 7 implementa solo la API, persistencia y estructura modular de
 `src/AdminWeb`, junto con el gate local del control plane. La interfaz
 administrativa forma parte del Bloque 11 `in_progress`. Sus dos primeras
 unidades ya implementan shell, navegacion y lecturas protegidas. Fluent UI,
-Testing Library, Playwright, telemetria y mutaciones aun no se consideran
-implementados.
+telemetria y mutaciones aun no se consideran implementados. La tercera unidad
+local agrega Testing Library/jsdom y Playwright solo como arnes de calidad sobre
+las vistas de solo lectura existentes.
 
 La pagina `/` existente es una superficie de estado tecnico del Bloque 8. La
 frontera de identidad de portal y autorizacion server-side fail-closed ya

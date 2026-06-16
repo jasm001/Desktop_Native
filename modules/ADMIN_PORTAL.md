@@ -27,7 +27,7 @@ Todavia no contiene:
 - RBAC productivo, scopes por sede/area ni asignaciones reales;
 - Fluent UI React;
 - formularios o mutaciones administrativas;
-- Playwright, Testing Library o pruebas por rol;
+- pruebas por rol productivo;
 - Entra, MFA, grupos, usuarios o datos corporativos;
 - OpenText, Rescue, Teams o UEMS reales.
 
@@ -67,6 +67,28 @@ La segunda unidad permanece de solo lectura:
 No se crean roles, scopes, asignaciones, tablas ni migraciones nuevas. El unico
 rol local sigue siendo `DeveloperAllAccess`. La evidencia vive en
 `../docs/modules/admin-portal-read-model.md`.
+
+## Tercera unidad local
+
+La tercera unidad cierra calidad local no bloqueante sin ampliar la superficie
+operativa:
+
+1. agrega Testing Library/jsdom para componentes del shell, tablas y estados
+   vacios;
+2. agrega Playwright para recorridos reales de `/admin`, `/admin/catalog`,
+   `/admin/operations`, `/admin/audit` y acceso denegado;
+3. ejecuta los recorridos contra PostgreSQL efimero y servidores Next locales
+   separados para identidad invalida y valida;
+4. verifica desktop, movil, teclado, foco inicial, estado activo, ausencia de
+   overflow horizontal y ausencia de formularios o botones mutantes en `main`;
+5. conserva el rechazo de roles/capabilities desconocidos sin crear roles,
+   owners, asignaciones o scopes productivos;
+6. documenta que Fluent UI React se difiere porque adoptarlo ahora aumentaria
+   reescritura y riesgo sin mejorar el cierre de pruebas locales.
+
+No se agregan migraciones, mutaciones, integraciones, secretos ni conexiones
+corporativas. La evidencia vive en
+`../docs/modules/admin-portal-local-quality-gate.md`.
 
 ## Responsabilidad
 

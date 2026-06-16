@@ -16,7 +16,9 @@ blocked on external pilot evidence. Block 11 is active for the bounded local
 administrative portal. Its first two local units add a protected read-only
 shell, real navigation, synthetic catalog data, and bounded PostgreSQL reads
 for operations and audit; no production integration or corporate identity is
-implemented.
+implemented. The third local unit adds component tests and browser walkthroughs
+for the current read-only administrative surface; it still does not add
+production identity, RBAC, mutations, Fluent UI, or corporate integrations.
 
 ## Current Status
 
@@ -47,9 +49,10 @@ implemented.
   remains the modular control plane. `/` is the engineering status surface and
   `/admin`, `/admin/catalog`, `/admin/operations`, and `/admin/audit` are
   development-only read views protected by a separate portal identity and
-  server-side capabilities. OIDC/Entra, productive RBAC, Fluent UI, mutations,
-  Testing Library, and Playwright role tests are not implemented.
-- Next gate: choose a third bounded portal unit without weakening the
+  server-side capabilities. Component tests and Playwright walkthroughs now
+  cover the local read-only surface. OIDC/Entra, productive RBAC, Fluent UI,
+  mutations, and product role tests are not implemented.
+- Next gate: choose another bounded portal unit without weakening the
   fail-closed boundary or inventing corporate roles and scopes. UEMS, Entra,
   Security/Sophos, publisher trust, real Teams and OpenText remain disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or

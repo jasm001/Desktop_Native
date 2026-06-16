@@ -1,6 +1,6 @@
 # Auditoria de consistencia documental
 
-Fecha: 2026-06-15.
+Fecha: 2026-06-16.
 
 ## Cobertura
 
@@ -34,16 +34,18 @@ La precedencia vigente permanece definida en `README.md`:
 - Incremento local del Bloque 9 publicado en `0448a42`.
 - Cierre local del Bloque 10 publicado en `be6c4fc`.
 - Segunda unidad local del Bloque 11 publicada en `17e7581`.
+- Tercera unidad local del Bloque 11 implementada localmente: Testing
+  Library/jsdom y Playwright sobre la superficie administrativa actual.
 - Bloques 9 y 10: `blocked` por evidencia externa.
 - Bloque 11: unico bloque principal `in_progress`.
 - Documento propietario del Bloque 9: `modules/TEAMS.md`.
 - Documento propietario del Bloque 10: `modules/PILOT_HARDENING.md`.
 - Documento propietario del Bloque 11: `modules/ADMIN_PORTAL.md`.
-- Gate completo vigente: 136 pruebas .NET, 35 pruebas Node unitarias/de
-  contrato, 12 integraciones AdminWeb, 4 del Worker, cuatro migraciones
-  PostgreSQL y E2E local.
-- Dos unidades locales del Bloque 11 implementadas sin cambiar contratos
-  publicos, migraciones o integraciones corporativas.
+- Gate completo vigente: 136 pruebas .NET, 40 pruebas Node unitarias/de
+  contrato/componente, 12 integraciones AdminWeb, 4 del Worker, cuatro
+  migraciones PostgreSQL, E2E local y 12 recorridos Playwright del portal.
+- Tres unidades locales del Bloque 11 implementadas sin cambiar contratos
+  publicos, migraciones, mutaciones o integraciones corporativas.
 
 ## Alineacion del Bloque 9
 
@@ -95,8 +97,10 @@ proveedores locales sin declarar cerrada la integracion Teams.
   accesible y lecturas limitadas de solo lectura.
 - Las consultas administrativas toman como maximo 25 registros, usan
   selecciones explicitas y omiten payloads de auditoria.
-- No estan instalados ni implementados Fluent UI, Testing Library, Playwright,
-  OIDC/Entra, sesiones, RBAC productivo o mutaciones administrativas.
+- Testing Library/jsdom y Playwright estan instalados e implementados solo para
+  calidad local de la superficie de solo lectura.
+- No estan instalados ni implementados Fluent UI, OIDC/Entra, sesiones, RBAC
+  productivo o mutaciones administrativas.
 - Los roles de produccion son un modelo objetivo; no representan owners,
   permisos ni asignaciones corporativas confirmadas.
 - El portal no llama directamente al DeviceAgent ni ejecuta comandos.
@@ -104,6 +108,9 @@ proveedores locales sin declarar cerrada la integracion Teams.
   evidencia, sustitucion futura por OIDC/Entra y riesgos residuales.
 - `docs/modules/admin-portal-read-model.md` registra las rutas, proyecciones,
   limites, pruebas de no mutacion y QA adaptable de la segunda unidad.
+- `docs/modules/admin-portal-local-quality-gate.md` registra la tercera unidad,
+  estrategia de Testing Library/Playwright, diferimiento de Fluent UI y riesgos
+  residuales.
 
 ## Correcciones realizadas
 

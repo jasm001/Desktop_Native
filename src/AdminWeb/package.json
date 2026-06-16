@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "next dev",
     "lint": "prisma generate && eslint . && tsc --noEmit",
-    "test": "prisma generate && vitest run --exclude tests/integration/**",
+    "test": "prisma generate && vitest run --exclude tests/integration/** --exclude tests/e2e/**",
+    "test:e2e": "node ../../scripts/run-admin-portal-e2e.mjs",
     "test:integration:direct": "prisma generate && vitest run tests/integration",
     "build": "prisma generate && node scripts/build.mjs",
     "start": "next start",
@@ -29,12 +30,16 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "1.60.0",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
     "@types/node": "24.13.2",
     "@types/pg": "8.20.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.9",
+    "jsdom": "29.1.1",
     "prisma": "7.8.0",
     "tsx": "4.22.4",
     "typescript": "5.9.3",
