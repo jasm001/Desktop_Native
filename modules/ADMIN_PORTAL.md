@@ -90,6 +90,25 @@ No se agregan migraciones, mutaciones, integraciones, secretos ni conexiones
 corporativas. La evidencia vive en
 `../docs/modules/admin-portal-local-quality-gate.md`.
 
+## Siguiente unidad local propuesta
+
+El siguiente avance no bloqueado puede cerrar el esqueleto local del portal si
+permanece dentro de las fronteras actuales:
+
+1. agregar superficies `/admin/*` para los modulos objetivo aun no representados
+   por una ruta propia;
+2. mantenerlas protegidas en servidor, sinteticas y de solo lectura;
+3. reutilizar el shell y la identidad de portal existentes;
+4. cubrir acceso permitido/denegado, teclado, foco, estados activos, estados
+   vacios y ausencia de overflow;
+5. no agregar mutaciones, migraciones, integraciones corporativas, roles
+   productivos, owners ni scopes reales.
+
+La especificacion de esta unidad vive en
+`../docs/modules/admin-portal-local-skeleton-closure.md`. Aunque se complete,
+el Bloque 11 seguira `in_progress` hasta cumplir los gates productivos de este
+documento.
+
 ## Responsabilidad
 
 Es el plano de control del producto. Se usa para gestionar identidades, equipos,
@@ -223,3 +242,4 @@ Las unidades locales actuales no cierran este gate.
 - `WEB_DELIVERY.md`
 - `../docs/modules/control-plane-foundation.md`
 - `../docs/modules/control-plane-local-flow.md`
+- `../docs/modules/admin-portal-local-skeleton-closure.md`

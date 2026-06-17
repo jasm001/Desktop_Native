@@ -21,9 +21,8 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 
 - Rama principal `main`; remoto
   `https://github.com/jasm001/Desktop_Native.git`.
-- La segunda unidad local del Bloque 11 esta publicada en `17e7581`; la tercera
-  unidad local de calidad del portal esta implementada localmente y pendiente de
-  publicacion.
+- La tercera unidad local del Bloque 11 esta publicada en `7a65f3e`: pruebas de
+  componentes y recorridos Playwright del portal administrativo local.
 - El cierre local del Bloque 10 esta publicado en `be6c4fc`.
 - El Bloque 9 local esta publicado en `0448a42`; su integracion corporativa no
   esta completada.
@@ -82,6 +81,10 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 - La tercera unidad vive en `docs/modules/admin-portal-local-quality-gate.md`;
   agrega pruebas de componentes y recorridos Playwright sobre PostgreSQL
   efimero, sin ampliar roles, contratos, migraciones o mutaciones.
+- La siguiente unidad local propuesta vive en
+  `docs/modules/admin-portal-local-skeleton-closure.md`; puede cerrar el
+  esqueleto local de navegacion y superficies protegidas si permanece sintetica,
+  server-side, de solo lectura y sin integraciones corporativas.
 - OpenText, Teams, Entra, UEMS, Hermes/RAG y portal productivos siguen
   deshabilitados.
 - El gate completo mantiene 136 pruebas .NET; Node tiene 40 pruebas
@@ -92,8 +95,9 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 ## Siguiente reanudacion
 
 1. Mantener los Bloques 9 y 10 `blocked` y el Bloque 11 `in_progress`.
-2. Mantener validadas las tres unidades locales del Bloque 11 y elegir una
-   siguiente unidad pequena sin agregar integraciones o mutaciones prematuras.
+2. Mantener validadas las tres unidades locales del Bloque 11 y, si se continua
+   el portal, ejecutar solo la unidad de esqueleto local descrita en
+   `docs/modules/admin-portal-local-skeleton-closure.md`.
 3. Conservar la identidad de portal solo en entorno local; Entra, MFA,
    grupos y usuarios corporativos permanecen deshabilitados.
 4. Reanudar el Bloque 10 solo cuando exista evidencia saneada de UEMS, cuenta

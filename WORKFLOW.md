@@ -6,14 +6,17 @@
 - Bloque activo: Bloque 11, portal administrativo web, `in_progress`. Los
   Bloques 9 y 10 permanecen `blocked`.
 - Los Bloques 0 a 8 estan `completed`.
-- Ultimo resultado publicado: segunda unidad local del Bloque 11 en `17e7581`.
-- Ultimo resultado funcional validado: tercera unidad local del Bloque 11 con
-  pruebas de componentes y recorridos Playwright para las cuatro rutas
+- Ultimo resultado publicado: tercera unidad local del Bloque 11 en `7a65f3e`,
+  con pruebas de componentes y recorridos Playwright para las cuatro rutas
   protegidas y acceso denegado. El bloque completo sigue abierto.
 - Unidades locales del Bloque 11: identidad sintetica separada, autorizacion
   server-side fail-closed, shell accesible, proyecciones Prisma sin mutacion,
   pruebas de componentes y recorridos de navegador. No hay OIDC/Entra, RBAC
   productivo, Fluent UI ni mutaciones.
+- Siguiente unidad local propuesta: cierre del esqueleto protegido de
+  navegacion y superficies `/admin/*`, documentado en
+  `docs/modules/admin-portal-local-skeleton-closure.md`, sin mutaciones,
+  integraciones corporativas ni gobierno productivo inventado.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes con API externa opcional, RAG local y continuidad
   degradada; no equivale a piloto corporativo.

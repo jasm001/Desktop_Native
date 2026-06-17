@@ -34,7 +34,7 @@ La precedencia vigente permanece definida en `README.md`:
 - Incremento local del Bloque 9 publicado en `0448a42`.
 - Cierre local del Bloque 10 publicado en `be6c4fc`.
 - Segunda unidad local del Bloque 11 publicada en `17e7581`.
-- Tercera unidad local del Bloque 11 implementada localmente: Testing
+- Tercera unidad local del Bloque 11 publicada en `7a65f3e`: Testing
   Library/jsdom y Playwright sobre la superficie administrativa actual.
 - Bloques 9 y 10: `blocked` por evidencia externa.
 - Bloque 11: unico bloque principal `in_progress`.
@@ -44,7 +44,7 @@ La precedencia vigente permanece definida en `README.md`:
 - Gate completo vigente: 136 pruebas .NET, 40 pruebas Node unitarias/de
   contrato/componente, 12 integraciones AdminWeb, 4 del Worker, cuatro
   migraciones PostgreSQL, E2E local y 12 recorridos Playwright del portal.
-- Tres unidades locales del Bloque 11 implementadas sin cambiar contratos
+- Tres unidades locales del Bloque 11 publicadas sin cambiar contratos
   publicos, migraciones, mutaciones o integraciones corporativas.
 
 ## Alineacion del Bloque 9
@@ -111,13 +111,16 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `docs/modules/admin-portal-local-quality-gate.md` registra la tercera unidad,
   estrategia de Testing Library/Playwright, diferimiento de Fluent UI y riesgos
   residuales.
+- `docs/modules/admin-portal-local-skeleton-closure.md` registra la siguiente
+  unidad local posible para cerrar el esqueleto protegido sin cerrar el Bloque
+  11 completo.
 
 ## Correcciones realizadas
 
 - `README.md`, `CURRENT_CONTEXT.md`, `WORKFLOW.md` y `DEVELOPMENT_PLAN.md`
   registran a los Bloques 9 y 10 `blocked` y al Bloque 11 como unico
   `in_progress`;
-- `WORKFLOW.md` registra `17e7581` como ultimo resultado publicado y conserva
+- `WORKFLOW.md` registra `7a65f3e` como ultimo resultado publicado y conserva
   stoppers separados para Teams y hardening;
 - `modules/PILOT_HARDENING.md` define alcance, limites y gate del Bloque 10;
 - `docs/threat-model/README.md` contiene el inventario inicial verificable;
@@ -137,8 +140,8 @@ proveedores locales sin declarar cerrada la integracion Teams.
   que el portal actual sigue ausente;
 - las evidencias de bloques cerrados que contenian referencias al bloque activo
   fueron convertidas en contexto historico;
-- `MASTER_PROMPT.md` queda como handoff para elegir una tercera unidad local del
-  Bloque 11 desde la linea base publicada en `17e7581`.
+- `MASTER_PROMPT.md` queda como handoff para cerrar el esqueleto local del
+  Bloque 11 desde la linea base publicada en `7a65f3e`.
 
 ## Diferencias intencionales
 

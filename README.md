@@ -52,9 +52,10 @@ production identity, RBAC, mutations, Fluent UI, or corporate integrations.
   server-side capabilities. Component tests and Playwright walkthroughs now
   cover the local read-only surface. OIDC/Entra, productive RBAC, Fluent UI,
   mutations, and product role tests are not implemented.
-- Next gate: choose another bounded portal unit without weakening the
-  fail-closed boundary or inventing corporate roles and scopes. UEMS, Entra,
-  Security/Sophos, publisher trust, real Teams and OpenText remain disabled.
+- Next local gate: close the protected read-only administrative skeleton under
+  `/admin/*` without weakening the fail-closed boundary or inventing corporate
+  roles and scopes. UEMS, Entra, Security/Sophos, publisher trust, real Teams
+  and OpenText remain disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes/RAG. This
   profile is not a corporate pilot.
@@ -67,7 +68,9 @@ in [`WORKFLOW.md`](WORKFLOW.md). The bounded local demonstration is defined in
 [`docs/modules/local-mvp-lab.md`](docs/modules/local-mvp-lab.md). Block 9 is
 owned by [`modules/TEAMS.md`](modules/TEAMS.md), and Block 10 is owned by
 [`modules/PILOT_HARDENING.md`](modules/PILOT_HARDENING.md). Block 11 is owned by
-[`modules/ADMIN_PORTAL.md`](modules/ADMIN_PORTAL.md).
+[`modules/ADMIN_PORTAL.md`](modules/ADMIN_PORTAL.md). The next local Block 11
+handoff is scoped in
+[`docs/modules/admin-portal-local-skeleton-closure.md`](docs/modules/admin-portal-local-skeleton-closure.md).
 
 ## Documentation Precedence
 

@@ -15,7 +15,10 @@ Estado confirmado:
 - Bloque 10, endurecimiento para piloto, esta `blocked`; su cierre local esta
   publicado en `be6c4fc`.
 - Bloque 11, portal administrativo web, esta `in_progress` y es el unico bloque
-  principal activo; su segunda unidad local esta publicada en `17e7581`.
+  principal activo.
+- La segunda unidad local del Bloque 11 esta publicada en `17e7581`.
+- La tercera unidad local del Bloque 11 esta publicada en `7a65f3e`; agrego
+  Testing Library/jsdom, Playwright y el gate local de calidad del portal.
 - `modules/TEAMS.md`, `modules/PILOT_HARDENING.md` y
   `modules/ADMIN_PORTAL.md` son los documentos propietarios de los Bloques 9,
   10 y 11 respectivamente.
@@ -27,11 +30,14 @@ Estado confirmado:
   Prisma/PostgreSQL, auditoria append-only, outbox, solicitudes, trabajos,
   `BotCase` y ticketing fake.
 - `/admin`, `/admin/catalog`, `/admin/operations` y `/admin/audit` contienen
-  las dos primeras unidades locales: identidad de portal sintetica separada,
-  autorizacion server-side fail-closed, navegacion real y lecturas limitadas
-  de catalogo, operaciones y auditoria.
+  identidad de portal sintetica separada, autorizacion server-side fail-closed,
+  navegacion real, capabilities de lectura separadas y lecturas limitadas de
+  catalogo, operaciones y auditoria.
+- Testing Library/jsdom cubre componentes del portal local. Playwright cubre
+  escritorio, movil, teclado, estado activo, acceso denegado, solo lectura y
+  ausencia de overflow horizontal para la superficie administrativa actual.
 - No existen aun OIDC/Entra, sesiones productivas, RBAC productivo, mutaciones,
-  Fluent UI, Testing Library ni Playwright.
+  Fluent UI, roles productivos, owners ni scopes corporativos.
 - `src/Worker` conserva el proceso Node durable separado.
 - Prisma/PostgreSQL tiene cuatro migraciones versionadas.
 - Cada confirmacion crea una `SupportRequest`, un `ExecutionJob` y un
@@ -45,12 +51,11 @@ Estado confirmado:
 - OpenText real, Teams corporativo, Entra, UEMS, Sophos, PKI, Rescue,
   Hermes/RAG productivo y portal administrativo productivo siguen
   deshabilitados.
-- Ultimo gate completo: 136 pruebas .NET, 35 pruebas Node unitarias/de contrato,
-  12 integraciones AdminWeb, 4 del Worker, cuatro migraciones PostgreSQL y E2E.
+- Ultimo gate completo: 136 pruebas .NET, 40 pruebas Node unitarias/de
+  contrato/componente, 12 integraciones AdminWeb, 4 del Worker, cuatro
+  migraciones PostgreSQL, E2E local y 12 recorridos Playwright del portal.
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
-- La documentacion vigente fue auditada y alineada para continuar el Bloque 11
-  desde sus dos unidades locales publicadas;
-  `context/` y `reference/` conservan historia y no definen el estado actual.
+- `context/` y `reference/` conservan historia y no definen el estado actual.
 
 Antes de editar:
 1. ejecuta `git status --branch --short`, `git log -5 --oneline` y verifica el
@@ -65,6 +70,8 @@ Antes de editar:
    `modules/OPERATIONS.md`, `modules/PILOT_HARDENING.md` y `modules/TEAMS.md`;
 7. lee completos `docs/modules/admin-portal-foundation.md`,
    `docs/modules/admin-portal-read-model.md`,
+   `docs/modules/admin-portal-local-quality-gate.md`,
+   `docs/modules/admin-portal-local-skeleton-closure.md`,
    `docs/modules/control-plane-foundation.md`,
    `docs/modules/control-plane-local-flow.md`,
    `docs/modules/local-mvp-lab.md`, `docs/threat-model/README.md` y
@@ -73,8 +80,9 @@ Antes de editar:
    `src/AdminWeb/src/modules/identity`, `src/AdminWeb/src/platform`,
    `src/AdminWeb/tests`, `src/AdminWeb/prisma`, `src/Contracts/Web` y
    `src/Worker`;
-9. confirma que la pagina actual, dependencias, identidad y pruebas coinciden
-   con la linea base documentada antes de elegir la implementacion.
+9. confirma que la pagina actual, dependencias, identidad, capabilities y
+   pruebas coinciden con la linea base documentada antes de elegir la
+   implementacion.
 
 Reglas no negociables:
 - no cambies stack, alcance, arquitectura, persistencia, seguridad o contratos
@@ -86,7 +94,8 @@ Reglas no negociables:
 - el portal no ejecuta comandos, scripts, rutas, argumentos ni texto operativo;
 - el portal nunca llama directamente al DeviceAgent;
 - toda autorizacion se aplica server-side y falla cerrada;
-- identidades, roles, scopes, payloads o versiones desconocidos se rechazan;
+- identidades, roles, scopes, capabilities, payloads o versiones desconocidos
+  se rechazan;
 - una identidad de desarrollo solo puede habilitarse con ambiente local exacto
   y configuracion explicita;
 - `DeveloperAllAccess` nunca se acepta fuera de desarrollo;
@@ -108,34 +117,36 @@ Reglas no negociables:
   para la unidad; conserva versiones fijadas y lockfile reproducible;
 - no declares terminada una unidad sin ejecutar los gates aplicables.
 
-Tarea:
-Continua el Bloque 11 desde las dos unidades locales publicadas y cierra lo
-pendiente no bloqueante del esquema local del portal administrativo. La unidad
-debe enfocarse en calidad verificable del portal existente, no en conectarlo a
-servicios corporativos ni en inventar gobierno productivo.
+Tarea sugerida para el siguiente chat:
+Continua el Bloque 11 desde las tres unidades locales publicadas y cierra, si
+no aparece un blocker normativo, el esqueleto local del portal administrativo.
+La unidad debe enfocarse en navegacion, superficies protegidas y estados
+sinteticos de solo lectura. No debe conectar servicios corporativos, inventar
+gobierno productivo ni agregar mutaciones.
 
 Pendientes locales no bloqueantes priorizados:
 
-1. pruebas de componentes del portal con Testing Library o una alternativa
-   equivalente aprobada si encaja mejor con Next Server Components;
-2. recorridos de navegador para `/admin`, `/admin/catalog`, `/admin/operations`,
-   `/admin/audit` y acceso denegado, cubriendo escritorio, movil, teclado,
-   estados activos y ausencia de overflow;
-3. pruebas de roles/capabilities sinteticas permitidas y denegadas sin crear
-   roles productivos, owners ni scopes corporativos;
-4. revision de accesibilidad local del shell, tablas y estados vacios;
-5. evaluar Fluent UI React solo como adopcion minima y justificada. Si agregarlo
-   aumenta riesgo, deuda o reescritura, documentar por que se difiere y cerrar
-   primero las pruebas locales.
+1. completar superficies `/admin/*` para los modulos objetivo aun sin ruta
+   propia, siguiendo `docs/modules/admin-portal-local-skeleton-closure.md`;
+2. mantener cada superficie protegida en servidor antes de renderizar contenido;
+3. reutilizar la identidad de portal existente y rechazar capabilities
+   desconocidas;
+4. cubrir acceso permitido/denegado, teclado, foco, estado activo, estados
+   vacios, solo lectura y ausencia de overflow horizontal;
+5. conservar la tercera unidad de pruebas existente y ampliarla solo donde el
+   esqueleto nuevo lo requiera;
+6. evaluar Fluent UI React solo si reduce riesgo y no fuerza reescritura. Si
+   aumenta deuda, documentar que sigue diferido.
 
 Antes de implementar:
-- verifica que las cuatro rutas, capabilities y proyecciones actuales coinciden
-  con `docs/modules/admin-portal-read-model.md`;
+- verifica que las rutas, capabilities y proyecciones actuales coinciden con
+  `docs/modules/admin-portal-read-model.md` y
+  `docs/modules/admin-portal-local-quality-gate.md`;
 - conserva la identidad de portal separada de usuario de API y agente;
-- define el alcance exacto, alternativas, evidencia y criterio de aceptacion
-  de esta unidad de cierre local en un documento modular;
-- decide la estrategia exacta de pruebas de UI/navegador usando el stack
-  aprobado. No agregues una tecnologia solo para marcar una casilla;
+- usa `docs/modules/admin-portal-local-skeleton-closure.md` como documento
+  modular de alcance, alternativas, evidencia y criterio de aceptacion;
+- decide la estrategia exacta de pruebas de UI/navegador usando el stack ya
+  instalado. No agregues una tecnologia solo para marcar una casilla;
 - si agregas dependencias, usa solo las aprobadas por `core/STACK.md`, fija
   versiones y actualiza el lockfile;
 - registra un stopper solo si la solucion exige alterar una frontera normativa
@@ -144,8 +155,8 @@ Antes de implementar:
 Alcance minimo esperado:
 - mantener identidad local, autorizacion server-side y deny-by-default;
 - conservar `/admin/*` accesible, adaptable y de solo lectura;
-- cubrir con pruebas automatizadas la navegacion y los estados protegidos del
-  portal actual;
+- agregar solo rutas/superficies sinteticas o estados vacios para completar el
+  esqueleto local;
 - cubrir denegacion fail-closed para perfiles invalidos sin filtrar contenido;
 - ninguna mutacion administrativa sin cumplir el gate completo de identidad,
   confirmacion, correlacion, idempotencia y auditoria;
@@ -166,13 +177,12 @@ Criterios de aceptacion:
 - roles o capabilities desconocidos se rechazan;
 - el shell no ejecuta comandos ni llama al DeviceAgent;
 - no se agregan mutaciones, secretos, PII o datos corporativos;
-- los recorridos automatizados verifican que las cuatro vistas administrativas
-  renderizan, navegan y mantienen solo lectura;
+- las rutas nuevas y existentes renderizan, navegan y mantienen solo lectura;
 - la ruta protegida con identidad invalida muestra solo acceso no disponible;
 - `src/AdminWeb` conserva sus APIs y modulos existentes;
 - el worker Node sigue separado;
 - las cuatro migraciones existentes no se modifican retroactivamente;
-- las cuatro rutas administrativas actuales siguen protegidas y operativas;
+- las rutas administrativas actuales siguen protegidas y operativas;
 - los gates de los Bloques 7 a 10 siguen pasando;
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan;
 - no se simula Entra, aprobacion Security ni un portal productivo completo.
@@ -205,8 +215,8 @@ Gates externos futuros del Bloque 11:
 - OpenText/Rescue y sus mecanismos de enlace o adaptador;
 - datos, ambientes y proceso de despliegue aprobados.
 
-Estos gates no bloquean cerrar pruebas, accesibilidad y calidad local de la
-superficie sintetica actual.
+Estos gates no bloquean cerrar el esqueleto local si la unidad permanece
+sintetica, de solo lectura, fail-closed y reemplazable.
 
 Gate base:
 .\scripts\Validate.ps1
@@ -219,8 +229,8 @@ Al terminar:
 - informa alcance implementado, archivos, autorizacion y pruebas;
 - lista riesgos y pendientes externos;
 - actualiza `modules/ADMIN_PORTAL.md`,
-  el documento modular de esta unidad, `WORKFLOW.md`, `CURRENT_CONTEXT.md`,
-  `README.md` y el threat model si cambia la superficie;
+  `docs/modules/admin-portal-local-skeleton-closure.md`, `WORKFLOW.md`,
+  `CURRENT_CONTEXT.md`, `README.md` y el threat model si cambia la superficie;
 - actualiza `CONSISTENCY_AUDIT.md` si cambia el estado o una frontera;
 - recomienda un Conventional Commit;
 - no hagas commit ni push automaticamente.

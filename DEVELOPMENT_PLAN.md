@@ -233,17 +233,18 @@ Construir el portal sobre contratos ya usados por WinUI y Teams:
 6. auditoria y reportes;
 7. enlaces OpenText/Rescue.
 
-Gate: autorización server-side, Playwright por rol, migraciones y auditoria.
+Gate: autorizacion server-side, Playwright por rol, migraciones y auditoria.
 
 Estado: `in_progress`. Es el unico bloque principal activo. Parte del control
 plane modular existente en `src/AdminWeb`, cuya pagina actual sigue siendo una
-superficie tecnica del Bloque 8. Las dos primeras unidades locales ya
+superficie tecnica del Bloque 8. Las tres primeras unidades locales ya
 establecen identidad de portal separada y fail-closed, cuatro capabilities de
-lectura, navegacion `/admin/*`, catalogo sintetico y proyecciones Prisma
-limitadas para operaciones y auditoria. No existen aun OIDC/Entra, sesiones,
-RBAC productivo, Fluent UI, mutaciones, Testing Library ni Playwright. La
-tercera unidad debe permanecer pequena y local, sin Entra, OpenText, Teams,
-Rescue, UEMS, roles/scopes inventados ni usuarios corporativos.
+lectura, navegacion `/admin/*`, catalogo sintetico, proyecciones Prisma
+limitadas para operaciones y auditoria, pruebas de componentes y recorridos
+Playwright. No existen aun OIDC/Entra, sesiones, RBAC productivo, Fluent UI ni
+mutaciones. La siguiente unidad local puede cerrar el esqueleto protegido del
+portal si permanece pequena, sintetica, de solo lectura y sin Entra, OpenText,
+Teams, Rescue, UEMS, roles/scopes inventados ni usuarios corporativos.
 
 ## Regla de escalamiento
 
