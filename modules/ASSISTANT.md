@@ -74,7 +74,8 @@ La vista Asistente ofrece opciones fijas para:
 
 `AssistantViewModel` traduce estados y codigos a texto de presentacion y
 habilita comandos. No evalua licencia, estado, alternativas ni transiciones.
-El campo de texto libre permanece deshabilitado.
+El campo de texto libre permanece deshabilitado por defecto. Solo se habilita
+cuando existe un `IAssistantProvider` local configurado explicitamente.
 
 ## Frontera compartida del Bloque 9
 
@@ -100,18 +101,31 @@ caso, ticket, auditoria ni outbox.
 ## Evolucion para el MVP local
 
 El perfil `local-demo` puede habilitar texto libre mediante un
-`IAssistantProvider` reemplazable. La primera evaluacion usa Hermes ejecutado
-localmente con:
+`IAssistantProvider` reemplazable. La primera evaluacion ya agrega un proveedor
+Hermes local, compatible con OpenAI, detras de variables de entorno:
+
+- `IT_SUPPORT_HERMES_CHAT_ENABLED=true`;
+- `IT_SUPPORT_HERMES_BASE_URL=http://127.0.0.1:8765/v1`;
+- `IT_SUPPORT_HERMES_MODEL=it-support`;
+- `IT_SUPPORT_HERMES_API_KEY` definido solo en la sesion local.
+
+El endpoint debe ser `http` o `https` de loopback. Si falta el flag, la clave,
+el modelo o el endpoint local valido, WinUI usa `DisabledAssistantProvider` y
+el cuadro de texto queda deshabilitado.
+
+Hermes ejecutado localmente conserva estas restricciones:
 
 - API externa opcional para inferencia;
 - RAG, documentos e indice almacenados localmente;
 - contenido exclusivamente publico, sintetico o curado;
-- salida estructurada validada antes de entrar a la maquina de estados;
+- respuesta informativa acotada antes de entrar a la UI;
 - citas a fuente y version del conocimiento recuperado;
 - limites de contexto, timeout, costo y cancelacion.
 
 Hermes no llama al DeviceAgent, no construye comandos y no autoriza acciones. Su
-salida solo puede mapearse a intenciones y opciones conocidas.
+salida actual no crea `ConversationCommand`, `SupportRequest`, ticket, trabajo,
+auditoria ni outbox. Las opciones deterministas existentes siguen siendo las
+unicas que pueden avanzar a propuesta, confirmacion y solicitud sintetica.
 
 Cuando no hay conexion o el proveedor falla, el asistente conserva:
 
@@ -123,3 +137,6 @@ Cuando no hay conexion o el proveedor falla, el asistente conserva:
   disponibles.
 
 La ausencia de API degrada el lenguaje natural, no la operacion local permitida.
+
+El procedimiento local vive en
+`../docs/runbooks/local-hermes-chat.md`.

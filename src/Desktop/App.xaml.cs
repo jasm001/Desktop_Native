@@ -2,6 +2,7 @@ using ITSupportNative.Catalog.Application;
 using ITSupportNative.Catalog.Domain;
 using ITSupportNative.Catalog.Fixtures;
 using ITSupportNative.Conversation.Application;
+using ITSupportNative.Desktop.Assistant;
 using ITSupportNative.Desktop.ControlPlane;
 using ITSupportNative.Desktop.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +33,14 @@ public partial class App : Application
             })
             .AddSingleton<IConversationControlPlane>(
                 provider => provider.GetRequiredService<IControlPlaneRequestClient>())
+            .AddSingleton<IAssistantProvider>(_ =>
+            {
+                HermesAssistantOptions? options =
+                    HermesAssistantOptions.FromEnvironment();
+                return options is null
+                    ? new DisabledAssistantProvider()
+                    : new HermesAssistantProvider(new HttpClient(), options);
+            })
             .AddSingleton<ConversationChannelService>()
             .AddSingleton<ShellViewModel>()
             .AddSingleton<HomeViewModel>()

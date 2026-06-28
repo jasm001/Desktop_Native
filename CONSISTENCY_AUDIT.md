@@ -1,6 +1,6 @@
 # Auditoria de consistencia documental
 
-Fecha: 2026-06-16.
+Fecha: 2026-06-28.
 
 ## Cobertura
 
@@ -41,11 +41,19 @@ La precedencia vigente permanece definida en `README.md`:
 - Documento propietario del Bloque 9: `modules/TEAMS.md`.
 - Documento propietario del Bloque 10: `modules/PILOT_HARDENING.md`.
 - Documento propietario del Bloque 11: `modules/ADMIN_PORTAL.md`.
-- Gate completo vigente: 136 pruebas .NET, 40 pruebas Node unitarias/de
+- Gate completo vigente: 140 pruebas .NET, 40 pruebas Node unitarias/de
   contrato/componente, 12 integraciones AdminWeb, 4 del Worker, cuatro
-  migraciones PostgreSQL, E2E local y 12 recorridos Playwright del portal.
+  migraciones PostgreSQL, E2E local, auditoria de dependencias y escaneo de
+  secretos correctos.
 - Tres unidades locales del Bloque 11 publicadas sin cambiar contratos
   publicos, migraciones, mutaciones o integraciones corporativas.
+- Unidad local intermedia: WinUI puede usar Hermes local compatible con OpenAI
+  para texto libre informativo mediante variables de entorno, deshabilitado por
+  defecto, limitado a loopback y sin crear solicitudes, comandos, tickets,
+  auditoria, outbox ni llamadas al DeviceAgent.
+- `SQLitePCLRaw.bundle_e_sqlite3` queda fijado a `3.0.3` para evitar la
+  vulnerabilidad alta reportada por NuGet Audit en la transitiva
+  `SQLitePCLRaw.lib.e_sqlite3` 2.1.11.
 
 ## Alineacion del Bloque 9
 

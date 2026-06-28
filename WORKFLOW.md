@@ -18,12 +18,13 @@
   `docs/modules/admin-portal-local-skeleton-closure.md`, sin mutaciones,
   integraciones corporativas ni gobierno productivo inventado.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
-  locales/fake, Hermes con API externa opcional, RAG local y continuidad
-  degradada; no equivale a piloto corporativo.
+  locales/fake, Hermes local opcional para texto libre informativo en WinUI,
+  RAG local pendiente y continuidad degradada; no equivale a piloto
+  corporativo.
 
 ## Ultima validacion
 
-- Fecha: 2026-06-16.
+- Fecha: 2026-06-28.
 - SDK global `10.0.301`: correcto.
 - El gate .NET local usa `-m:1`, deshabilita build servers y escribe build/test
   en `.artifacts/validate` para no competir con el build host del IDE.
@@ -33,7 +34,14 @@
 - `dotnet build ITSupportNative.slnx --configuration Release --no-restore`:
   correcto, 0 warnings y 0 errores.
 - `dotnet test ITSupportNative.slnx --configuration Release --no-build`:
-  correcto, 136 pruebas.
+  correcto, 140 pruebas.
+- Hermes local de WinUI: proveedor `IAssistantProvider` opcional compatible con
+  OpenAI, deshabilitado por defecto, limitado a loopback y texto informativo;
+  4 pruebas nuevas cubren proveedor ausente, envio sin solicitud, configuracion
+  local explicita y rechazo de endpoint no loopback.
+- Dependencias .NET: `SQLitePCLRaw.bundle_e_sqlite3` fijado a `3.0.3` mediante
+  Central Package Management para evitar la vulnerabilidad alta reportada por
+  NuGet Audit en `SQLitePCLRaw.lib.e_sqlite3` 2.1.11.
 - Pruebas del Bloque 10: kill switch sin persistencia, pendientes sin avance,
   rechazo IPC y ausencia de claim; politica de configuracion predeterminada,
   perfiles/ambientes/combinaciones invalidos; eventos de runtime con IDs,
@@ -77,7 +85,8 @@
   vulnerabilidades conocidas.
 - `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
 - `scripts/Validate.ps1`: correcto.
-- Lockfiles sin cambios; Desktop/WindowsUi conservan unicamente `win-x64`.
+- Lockfiles NuGet actualizados solo por el pin de `SQLitePCLRaw.bundle_e_sqlite3`
+  `3.0.3`; Desktop/WindowsUi conservan unicamente `win-x64`.
 - Token Hyper-V: `S-1-5-32-578` habilitado; grupo local y acceso de lectura a
   VM/checkpoint confirmados.
 - Matriz VM: correcta en Windows 11 Pro Education build 26200 x64, generacion 2,
@@ -175,8 +184,9 @@ Permitido antes de la decision corporativa:
 - Windows Service de laboratorio y Salud real por IPC;
 - software libre redistribuible desde mirror local con SHA-256;
 - backend, persistencia, portal e identidad de desarrollo;
-- Hermes local con API externa usando contenido publico/sintetico;
-- RAG e indice locales;
+- Hermes local con API externa usando contenido publico/sintetico para texto
+  libre informativo;
+- RAG e indice locales pendientes;
 - operacion offline cerrada con politica y artefactos ya disponibles.
 
 Pendiente para piloto:

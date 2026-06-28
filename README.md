@@ -57,8 +57,8 @@ production identity, RBAC, mutations, Fluent UI, or corporate integrations.
   roles and scopes. UEMS, Entra, Security/Sophos, publisher trust, real Teams
   and OpenText remain disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
-  fake providers, a development artifact mirror, and optional Hermes/RAG. This
-  profile is not a corporate pilot.
+  fake providers, a development artifact mirror, and optional Hermes chat for
+  WinUI. This profile is not a corporate pilot.
 - Data policy: synthetic data and deterministic fakes only.
 - Remote: `https://github.com/jasm001/Desktop_Native.git`.
 
@@ -71,6 +71,8 @@ owned by [`modules/TEAMS.md`](modules/TEAMS.md), and Block 10 is owned by
 [`modules/ADMIN_PORTAL.md`](modules/ADMIN_PORTAL.md). The next local Block 11
 handoff is scoped in
 [`docs/modules/admin-portal-local-skeleton-closure.md`](docs/modules/admin-portal-local-skeleton-closure.md).
+Hermes local chat startup is documented in
+[`docs/runbooks/local-hermes-chat.md`](docs/runbooks/local-hermes-chat.md).
 
 ## Documentation Precedence
 

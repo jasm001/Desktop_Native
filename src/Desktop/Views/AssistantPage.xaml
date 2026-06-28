@@ -120,12 +120,13 @@
             </Grid.ColumnDefinitions>
             <TextBox
                 AutomationProperties.Name="Escribir una consulta"
-                IsReadOnly="True"
-                PlaceholderText="El texto libre se habilitará en un bloque posterior" />
+                IsEnabled="{x:Bind ViewModel.IsFreeTextEnabled, Mode=OneWay}"
+                PlaceholderText="{x:Bind ViewModel.FreeTextPlaceholder, Mode=OneWay}"
+                Text="{x:Bind ViewModel.DraftMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <Button
                 Grid.Column="1"
-                AutomationProperties.Name="Enviar consulta deshabilitado"
-                IsEnabled="False">
+                AutomationProperties.Name="Enviar consulta"
+                Command="{x:Bind ViewModel.SendMessageCommand}">
                 <FontIcon Glyph="&#xE724;" />
             </Button>
         </Grid>

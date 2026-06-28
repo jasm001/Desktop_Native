@@ -1,6 +1,6 @@
 # Contexto actual
 
-Fecha de ultima actualizacion: 2026-06-16.
+Fecha de ultima actualizacion: 2026-06-28.
 
 ## Objetivo inmediato
 
@@ -85,12 +85,17 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   `docs/modules/admin-portal-local-skeleton-closure.md`; puede cerrar el
   esqueleto local de navegacion y superficies protegidas si permanece sintetica,
   server-side, de solo lectura y sin integraciones corporativas.
-- OpenText, Teams, Entra, UEMS, Hermes/RAG y portal productivos siguen
-  deshabilitados.
-- El gate completo mantiene 136 pruebas .NET; Node tiene 40 pruebas
+- OpenText, Teams, Entra, UEMS, RAG y portal productivos siguen
+  deshabilitados. WinUI puede habilitar Hermes local temporalmente mediante
+  variables de entorno para texto libre informativo, sin acciones ni datos
+  corporativos.
+- El gate completo mantiene 140 pruebas .NET; Node tiene 40 pruebas
   unitarias/de contrato/componente, 12 integraciones AdminWeb y 4 del Worker,
   mas el E2E WinUI/DeviceAgent sobre PostgreSQL efimero. El portal agrega 12
   recorridos Playwright locales.
+- `SQLitePCLRaw.bundle_e_sqlite3` queda fijado a `3.0.3` para evitar la
+  vulnerabilidad alta reportada por NuGet Audit en la transitiva
+  `SQLitePCLRaw.lib.e_sqlite3` 2.1.11.
 
 ## Siguiente reanudacion
 

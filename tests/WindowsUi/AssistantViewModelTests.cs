@@ -7,6 +7,7 @@ using ITSupportNative.Contracts.Conversation;
 using ITSupportNative.Conversation.Application;
 using ITSupportNative.Conversation.Channels;
 using ITSupportNative.Conversation.Domain;
+using ITSupportNative.Desktop.Assistant;
 using ITSupportNative.Desktop.ControlPlane;
 using ITSupportNative.Desktop.Conversation;
 using ITSupportNative.Desktop.ViewModels;
@@ -25,6 +26,67 @@ public sealed class AssistantViewModelTests
         Assert.Equal("Consulta", viewModel.StateLabel);
         Assert.Contains("No se creó ninguna solicitud", viewModel.Response);
         Assert.Equal("Sin solicitud creada", viewModel.RequestReference);
+    }
+
+    [Fact]
+    public void FreeTextIsDisabledWhenHermesIsNotConfigured()
+    {
+        AssistantViewModel viewModel = CreateViewModel();
+
+        viewModel.DraftMessage = "Hola";
+
+        Assert.False(viewModel.IsFreeTextEnabled);
+        Assert.False(viewModel.SendMessageCommand.CanExecute(null));
+        Assert.Equal("Hermes local no esta configurado", viewModel.FreeTextPlaceholder);
+    }
+
+    [Fact]
+    public async Task FreeTextUsesAssistantProviderWithoutCreatingRequest()
+    {
+        var provider = new RecordingAssistantProvider();
+        AssistantViewModel viewModel = CreateViewModel(assistantProvider: provider);
+
+        viewModel.DraftMessage = "Que puedo instalar?";
+        await viewModel.SendMessageCommand.ExecuteAsync(null);
+
+        Assert.Equal("Que puedo instalar?", provider.Message);
+        Assert.Equal("Hermes local", viewModel.StateLabel);
+        Assert.Equal("Respuesta conectada a Hermes.", viewModel.Response);
+        Assert.Equal(
+            "Fuente: hermes-local; sin solicitud ni accion creada",
+            viewModel.RequestReference);
+        Assert.Null(viewModel.LastChannelOutput);
+    }
+
+    [Fact]
+    public void HermesOptionsRequireExplicitLocalConfiguration()
+    {
+        Dictionary<string, string?> environment = new(StringComparer.Ordinal)
+        {
+            [HermesAssistantOptions.EnabledVariable] = "true",
+            [HermesAssistantOptions.ApiKeyVariable] = "test-key",
+        };
+
+        HermesAssistantOptions? options =
+            HermesAssistantOptions.FromEnvironment(environment);
+
+        Assert.NotNull(options);
+        Assert.Equal("http://127.0.0.1:8765/v1/", options.BaseEndpoint.AbsoluteUri);
+        Assert.Equal("it-support", options.Model);
+    }
+
+    [Fact]
+    public void HermesOptionsRejectNonLoopbackEndpoint()
+    {
+        Dictionary<string, string?> environment = new(StringComparer.Ordinal)
+        {
+            [HermesAssistantOptions.EnabledVariable] = "true",
+            [HermesAssistantOptions.ApiKeyVariable] = "test-key",
+            [HermesAssistantOptions.BaseEndpointVariable] =
+                "https://example.com/v1",
+        };
+
+        Assert.Null(HermesAssistantOptions.FromEnvironment(environment));
     }
 
     [Fact]
@@ -135,13 +197,15 @@ public sealed class AssistantViewModelTests
     }
 
     private static AssistantViewModel CreateViewModel(
-        IControlPlaneRequestClient? controlPlane = null)
+        IControlPlaneRequestClient? controlPlane = null,
+        IAssistantProvider? assistantProvider = null)
     {
         return new(
             new ConversationChannelService(
                 new ConversationService(
                     new CatalogDecisionService(SyntheticCatalog.Products)),
-                controlPlane ?? new DisabledControlPlaneRequestClient()));
+                controlPlane ?? new DisabledControlPlaneRequestClient()),
+            assistantProvider ?? new DisabledAssistantProvider());
     }
 
     private static ConversationChannelService CreateChannelService()
@@ -236,6 +300,24 @@ public sealed class AssistantViewModelTests
             CancellationToken cancellationToken)
         {
             return Task.FromResult<ControlPlaneBotCase?>(null);
+        }
+    }
+
+    private sealed class RecordingAssistantProvider : IAssistantProvider
+    {
+        public bool IsAvailable => true;
+
+        public string? Message { get; private set; }
+
+        public Task<AssistantProviderReply> GetResponseAsync(
+            string message,
+            CancellationToken cancellationToken)
+        {
+            Message = message;
+            return Task.FromResult(
+                new AssistantProviderReply(
+                    "Respuesta conectada a Hermes.",
+                    "hermes-local"));
         }
     }
 }

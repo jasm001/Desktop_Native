@@ -22,10 +22,13 @@ Los incrementos de adaptador y control plane del laboratorio estan completados:
 - recorrido WinUI -> API -> agente simulado -> evidencia validado.
 - casos internos, evento de escalamiento y ticketing fake idempotente.
 
-El Windows Service instalado, la conexion IPC de Salud desde WinUI y Hermes/RAG
-siguen siendo componentes previstos. El portal ya tiene dos unidades locales de
-solo lectura, pero no forma parte de los gates cerrados de los Bloques 6, 7 y 8
-ni representa una integracion corporativa.
+El Windows Service instalado y la conexion IPC de Salud desde WinUI siguen
+siendo componentes previstos. WinUI ya puede habilitar texto libre contra
+Hermes local compatible con OpenAI mediante variables de entorno, solo para
+orientacion informativa y sin crear solicitudes ni acciones. RAG local curado
+sigue pendiente. El portal ya tiene unidades locales de solo lectura, pero no
+forma parte de los gates cerrados de los Bloques 6, 7 y 8 ni representa una
+integracion corporativa.
 
 ## Perfil `local-demo`
 
@@ -39,8 +42,8 @@ Componentes previstos:
 - portal e identidad de desarrollo;
 - ticketing, Teams, UEMS y demas integraciones mediante fakes;
 - mirror local de artefactos;
-- Hermes local con API externa opcional;
-- documentos e indice RAG locales;
+- Hermes local con API externa opcional para texto libre informativo;
+- documentos e indice RAG locales pendientes de curacion;
 - modo degradado sin conexion.
 
 La configuracion `local-demo` debe ser identificable y fallar al intentar usarse
@@ -70,9 +73,10 @@ usuarios reales.
 
 ## Hermes y RAG
 
-Hermes se ejecuta localmente como proveedor del chat. La inferencia puede usar
-una API externa de prueba, por lo que requiere Internet y no se considera IA
-offline.
+Hermes se ejecuta localmente como proveedor opcional del chat WinUI. La
+inferencia puede usar una API externa de prueba, por lo que requiere Internet y
+no se considera IA offline. La configuracion de arranque vive en
+`../runbooks/local-hermes-chat.md`.
 
 Permanecen locales:
 

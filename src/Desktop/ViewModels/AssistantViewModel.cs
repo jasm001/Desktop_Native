@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using ITSupportNative.Contracts.Conversation;
 using ITSupportNative.Conversation.Application;
 using ITSupportNative.Conversation.Domain;
+using ITSupportNative.Desktop.Assistant;
 using ITSupportNative.Desktop.Conversation;
 using ITSupportNative.Desktop.Models;
 
@@ -11,18 +12,23 @@ namespace ITSupportNative.Desktop.ViewModels;
 public sealed class AssistantViewModel : ObservableObject
 {
     private readonly ConversationChannelService _channelService;
+    private readonly IAssistantProvider _assistantProvider;
     private ConversationSession _session;
     private int _commandSequence;
     private int _conversationSequence;
+    private string _draftMessage = string.Empty;
     private string _stateLabel = "Consulta";
     private string _response =
-        "Elige una intención fija para iniciar la demostración.";
+        "Elige una intencion fija o escribe una consulta si Hermes local esta habilitado.";
     private string _requestReference = "Sin solicitud creada";
     private ConversationChannelOutput? _lastChannelOutput;
 
-    public AssistantViewModel(ConversationChannelService channelService)
+    public AssistantViewModel(
+        ConversationChannelService channelService,
+        IAssistantProvider assistantProvider)
     {
         _channelService = channelService;
+        _assistantProvider = assistantProvider;
         _session = ConversationSession.Start("desktop-demo-0");
 
         QueryApprovedCommand = new AsyncRelayCommand(
@@ -47,6 +53,9 @@ public sealed class AssistantViewModel : ObservableObject
             () => RunAsync(ConversationChannelActions.ConversationCancel),
             () => _session.State is ConversationState.Proposal
                 or ConversationState.ConfirmationRequired);
+        SendMessageCommand = new AsyncRelayCommand(
+            SendMessageAsync,
+            CanSendMessage);
 
         Suggestions =
         [
@@ -81,6 +90,26 @@ public sealed class AssistantViewModel : ObservableObject
     public IAsyncRelayCommand ConfirmCommand { get; }
 
     public IAsyncRelayCommand CancelCommand { get; }
+
+    public IAsyncRelayCommand SendMessageCommand { get; }
+
+    public bool IsFreeTextEnabled => _assistantProvider.IsAvailable;
+
+    public string FreeTextPlaceholder => _assistantProvider.IsAvailable
+        ? "Escribe una consulta para Hermes local"
+        : "Hermes local no esta configurado";
+
+    public string DraftMessage
+    {
+        get => _draftMessage;
+        set
+        {
+            if (SetProperty(ref _draftMessage, value))
+            {
+                SendMessageCommand.NotifyCanExecuteChanged();
+            }
+        }
+    }
 
     public string StateLabel
     {
@@ -133,6 +162,50 @@ public sealed class AssistantViewModel : ObservableObject
             CancellationToken.None);
 
         Apply(turn);
+    }
+
+    private bool CanSendMessage()
+    {
+        return _assistantProvider.IsAvailable
+            && !string.IsNullOrWhiteSpace(DraftMessage);
+    }
+
+    private async Task SendMessageAsync()
+    {
+        string message = DraftMessage.Trim();
+        DraftMessage = string.Empty;
+        StateLabel = "Hermes local";
+        Response = "Consultando Hermes local...";
+        RequestReference = "Consulta informativa; sin solicitud ni accion creada";
+
+        try
+        {
+            AssistantProviderReply reply =
+                await _assistantProvider.GetResponseAsync(
+                    message,
+                    CancellationToken.None);
+            Response = reply.Text;
+            RequestReference =
+                $"Fuente: {reply.Source}; sin solicitud ni accion creada";
+        }
+        catch (OperationCanceledException)
+        {
+            Response =
+                "Hermes local no respondio dentro del limite. El asistente conserva las opciones deterministas.";
+            RequestReference = "Sin solicitud creada";
+        }
+        catch (HttpRequestException)
+        {
+            Response =
+                "Hermes local no esta disponible. El asistente conserva las opciones deterministas.";
+            RequestReference = "Sin solicitud creada";
+        }
+        catch (InvalidOperationException)
+        {
+            Response =
+                "Hermes local devolvio una respuesta no utilizable. El asistente conserva las opciones deterministas.";
+            RequestReference = "Sin solicitud creada";
+        }
     }
 
     private void Apply(ConversationChannelTurn turn)
