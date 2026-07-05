@@ -36,6 +36,13 @@ La precedencia vigente permanece definida en `README.md`:
 - Segunda unidad local del Bloque 11 publicada en `17e7581`.
 - Tercera unidad local del Bloque 11 publicada en `7a65f3e`: Testing
   Library/jsdom y Playwright sobre la superficie administrativa actual.
+- Cuarta unidad local del Bloque 11 publicada en `212f274`: cierre del
+  esqueleto `/admin/*` con rutas protegidas sinteticas.
+- Unidad local del asistente WinUI publicada en `cfa3342`: chat visual de
+  Hermes local en memoria, indicador de respuesta, autoscroll y envio con
+  Enter, sin persistencia ni acciones.
+- Ajuste local de Hermes publicado en `eb99434`: timeout cliente de 120
+  segundos.
 - Bloques 9 y 10: `blocked` por evidencia externa.
 - Bloque 11: unico bloque principal `in_progress`.
 - Documento propietario del Bloque 9: `modules/TEAMS.md`.
@@ -45,10 +52,7 @@ La precedencia vigente permanece definida en `README.md`:
   contrato/componente, 12 integraciones AdminWeb, 4 del Worker, cuatro
   migraciones PostgreSQL, E2E local, auditoria de dependencias y escaneo de
   secretos correctos.
-- Tres unidades locales del Bloque 11 publicadas sin cambiar contratos
-  publicos, migraciones, mutaciones o integraciones corporativas.
-- La cuarta unidad local del Bloque 11 esta implementada localmente: cierra el
-  esqueleto `/admin/*` con ocho rutas protegidas y sigue sin cambiar contratos
+- Cuatro unidades locales del Bloque 11 publicadas sin cambiar contratos
   publicos, migraciones, mutaciones o integraciones corporativas.
 - Unidad local intermedia: WinUI puede usar Hermes local compatible con OpenAI
   para texto libre informativo mediante variables de entorno, deshabilitado por
@@ -135,7 +139,7 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `README.md`, `CURRENT_CONTEXT.md`, `WORKFLOW.md` y `DEVELOPMENT_PLAN.md`
   registran a los Bloques 9 y 10 `blocked` y al Bloque 11 como unico
   `in_progress`;
-- `WORKFLOW.md` registra `7a65f3e` como ultimo resultado publicado y conserva
+- `WORKFLOW.md` registra `eb99434` como ultimo resultado publicado y conserva
   stoppers separados para Teams y hardening;
 - `modules/PILOT_HARDENING.md` define alcance, limites y gate del Bloque 10;
 - `docs/threat-model/README.md` contiene el inventario inicial verificable;
@@ -155,8 +159,8 @@ proveedores locales sin declarar cerrada la integracion Teams.
   que el portal actual sigue ausente;
 - las evidencias de bloques cerrados que contenian referencias al bloque activo
   fueron convertidas en contexto historico;
-- `MASTER_PROMPT.md` queda como handoff para cerrar el esqueleto local del
-  Bloque 11 desde la linea base publicada en `7a65f3e`.
+- `MASTER_PROMPT.md` queda como handoff para continuar desde la linea base
+  publicada en `eb99434`.
 
 ## Diferencias intencionales
 

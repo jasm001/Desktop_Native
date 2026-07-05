@@ -22,6 +22,11 @@ Estado confirmado:
 - La cuarta unidad local del Bloque 11 esta publicada en `212f274`; cerro el
   esqueleto local `/admin/*` con rutas protegidas y sinteticas
   `/admin/access`, `/admin/approvals`, `/admin/support` y `/admin/reporting`.
+- La unidad local del asistente WinUI esta publicada en `cfa3342`; agrego chat
+  visual en memoria para Hermes local, indicador de respuesta, autoscroll y
+  envio con Enter, sin persistencia ni acciones.
+- El ajuste local de Hermes esta publicado en `eb99434`; elevo a 120 segundos
+  el timeout cliente de WinUI para permitir skills locales lentas.
 - `modules/TEAMS.md`, `modules/PILOT_HARDENING.md` y
   `modules/ADMIN_PORTAL.md` son los documentos propietarios de los Bloques 9,
   10 y 11 respectivamente.
@@ -66,11 +71,12 @@ Estado confirmado:
   desbloquean UEMS, Teams, Entra, Power Automate productivo o el Bloque 10.
 - WinUI puede habilitar Hermes local temporalmente mediante variables de
   entorno para texto libre informativo, sin acciones, sin datos corporativos,
-  sin solicitudes, sin tickets, sin auditoria, sin outbox y sin llamadas al
-  DeviceAgent. El procedimiento vive en `docs/runbooks/local-hermes-chat.md`.
+  sin solicitudes, sin tickets, sin auditoria, sin outbox, sin llamadas al
+  DeviceAgent y con historial visual solo en memoria. El procedimiento vive en
+  `docs/runbooks/local-hermes-chat.md`.
 - Hermes local usa un endpoint compatible con OpenAI limitado a loopback. La
   app envia `Authorization: Bearer <key>` a `/chat/completions`, modelo
-  `it-support`, timeout fijo de 20 segundos. No guardes API keys en archivos
+  `it-support`, timeout cliente de 120 segundos. No guardes API keys en archivos
   del repositorio, `.env`, notas, capturas ni logs compartidos;
   `scripts/Test-Secrets.ps1` escanea tambien archivos ignorados.
 - `SQLitePCLRaw.bundle_e_sqlite3` esta fijado en `3.0.3` mediante Central
@@ -81,6 +87,9 @@ Estado confirmado:
   migraciones PostgreSQL, E2E local, auditoria de dependencias y escaneo de
   secretos correctos. El portal conserva recorridos Playwright locales para las
   ocho rutas administrativas.
+- Ultima validacion focalizada: 2026-07-05, build Release, 140 pruebas .NET,
+  `dotnet format` y `scripts/Test-Secrets.ps1` correctos para la unidad del
+  asistente WinUI y el timeout cliente de Hermes.
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
 - `context/` y `reference/` conservan historia y no definen el estado actual.
 
@@ -182,7 +191,8 @@ Configuracion local opcional de Hermes para demo WinUI:
 - El modelo esperado de prueba es `it-support`.
 - El endpoint debe ser `http` o `https` de loopback; endpoints externos se
   rechazan.
-- Timeout actual de la app: 20 segundos.
+- Timeout actual de la app: 120 segundos; este limite es del lado de WinUI, no
+  del gateway Hermes.
 - Con Hermes apagado o mal configurado, el campo de texto libre queda
   deshabilitado y el asistente conserva las opciones deterministas.
 - Hermes solo puede responder orientacion informativa; no autoriza ni ejecuta

@@ -60,8 +60,8 @@ for operations and audit; no production integration or corporate identity is
   and OpenText remain disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes chat for
-  WinUI with in-memory visual history only. This profile is not a corporate
-  pilot.
+  WinUI with in-memory visual history and a 120-second client timeout. This
+  profile is not a corporate pilot.
 - Data policy: synthetic data and deterministic fakes only.
 - Remote: `https://github.com/jasm001/Desktop_Native.git`.
 

@@ -1,6 +1,6 @@
 # Contexto actual
 
-Fecha de ultima actualizacion: 2026-06-28.
+Fecha de ultima actualizacion: 2026-07-05.
 
 ## Objetivo inmediato
 
@@ -23,9 +23,14 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   `https://github.com/jasm001/Desktop_Native.git`.
 - La tercera unidad local del Bloque 11 esta publicada en `7a65f3e`: pruebas de
   componentes y recorridos Playwright del portal administrativo local.
-- La cuarta unidad local del Bloque 11 esta implementada localmente y pendiente
-  de publicacion: cierra el esqueleto local con rutas protegidas
-  `/admin/access`, `/admin/approvals`, `/admin/support` y `/admin/reporting`.
+- La cuarta unidad local del Bloque 11 esta publicada en `212f274`: cierra el
+  esqueleto local con rutas protegidas `/admin/access`, `/admin/approvals`,
+  `/admin/support` y `/admin/reporting`.
+- La unidad local del asistente WinUI esta publicada en `cfa3342`: agrega chat
+  visual en memoria para Hermes local, indicador de respuesta, autoscroll y
+  envio con Enter, sin persistencia ni acciones.
+- El ajuste local de Hermes esta publicado en `eb99434`: eleva el timeout
+  cliente de WinUI a 120 segundos.
 - El cierre local del Bloque 10 esta publicado en `be6c4fc`.
 - El Bloque 9 local esta publicado en `0448a42`; su integracion corporativa no
   esta completada.
@@ -104,6 +109,8 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   unitarias/de contrato/componente, 12 integraciones AdminWeb y 4 del Worker,
   mas el E2E WinUI/DeviceAgent sobre PostgreSQL efimero. El portal agrega 12
   recorridos Playwright locales.
+- La validacion focalizada del 2026-07-05 para el asistente WinUI paso build
+  Release, 140 pruebas .NET, `dotnet format` y `scripts/Test-Secrets.ps1`.
 - `SQLitePCLRaw.bundle_e_sqlite3` queda fijado a `3.0.3` para evitar la
   vulnerabilidad alta reportada por NuGet Audit en la transitiva
   `SQLitePCLRaw.lib.e_sqlite3` 2.1.11.
@@ -111,9 +118,8 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 ## Siguiente reanudacion
 
 1. Mantener los Bloques 9 y 10 `blocked` y el Bloque 11 `in_progress`.
-2. Mantener validadas las tres unidades locales del Bloque 11 y, si se continua
-   el portal, ejecutar solo la unidad de esqueleto local descrita en
-   `docs/modules/admin-portal-local-skeleton-closure.md`.
+2. Mantener validadas las cuatro unidades locales del Bloque 11 y definir una
+   unidad nueva y acotada antes de seguir el portal o el laboratorio local.
 3. Conservar la identidad de portal solo en entorno local; Entra, MFA,
    grupos y usuarios corporativos permanecen deshabilitados.
 4. Reanudar el Bloque 10 solo cuando exista evidencia saneada de UEMS, cuenta

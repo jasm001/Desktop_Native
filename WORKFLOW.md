@@ -6,17 +6,18 @@
 - Bloque activo: Bloque 11, portal administrativo web, `in_progress`. Los
   Bloques 9 y 10 permanecen `blocked`.
 - Los Bloques 0 a 8 estan `completed`.
-- Ultimo resultado publicado: tercera unidad local del Bloque 11 en `7a65f3e`.
-  Resultado local pendiente de publicacion: cuarta unidad del Bloque 11, que
-  cierra el esqueleto `/admin/*` con rutas protegidas de acceso, aprobaciones,
-  soporte y reportes. El bloque completo sigue abierto.
+- Ultimo resultado publicado: ajuste local de Hermes en `eb99434`, que eleva a
+  120 segundos el timeout cliente de WinUI. La unidad previa del asistente
+  WinUI esta publicada en `cfa3342` y agrega historial visual en memoria,
+  indicador de respuesta, autoscroll y envio con Enter. La cuarta unidad local
+  del Bloque 11 esta publicada en `212f274`; el bloque completo sigue abierto.
 - Unidades locales del Bloque 11: identidad sintetica separada, autorizacion
   server-side fail-closed, shell accesible, proyecciones Prisma sin mutacion,
   pruebas de componentes y recorridos de navegador. No hay OIDC/Entra, RBAC
   productivo, Fluent UI ni mutaciones.
 - La unidad de esqueleto protegido `/admin/*`, documentada en
-  `docs/modules/admin-portal-local-skeleton-closure.md`, esta implementada
-  localmente sin mutaciones, integraciones corporativas ni gobierno productivo
+  `docs/modules/admin-portal-local-skeleton-closure.md`, esta publicada en
+  `212f274` sin mutaciones, integraciones corporativas ni gobierno productivo
   inventado.
 - Nota modular nueva: `docs/modules/lab-bridge-reuse-notes.md` registra que el
   laboratorio externo Bunny Bridge puede reutilizarse como patron de bridge y
@@ -29,7 +30,7 @@
 
 ## Ultima validacion
 
-- Fecha: 2026-06-28.
+- Fecha base: 2026-06-28.
 - SDK global `10.0.301`: correcto.
 - El gate .NET local usa `-m:1`, deshabilita build servers y escribe build/test
   en `.artifacts/validate` para no competir con el build host del IDE.
