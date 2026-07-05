@@ -93,7 +93,8 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 - OpenText, Teams, Entra, UEMS, RAG y portal productivos siguen
   deshabilitados. WinUI puede habilitar Hermes local temporalmente mediante
   variables de entorno para texto libre informativo con historial visual en
-  memoria, sin acciones ni datos corporativos.
+  memoria y timeout cliente de 120 segundos, sin acciones ni datos
+  corporativos.
 - El laboratorio externo Bunny Bridge se documento como patron reutilizable en
   `docs/modules/lab-bridge-reuse-notes.md`: bridge local `validate-only`,
   requester/hostname/software allowlisted, gateway y separacion de secretos. Sus

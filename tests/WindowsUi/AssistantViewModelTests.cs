@@ -81,6 +81,7 @@ public sealed class AssistantViewModelTests
         Assert.NotNull(options);
         Assert.Equal("http://127.0.0.1:8765/v1/", options.BaseEndpoint.AbsoluteUri);
         Assert.Equal("it-support", options.Model);
+        Assert.Equal(TimeSpan.FromSeconds(120), options.Timeout);
     }
 
     [Fact]

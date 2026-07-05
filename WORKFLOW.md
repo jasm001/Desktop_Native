@@ -115,9 +115,9 @@ Validacion focalizada posterior:
 
 - Fecha: 2026-07-05.
 - Unidad local del asistente WinUI: historial visual de chat en memoria,
-  indicador de respuesta de Hermes, autoscroll y envio con Enter. No agrega
-  persistencia, mutaciones, comandos, llamadas al DeviceAgent ni archivos `.env`
-  con secretos.
+  indicador de respuesta de Hermes, autoscroll, envio con Enter y timeout
+  cliente de 120 segundos. No agrega persistencia, mutaciones, comandos,
+  llamadas al DeviceAgent ni archivos `.env` con secretos.
 - `dotnet build ITSupportNative.slnx --configuration Release --no-restore -m:1
   --artifacts-path .artifacts\validate --disable-build-servers`: correcto, 0
   warnings y 0 errores.

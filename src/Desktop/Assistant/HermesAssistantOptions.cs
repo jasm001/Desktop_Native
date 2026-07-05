@@ -56,7 +56,7 @@ public sealed record HermesAssistantOptions(
             NormalizeEndpoint(endpoint),
             apiKey,
             model.Trim(),
-            TimeSpan.FromSeconds(20));
+            TimeSpan.FromSeconds(120));
     }
 
     private static string? Get(

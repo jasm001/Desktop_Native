@@ -62,6 +62,10 @@ En la vista `Asistente`, el cuadro inferior queda habilitado. Las opciones
 deterministas existentes siguen disponibles y son las unicas que pueden avanzar
 hacia propuesta, confirmacion y solicitud sintetica.
 
+La app espera hasta 120 segundos por cada respuesta de Hermes local. Ese limite
+esta del lado de WinUI y da margen para que Hermes use skills locales de
+validacion antes de responder.
+
 ## Arranque sin terminal
 
 No crees un `.env` dentro del repositorio. Para evitar repetir variables en cada
@@ -135,5 +139,6 @@ vista conserva las opciones deterministas.
 - El texto enviado se acota a 1000 caracteres.
 - No se envia historial completo, diagnosticos, tokens de la app, evidencia,
   credenciales, hostnames ni datos corporativos.
-- Los errores de red, timeout o payload vacio degradan a mensaje informativo.
+- Los errores de red, timeout de 120 segundos o payload vacio degradan a
+  mensaje informativo.
 - Esta configuracion no es inferencia offline ni integracion productiva de IA.

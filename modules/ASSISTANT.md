@@ -122,7 +122,7 @@ Hermes ejecutado localmente conserva estas restricciones:
 - contenido exclusivamente publico, sintetico o curado;
 - respuesta informativa acotada antes de entrar a la UI;
 - citas a fuente y version del conocimiento recuperado;
-- limites de contexto, timeout, costo y cancelacion.
+- limites de contexto, timeout cliente de 120 segundos, costo y cancelacion.
 
 Hermes no llama al DeviceAgent, no construye comandos y no autoriza acciones. Su
 salida actual solo se agrega al historial visual de la sesion WinUI y no crea
