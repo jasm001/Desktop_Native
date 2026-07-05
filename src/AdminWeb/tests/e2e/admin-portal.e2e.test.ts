@@ -49,6 +49,12 @@ const routes = [
     active: "Reportes",
     landmark: "Superficie protegida",
   },
+  {
+    path: "/admin/lab",
+    title: "Laboratorio local",
+    active: "Laboratorio",
+    landmark: "Estado del laboratorio",
+  },
 ] as const;
 
 for (const route of routes) {

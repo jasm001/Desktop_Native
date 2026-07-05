@@ -20,7 +20,9 @@ for operations and audit; no production integration or corporate identity is
   for the read-only administrative surface. The fourth local unit closes the
   local `/admin/*` skeleton with protected synthetic routes for access,
   approvals, support, and reporting; it still does not add production identity,
-  RBAC, mutations, Fluent UI, or corporate integrations.
+  RBAC, mutations, Fluent UI, or corporate integrations. The latest local unit
+  adds `/admin/lab` for read-only laboratory status and persisted
+  `lab-real-sanitized` PostgreSQL readings without controlling services or VM.
 
 ## Current Status
 
@@ -52,12 +54,16 @@ for operations and audit; no production integration or corporate identity is
   `/admin`, `/admin/catalog`, `/admin/operations`, `/admin/audit`,
   `/admin/access`, `/admin/approvals`, `/admin/support`, and
   `/admin/reporting` are development-only read views protected by a separate
-  portal identity and server-side capabilities. Component tests and Playwright
-  walkthroughs now cover the local read-only skeleton. OIDC/Entra, productive
-  RBAC, Fluent UI, mutations, and product role tests are not implemented.
-- Next local gate: move beyond the protected skeleton only after a new bounded
-  unit is defined. UEMS, Entra, Security/Sophos, publisher trust, real Teams
-  and OpenText remain disabled.
+  portal identity and server-side capabilities. `/admin/lab` adds read-only
+  laboratory status, local PostgreSQL counts, outbox summaries and fake ticket
+  summaries under `portal.lab.read`. Component tests and Playwright
+  walkthroughs now cover the local read-only skeleton and lab route.
+  OIDC/Entra, productive RBAC, Fluent UI, mutations, and product role tests are
+  not implemented.
+- Next local gate: continue with simulated connector health only after the
+  contract remains local, read-only, fail-closed and free of secrets. UEMS,
+  Entra, Security/Sophos, publisher trust, real Teams and OpenText remain
+  disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data,
   persisted sanitized lab-real data, local or fake providers, a development
   artifact mirror, and optional Hermes chat for WinUI with in-memory visual
@@ -78,6 +84,8 @@ owned by [`modules/PILOT_HARDENING.md`](modules/PILOT_HARDENING.md). Block 11 is
 [`modules/ADMIN_PORTAL.md`](modules/ADMIN_PORTAL.md). The next local Block 11
 handoff is scoped in
 [`docs/modules/admin-portal-local-skeleton-closure.md`](docs/modules/admin-portal-local-skeleton-closure.md).
+The local laboratory portal increment is documented in
+[`docs/modules/admin-portal-lab-real-read-model.md`](docs/modules/admin-portal-lab-real-read-model.md).
 Hermes local chat startup is documented in
 [`docs/runbooks/local-hermes-chat.md`](docs/runbooks/local-hermes-chat.md).
 

@@ -10,7 +10,8 @@ export type AdminNavigationKey =
   | "access"
   | "approvals"
   | "support"
-  | "reporting";
+  | "reporting"
+  | "lab";
 
 interface AdminShellProps {
   readonly activeItem: AdminNavigationKey;
@@ -64,6 +65,12 @@ const navigation = [
     label: "Reportes",
     href: "/admin/reporting",
     icon: ReportingIcon,
+  },
+  {
+    key: "lab",
+    label: "Laboratorio",
+    href: "/admin/lab",
+    icon: LabIcon,
   },
 ] as const;
 
@@ -228,6 +235,14 @@ function ReportingIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path d="M4 19h16v2H4v-2Zm2-9h3v7H6v-7Zm5-5h3v12h-3V5Zm5 8h3v4h-3v-4Z" />
+    </svg>
+  );
+}
+
+function LabIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M8 3h8v2h-1v4.6l4.5 7.8A2.4 2.4 0 0 1 17.42 21H6.58a2.4 2.4 0 0 1-2.08-3.6L9 9.6V5H8V3Zm3 2v5.14l-4.77 8.26a.4.4 0 0 0 .35.6h10.84a.4.4 0 0 0 .35-.6L13 10.14V5h-2Zm-1.2 10h4.4l1.15 2H8.65l1.15-2Z" />
     </svg>
   );
 }

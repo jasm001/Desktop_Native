@@ -61,7 +61,8 @@ Gate:
 - secretos y URLs sensibles nunca se renderizan;
 - desktop, movil, teclado, solo lectura y ausencia de overflow cubiertos.
 
-Estado: `pending`.
+Estado: `completed` como incremento local validado en
+`admin-portal-lab-real-read-model.md`.
 
 ## Unidad 2: lecturas operativas reales locales
 
@@ -86,7 +87,8 @@ Gate:
 - pruebas unitarias/componentes y Playwright cubren lectura y ausencia de
   formularios mutantes.
 
-Estado: `pending`.
+Estado: `completed` como incremento local validado en
+`admin-portal-lab-real-read-model.md`.
 
 ## Unidad 3: conectores simulados con health real
 

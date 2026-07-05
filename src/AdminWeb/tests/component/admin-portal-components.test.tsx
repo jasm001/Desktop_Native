@@ -6,12 +6,14 @@ import { afterEach, describe, expect, it } from "vitest";
 import type { CatalogProduct } from "@it-support-native/control-plane-contracts";
 import type {
   AdminAuditSummary,
+  AdminLabReadModel,
   AdminOperationSummary,
 } from "@/modules/administration/application/admin-read-repository";
 import { getAdminApprovalsSkeleton } from "@/modules/administration/application/get-admin-skeleton";
 import { AdminAccessDenied } from "@/modules/administration/ui/admin-access-denied";
 import { AdminAuditContent } from "@/modules/administration/ui/admin-audit-content";
 import { AdminCatalogContent } from "@/modules/administration/ui/admin-catalog-content";
+import { AdminLabContent } from "@/modules/administration/ui/admin-lab-content";
 import { AdminOperationsContent } from "@/modules/administration/ui/admin-operations-content";
 import { AdminShell } from "@/modules/administration/ui/admin-shell";
 import { AdminSkeletonContent } from "@/modules/administration/ui/admin-skeleton-content";
@@ -52,6 +54,9 @@ describe("admin portal components", () => {
     expect(
       within(navigation).getByRole("link", { name: "Aprobaciones" }),
     ).toHaveAttribute("href", "/admin/approvals");
+    expect(
+      within(navigation).getByRole("link", { name: "Laboratorio" }),
+    ).toHaveAttribute("href", "/admin/lab");
     expect(screen.getByRole("main")).toHaveAttribute("id", "admin-content");
     expect(
       screen.getByRole("link", {
@@ -158,6 +163,81 @@ describe("admin portal components", () => {
     expect(screen.getByText("Bloqueado")).toBeVisible();
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
     expect(document.querySelector("form")).toBeNull();
+  });
+
+  it("renders lab-real status and persisted local summaries without actions", () => {
+    const lab: AdminLabReadModel = {
+      components: [
+        {
+          id: "postgresql",
+          name: "PostgreSQL local",
+          status: "available",
+          source: "lab-real-sanitized",
+          detail: "Lectura bounded completada.",
+          lastCheckedAt: new Date("2026-07-05T12:00:00.000Z"),
+        },
+        {
+          id: "windows-vm",
+          name: "VM Windows 11",
+          status: "not_checked",
+          source: "local",
+          detail: "La VM se inicia manualmente.",
+          lastCheckedAt: null,
+        },
+      ],
+      metrics: [
+        {
+          label: "Solicitudes",
+          value: 2,
+          source: "lab-real-sanitized",
+          detail: "Filas reales de support_requests.",
+        },
+        {
+          label: "Tickets fake",
+          value: 1,
+          source: "fake",
+          detail: "Registros fake persistidos localmente.",
+        },
+      ],
+      recentOperations: [],
+      recentAuditEvents: [],
+      recentOutboxEvents: [
+        {
+          id: "632c99fb-b56a-49d6-873f-4315482fdab8",
+          eventType: "support-request.confirmed.v1",
+          aggregateType: "support-request",
+          status: "PENDING",
+          attemptCount: 0,
+          createdAt: new Date("2026-07-05T12:00:00.000Z"),
+        },
+      ],
+      recentExternalTickets: [
+        {
+          id: "cc794622-391f-4ed2-bf78-ded50ed7e902",
+          reference: "FAKE-1234",
+          provider: "FAKE",
+          status: "OPEN",
+          reasonCode: "execution_failed",
+          correlationId: "lab-correlation",
+          createdAt: new Date("2026-07-05T12:00:00.000Z"),
+        },
+      ],
+      boundaries: ["Sin llamadas directas al DeviceAgent."],
+    };
+
+    render(<AdminLabContent lab={lab} />);
+
+    expect(
+      screen.getByRole("heading", { name: "Estado del laboratorio" }),
+    ).toBeVisible();
+    expect(screen.getByText("PostgreSQL local")).toBeVisible();
+    expect(screen.getByText("No comprobado")).toBeVisible();
+    expect(screen.getByText("support-request.confirmed.v1")).toBeVisible();
+    expect(screen.getByText("FAKE-1234")).toBeVisible();
+    expect(screen.getAllByText("lab-real-sanitized").length).toBeGreaterThan(0);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(document.querySelector("form")).toBeNull();
+    expect(screen.queryByText("payload")).not.toBeInTheDocument();
   });
 
   it("renders access denied without protected portal content", () => {

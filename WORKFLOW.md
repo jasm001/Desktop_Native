@@ -19,6 +19,11 @@
   `docs/modules/admin-portal-local-skeleton-closure.md`, esta publicada en
   `212f274` sin mutaciones, integraciones corporativas ni gobierno productivo
   inventado.
+- La unidad local de laboratorio `/admin/lab`, pendiente de commit, implementa
+  las Unidades 1 y 2 de `docs/modules/local-lab-real-data-roadmap.md` con
+  `portal.lab.read`, estado de laboratorio y lecturas reales locales
+  `lab-real-sanitized` sin mutaciones, migraciones, secretos, control de VM ni
+  integraciones corporativas.
 - Nota modular nueva: `docs/modules/lab-bridge-reuse-notes.md` registra que el
   laboratorio externo Bunny Bridge puede reutilizarse como patron de bridge y
   validacion `validate-only`, no como dependencia productiva ni como cierre de
@@ -67,13 +72,14 @@
 - `corepack pnpm@11.5.3 run check`: correcto.
 - Contratos/Node: 40 pruebas unitarias, de contrato y de componentes; lint,
   TypeScript estricto y builds de Contracts, AdminWeb y Worker correctos.
-- Portal local: 33 pruebas unitarias/componentes cubren identidad separada,
-  ambiente o flag invalido, rol/capability desconocidos, ocho capabilities
+- Portal local: 36 pruebas unitarias/componentes cubren identidad separada,
+  ambiente o flag invalido, rol/capability desconocidos, nueve capabilities
   permitidas, limites fijos para lecturas administrativas, shell, tablas,
-  estados vacios, esqueleto local y acceso denegado.
-- QA de navegador: 24 recorridos Playwright cubren acceso denegado, `/admin`,
+  estados vacios, esqueleto local, laboratorio local y acceso denegado.
+- QA de navegador: 28 recorridos Playwright cubren acceso denegado, `/admin`,
   `/admin/catalog`, `/admin/operations`, `/admin/audit`, `/admin/access`,
-  `/admin/approvals`, `/admin/support`, `/admin/reporting`, escritorio
+  `/admin/approvals`, `/admin/support`, `/admin/reporting`, `/admin/lab`,
+  escritorio
   `1440x1000`, movil `390x844`, teclado, estados activos, solo lectura,
   ausencia de formularios/botones mutantes en `main` y cero overflow horizontal
   de pagina.
@@ -85,7 +91,7 @@
 - PostgreSQL 18 real efimero: cuatro migraciones aplicadas con `migrate deploy`,
   incluidas `20260614013000_bot_case_foundation` y
   `20260614090000_fake_ticketing`.
-- Integracion PostgreSQL: 12 pruebas AdminWeb y 4 pruebas Worker correctas;
+- Integracion PostgreSQL: 13 pruebas AdminWeb y 4 pruebas Worker correctas;
   idempotencia, caso unico, conflicto de payload, transaccion, auditoria
   append-only, consultas sin mutacion, resultados de exito/fallo, leases
   agotados, escalamiento tipado, ticket fake idempotente y efectos sinteticos
@@ -196,7 +202,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 8. Casos, tickets y OpenText fake | completed | `BotCase`, politica de 72 horas, evento de escalamiento, `ITicketingProvider` fake, `ExternalTicket`, worker idempotente y consulta HTTP validados sobre PostgreSQL real efimero; `cf262b4`. |
 | 9. Canal Teams existente | blocked | Incremento local publicado en `0448a42`: contrato v1 estricto, `IConversationChannel`, adaptador recorded, API compartida y paridad Teams/WinUI. Integracion corporativa bloqueada por evidencia externa. |
 | 10. Endurecimiento para piloto | blocked | Trabajo local acotado: threat model trazable, kill switch apagado por defecto, perfil `local-demo` confinado a `Development`, fallos del host saneados y runbook de retiro. Revision externa y ensayo en dos endpoints pendientes. |
-| 11. Portal administrativo web | in_progress | Cuatro unidades locales validadas: identidad separada, ocho capabilities server-side, navegacion `/admin/*`, lecturas Prisma limitadas sin payload de auditoria, estados sinteticos en memoria, pruebas de componentes y recorridos Playwright locales; sin Entra, RBAC productivo, Fluent UI o integraciones corporativas. |
+| 11. Portal administrativo web | in_progress | Cinco unidades locales validadas: identidad separada, capability `portal.lab.read`, navegacion `/admin/*`, lecturas Prisma limitadas sin payload de auditoria, estados sinteticos y `lab-real-sanitized`, pruebas de componentes y recorridos Playwright locales; sin Entra, RBAC productivo, Fluent UI o integraciones corporativas. |
 
 ## Alcance del MVP local
 
@@ -249,6 +255,25 @@ Impacto: Se permite usar evidencia generada por laboratorio local controlado,
 Recomendacion: Empezar por las Unidades 1 y 2 de
   `docs/modules/local-lab-real-data-roadmap.md`; tratar VM y APIs apagadas como
   `not_checked`, `offline` o `unavailable`.
+Owner: Desarrollo / operador local del laboratorio.
+```
+
+```text
+Fecha: 2026-07-05
+Modulo: Laboratorio local / Portal administrativo
+Accion completada: Implementar `/admin/lab` como vista protegida de solo lectura
+  para estado de laboratorio y lecturas reales locales persistidas.
+Evidencia: `portal.lab.read`, tarjetas de estado, resumenes de
+  `SupportRequest`, `ExecutionJob`, `BotCase`, `ExternalTicket`, auditoria y
+  outbox, sin payloads completos ni mutaciones.
+Validacion: pruebas AdminWeb unitarias/componentes, lint, integracion
+  PostgreSQL efimera y Playwright de rutas administrativas correctos.
+Impacto: Las Unidades 1 y 2 de
+  `docs/modules/local-lab-real-data-roadmap.md` quedan implementadas; los
+  Bloques 9 y 10 permanecen `blocked` y el Bloque 11 sigue `in_progress`.
+Recomendacion: Continuar con health real de conectores locales solo mediante
+  contratos reemplazables, errores saneados y estado degradado cuando dependan
+  de servicios apagados.
 Owner: Desarrollo / operador local del laboratorio.
 ```
 

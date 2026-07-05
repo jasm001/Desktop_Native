@@ -22,6 +22,9 @@ capabilities de lectura separadas y proyecciones Prisma limitadas. La tercera
 unidad agrega pruebas de componentes y Playwright. La cuarta unidad cierra el
 esqueleto local con `/admin/access`, `/admin/approvals`, `/admin/support` y
 `/admin/reporting`, todas sinteticas, protegidas en servidor y de solo lectura.
+La quinta unidad agrega `/admin/lab` para estado de laboratorio y lecturas
+reales locales `lab-real-sanitized`, tambien protegida en servidor y de solo
+lectura.
 La pagina `/` permanece como superficie tecnica.
 
 Todavia no contiene:
@@ -114,18 +117,38 @@ No se agregan Entra, OpenText, Rescue, Teams, UEMS, roles productivos, owners,
 scopes, secretos ni datos corporativos. La evidencia vive en
 `../docs/modules/admin-portal-local-skeleton-closure.md`.
 
+## Quinta unidad local
+
+La quinta unidad implementa las dos primeras unidades de la ruta
+`lab-real-sanitized`:
+
+1. agrega la capability local `portal.lab.read`;
+2. agrega la ruta server-rendered `/admin/lab`;
+3. muestra estado de AdminWeb, PostgreSQL local, Worker, Hermes, mirror,
+   bridge de laboratorio y VM Windows 11;
+4. etiqueta fuentes como `local`, `fake`, `validate-only` o
+   `lab-real-sanitized`;
+5. resume filas reales locales de `SupportRequest`, `ExecutionJob`, `BotCase`,
+   `ExternalTicket`, auditoria y outbox;
+6. usa consultas limitadas y selecciones explicitas sin payloads completos;
+7. conserva la VM apagada o no comprobada como estado honesto, sin intentar
+   iniciarla.
+
+No agrega migraciones, mutaciones, Server Actions, Route Handlers mutantes,
+integraciones corporativas, secretos ni control de servicios o VM. La evidencia
+vive en `../docs/modules/admin-portal-lab-real-read-model.md`.
+
 ## Siguiente avance
 
-El siguiente avance no bloqueado puede pasar del esqueleto local hacia datos
-reales de laboratorio persistidos si permanece dentro de las fronteras actuales:
+El siguiente avance no bloqueado puede agregar health real de conectores de
+laboratorio si permanece dentro de las fronteras actuales:
 
-1. agregar una superficie de laboratorio de solo lectura para estado de
-   conectores y componentes locales;
-2. mantenerla protegida en servidor, de solo lectura y etiquetada como
-   `local-demo`;
-3. reutilizar el shell y la identidad de portal existentes;
-4. cubrir acceso permitido/denegado, teclado, foco, estados activos, estados
-   vacios, dependencias apagadas y ausencia de overflow;
+1. mantener `/admin/lab` protegida en servidor y de solo lectura;
+2. agregar contratos de health para dependencias locales apagadas, disponibles o
+   mal configuradas;
+3. conservar errores saneados y acotados;
+4. cubrir acceso permitido/denegado, teclado, foco, estados activos, estados de
+   dependencia apagada y ausencia de overflow;
 5. no agregar mutaciones, migraciones, integraciones corporativas, roles
    productivos, owners ni scopes reales.
 
@@ -297,4 +320,5 @@ Las unidades locales actuales no cierran este gate.
 - `../docs/modules/control-plane-foundation.md`
 - `../docs/modules/control-plane-local-flow.md`
 - `../docs/modules/admin-portal-local-skeleton-closure.md`
+- `../docs/modules/admin-portal-lab-real-read-model.md`
 - `../docs/modules/local-lab-real-data-roadmap.md`

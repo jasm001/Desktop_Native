@@ -1,6 +1,11 @@
 import { expect, type Page, test } from "@playwright/test";
 
-const protectedRoutes = ["/admin", "/admin/access", "/admin/support"] as const;
+const protectedRoutes = [
+  "/admin",
+  "/admin/access",
+  "/admin/support",
+  "/admin/lab",
+] as const;
 
 for (const route of protectedRoutes) {
   test(`fails closed on ${route} without rendering protected portal content`, async ({

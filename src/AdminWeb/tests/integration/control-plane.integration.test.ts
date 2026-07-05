@@ -21,6 +21,7 @@ import {
   getRecentAdminAuditEvents,
   getRecentAdminOperations,
 } from "@/modules/administration/application/get-admin-read-model";
+import { getAdminLabReadModel } from "@/modules/administration/application/get-admin-lab-read-model";
 import { PrismaAdminReadRepository } from "@/modules/administration/infrastructure/prisma-admin-read-repository";
 import { CreateConfirmedInstallation } from "@/modules/requests/application/create-confirmed-installation";
 import { GetSupportRequest } from "@/modules/requests/application/get-support-request";
@@ -225,6 +226,46 @@ describe("control plane persistence", () => {
       }),
     );
     expect(auditEvents[0]).not.toHaveProperty("payload");
+    await expect(mutationCounts()).resolves.toEqual(countsBefore);
+  });
+
+  it("serves lab-real local read models without side effects", async () => {
+    const adminRepository = new PrismaAdminReadRepository(prisma);
+    const countsBefore = await mutationCounts();
+    const lab = await getAdminLabReadModel(adminRepository);
+
+    expect(lab.components).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "postgresql",
+          status: "available",
+          source: "lab-real-sanitized",
+        }),
+        expect.objectContaining({
+          id: "windows-vm",
+          status: "not_checked",
+        }),
+      ]),
+    );
+    expect(lab.metrics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          label: "Solicitudes",
+          value: countsBefore.requests,
+          source: "lab-real-sanitized",
+        }),
+        expect.objectContaining({
+          label: "Outbox",
+          value: countsBefore.outbox,
+        }),
+      ]),
+    );
+    expect(lab.recentOperations.length).toBeGreaterThan(0);
+    expect(lab.recentAuditEvents.length).toBeGreaterThan(0);
+    expect(lab.recentOutboxEvents.length).toBeGreaterThan(0);
+    expect(lab.recentOutboxEvents[0]).not.toHaveProperty("payload");
+    expect(lab.recentExternalTickets).toEqual([]);
+    expect(JSON.stringify(lab)).not.toContain("api-key");
     await expect(mutationCounts()).resolves.toEqual(countsBefore);
   });
 

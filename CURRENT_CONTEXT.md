@@ -37,12 +37,14 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 - `src/AdminWeb` es el control plane Next.js modular sobre el que se construye
   el Bloque 11. `/` sigue siendo la superficie tecnica del Bloque 8. Las rutas
   `/admin`, `/admin/catalog`, `/admin/operations`, `/admin/audit`,
-  `/admin/access`, `/admin/approvals`, `/admin/support` y `/admin/reporting`
-  usan una identidad sintetica separada, capabilities server-side fail-closed y
-  lecturas limitadas o estados sinteticos en memoria. Testing Library/jsdom
-  cubre componentes locales y Playwright cubre recorridos desktop/movil de las
-  ocho rutas y acceso denegado. No existen OIDC/Entra, RBAC productivo, Fluent
-  UI ni mutaciones.
+  `/admin/access`, `/admin/approvals`, `/admin/support`, `/admin/reporting` y
+  `/admin/lab` usan una identidad sintetica separada, capabilities server-side
+  fail-closed y lecturas limitadas o estados sinteticos en memoria. `/admin/lab`
+  agrega `portal.lab.read`, estado de laboratorio y resumenes reales locales de
+  PostgreSQL bajo `lab-real-sanitized`, sin payloads completos ni control de VM
+  o servicios. Testing Library/jsdom cubre componentes locales y Playwright
+  cubre recorridos desktop/movil de las rutas administrativas y acceso
+  denegado. No existen OIDC/Entra, RBAC productivo, Fluent UI ni mutaciones.
 - Prisma/PostgreSQL tiene cuatro migraciones versionadas.
 - Cada confirmacion crea una sola `SupportRequest`, `ExecutionJob` y `BotCase`.
 - Exito deja el caso en `attended_waiting_user` sin ticket.
@@ -95,6 +97,12 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   `docs/modules/admin-portal-local-skeleton-closure.md`; cierra el esqueleto
   local de navegacion y superficies protegidas sin dejar de ser sintetica,
   server-side, de solo lectura y sin integraciones corporativas.
+- La quinta unidad local vive en
+  `docs/modules/admin-portal-lab-real-read-model.md`; implementa las Unidades 1
+  y 2 de `docs/modules/local-lab-real-data-roadmap.md` con `/admin/lab`,
+  capability `portal.lab.read`, tarjetas de estado de laboratorio y lecturas
+  reales locales de `SupportRequest`, `ExecutionJob`, `BotCase`,
+  `ExternalTicket`, auditoria y outbox, sin migraciones ni mutaciones.
 - OpenText, Teams, Entra, UEMS, RAG y portal productivos siguen
   deshabilitados. WinUI puede habilitar Hermes local temporalmente mediante
   variables de entorno para texto libre informativo con historial visual en
@@ -115,15 +123,16 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   independientes para pasar de muestras a datos reales de laboratorio:
   estado del laboratorio, lecturas operativas reales locales, health de
   conectores simulados, catalogo local curado y recorrido end-to-end visual.
-  La VM puede estar apagada por defecto; las futuras vistas deben mostrar
-  `not_checked`, `offline` o `unavailable` sin intentar iniciarla.
+  Las dos primeras unidades estan implementadas en `/admin/lab`. La VM puede
+  estar apagada por defecto; las vistas deben mostrar `not_checked`, `offline`
+  o `unavailable` sin intentar iniciarla.
 - `core/DECISIONS.md` registra D-073 para permitir `lab-real-sanitized` solo en
   `local-demo`; `core/SCOPE.md` diferencia estos datos de cualquier dato real
   corporativo o productivo.
 - El gate completo mantiene 140 pruebas .NET; Node tiene 40 pruebas
-  unitarias/de contrato/componente, 12 integraciones AdminWeb y 4 del Worker,
-  mas el E2E WinUI/DeviceAgent sobre PostgreSQL efimero. El portal agrega 12
-  recorridos Playwright locales.
+  unitarias/de contrato/componente, 13 integraciones AdminWeb y 4 del Worker,
+  mas el E2E WinUI/DeviceAgent sobre PostgreSQL efimero. El portal agrega 28
+  recorridos Playwright locales para rutas administrativas y acceso denegado.
 - La validacion focalizada del 2026-07-05 para el asistente WinUI paso build
   Release, 140 pruebas .NET, `dotnet format` y `scripts/Test-Secrets.ps1`.
 - `SQLitePCLRaw.bundle_e_sqlite3` queda fijado a `3.0.3` para evitar la
@@ -133,8 +142,8 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 ## Siguiente reanudacion
 
 1. Mantener los Bloques 9 y 10 `blocked` y el Bloque 11 `in_progress`.
-2. Mantener validadas las cuatro unidades locales del Bloque 11 y, si se sigue
-   el laboratorio/portal, comenzar por las Unidades 1 y 2 de
+2. Mantener validadas las cinco unidades locales del Bloque 11 y, si se sigue
+   el laboratorio/portal, continuar con la Unidad 3 de
    `docs/modules/local-lab-real-data-roadmap.md`.
 3. Conservar la identidad de portal solo en entorno local; Entra, MFA,
    grupos y usuarios corporativos permanecen deshabilitados.

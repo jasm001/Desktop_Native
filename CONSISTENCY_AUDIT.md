@@ -49,11 +49,15 @@ La precedencia vigente permanece definida en `README.md`:
 - Documento propietario del Bloque 10: `modules/PILOT_HARDENING.md`.
 - Documento propietario del Bloque 11: `modules/ADMIN_PORTAL.md`.
 - Gate completo vigente: 140 pruebas .NET, 40 pruebas Node unitarias/de
-  contrato/componente, 12 integraciones AdminWeb, 4 del Worker, cuatro
+  contrato/componente, 13 integraciones AdminWeb, 4 del Worker, cuatro
   migraciones PostgreSQL, E2E local, auditoria de dependencias y escaneo de
   secretos correctos.
 - Cuatro unidades locales del Bloque 11 publicadas sin cambiar contratos
   publicos, migraciones, mutaciones o integraciones corporativas.
+- Una quinta unidad local del Bloque 11 queda pendiente de commit: `/admin/lab`
+  con `portal.lab.read`, estado de laboratorio y lecturas reales locales
+  `lab-real-sanitized`, sin migraciones, mutaciones, secretos ni integraciones
+  corporativas.
 - `docs/modules/local-mvp-lab.md` define `lab-real-sanitized` como categoria de
   datos reales de laboratorio persistidos y saneados. La categoria permite
   mejorar visualizacion local con evidencia generada por el propio laboratorio,
@@ -120,10 +124,10 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `src/AdminWeb` conserva el control plane modular, cuatro migraciones y la
   superficie tecnica `/` del Bloque 8.
 - `/admin`, `/admin/catalog`, `/admin/operations`, `/admin/audit`,
-  `/admin/access`, `/admin/approvals`, `/admin/support` y `/admin/reporting`
-  implementan identidad sintetica separada, ocho capabilities fail-closed,
-  navegacion accesible, lecturas limitadas de solo lectura y estados sinteticos
-  en memoria.
+  `/admin/access`, `/admin/approvals`, `/admin/support`, `/admin/reporting` y
+  `/admin/lab` implementan identidad sintetica separada, capabilities
+  fail-closed, navegacion accesible, lecturas limitadas de solo lectura,
+  estados sinteticos en memoria y lecturas `lab-real-sanitized`.
 - Las consultas administrativas toman como maximo 25 registros, usan
   selecciones explicitas y omiten payloads de auditoria.
 - Testing Library/jsdom y Playwright estan instalados e implementados solo para
@@ -143,11 +147,14 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `docs/modules/admin-portal-local-skeleton-closure.md` registra la cuarta
   unidad local que cierra el esqueleto protegido sin cerrar el Bloque 11
   completo.
-- `modules/ADMIN_PORTAL.md` permite una futura superficie de laboratorio de
+- `docs/modules/admin-portal-lab-real-read-model.md` registra la quinta unidad
+  local que implementa las dos primeras unidades de laboratorio sin cerrar el
+  Bloque 11 completo.
+- `modules/ADMIN_PORTAL.md` gobierna una superficie de laboratorio de
   solo lectura para `lab-real-sanitized`, protegida en servidor, sin mutaciones,
   sin llamadas directas al DeviceAgent y sin administrar VM, servicios o
-  bridges. Una VM apagada se trata como `not_checked`, `offline` o
-  `unavailable`, no como fallo productivo.
+  bridges. La primera superficie ya existe en `/admin/lab`. Una VM apagada se
+  trata como `not_checked`, `offline` o `unavailable`, no como fallo productivo.
 
 ## Correcciones realizadas
 
@@ -169,8 +176,8 @@ proveedores locales sin declarar cerrada la integracion Teams.
   y `tests/AdminWeb/README.md` distinguen las lecturas locales ya implementadas
   del portal productivo todavia pendiente;
 - `docs/modules/local-lab-real-data-roadmap.md` agrega la ruta documental para
-  sustituir muestras por datos reales de laboratorio saneados antes de
-  implementar nuevas unidades;
+  sustituir muestras por datos reales de laboratorio saneados y marca las dos
+  primeras unidades como implementadas;
 - `docs/modules/repository-foundation.md`,
   `docs/modules/control-plane-foundation.md` y
   `docs/modules/local-mvp-lab.md` conservan su evidencia historica sin afirmar
