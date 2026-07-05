@@ -19,6 +19,9 @@ Estado confirmado:
 - La segunda unidad local del Bloque 11 esta publicada en `17e7581`.
 - La tercera unidad local del Bloque 11 esta publicada en `7a65f3e`; agrego
   Testing Library/jsdom, Playwright y el gate local de calidad del portal.
+- La cuarta unidad local del Bloque 11 esta publicada en `212f274`; cerro el
+  esqueleto local `/admin/*` con rutas protegidas y sinteticas
+  `/admin/access`, `/admin/approvals`, `/admin/support` y `/admin/reporting`.
 - `modules/TEAMS.md`, `modules/PILOT_HARDENING.md` y
   `modules/ADMIN_PORTAL.md` son los documentos propietarios de los Bloques 9,
   10 y 11 respectivamente.
@@ -29,10 +32,11 @@ Estado confirmado:
 - AdminWeb ya contiene APIs v1, identidad sintetica de desarrollo,
   Prisma/PostgreSQL, auditoria append-only, outbox, solicitudes, trabajos,
   `BotCase` y ticketing fake.
-- `/admin`, `/admin/catalog`, `/admin/operations` y `/admin/audit` contienen
-  identidad de portal sintetica separada, autorizacion server-side fail-closed,
-  navegacion real, capabilities de lectura separadas y lecturas limitadas de
-  catalogo, operaciones y auditoria.
+- `/admin`, `/admin/catalog`, `/admin/operations`, `/admin/audit`,
+  `/admin/access`, `/admin/approvals`, `/admin/support` y `/admin/reporting`
+  contienen identidad de portal sintetica separada, autorizacion server-side
+  fail-closed, navegacion real, capabilities de lectura separadas, lecturas
+  limitadas o estados sinteticos en memoria.
 - Testing Library/jsdom cubre componentes del portal local. Playwright cubre
   escritorio, movil, teclado, estado activo, acceso denegado, solo lectura y
   ausencia de overflow horizontal para la superficie administrativa actual.
@@ -50,28 +54,42 @@ Estado confirmado:
   saneada, kill switch y confinamiento de `local-demo` a `Development`.
 - OpenText real, Teams corporativo, Entra, UEMS, Sophos, PKI, Rescue,
   RAG productivo y portal administrativo productivo siguen deshabilitados.
+- `docs/modules/local-mvp-lab.md` documenta el laboratorio personal/local:
+  VM Windows 11, datos publicos o sinteticos, proveedores fake/locales, mirror
+  local, Hermes local opcional, RAG local curado pendiente y perfil
+  `local-demo`. No acredita piloto ni produccion.
 - El laboratorio externo Bunny Bridge queda documentado en
   `docs/modules/lab-bridge-reuse-notes.md` solo como patron reutilizable:
   bridge local `validate-only`, requester/hostname/software allowlisted,
-  gateway y separacion de secretos. Sus dominios y hostnames simulan una
-  operacion realista, pero no son supuestos productivos ni desbloquean UEMS,
-  Teams, Entra, Power Automate productivo o el Bloque 10.
+  gateway y separacion de secretos. Sus dominios, hostnames, usuarios y UEMS
+  trial simulan una operacion realista, pero no son supuestos productivos ni
+  desbloquean UEMS, Teams, Entra, Power Automate productivo o el Bloque 10.
 - WinUI puede habilitar Hermes local temporalmente mediante variables de
   entorno para texto libre informativo, sin acciones, sin datos corporativos,
   sin solicitudes, sin tickets, sin auditoria, sin outbox y sin llamadas al
   DeviceAgent. El procedimiento vive en `docs/runbooks/local-hermes-chat.md`.
-- Hermes local usa un endpoint compatible con OpenAI limitado a loopback. No
-  guardes API keys en archivos del repositorio, `.env`, notas, capturas ni logs
-  compartidos; `scripts/Test-Secrets.ps1` escanea tambien archivos ignorados.
+- Hermes local usa un endpoint compatible con OpenAI limitado a loopback. La
+  app envia `Authorization: Bearer <key>` a `/chat/completions`, modelo
+  `it-support`, timeout fijo de 20 segundos. No guardes API keys en archivos
+  del repositorio, `.env`, notas, capturas ni logs compartidos;
+  `scripts/Test-Secrets.ps1` escanea tambien archivos ignorados.
 - `SQLitePCLRaw.bundle_e_sqlite3` esta fijado en `3.0.3` mediante Central
   Package Management para evitar la vulnerabilidad alta reportada por NuGet
-  Audit en la transitiva `SQLitePCLRaw.lib.e_sqlite3` 2.1.11.
-- Ultimo gate completo: 140 pruebas .NET, 40 pruebas Node unitarias/de
+  Audit en la transitiva `SQLitePCLRaw.lib_e_sqlite3` 2.1.11.
+- Ultimo gate completo: 140 pruebas .NET, pruebas Node unitarias/de
   contrato/componente, 12 integraciones AdminWeb, 4 del Worker, cuatro
   migraciones PostgreSQL, E2E local, auditoria de dependencias y escaneo de
-  secretos correctos. El portal conserva 12 recorridos Playwright locales.
+  secretos correctos. El portal conserva recorridos Playwright locales para las
+  ocho rutas administrativas.
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
 - `context/` y `reference/` conservan historia y no definen el estado actual.
+
+Precedencia documental:
+- Aplica la precedencia de `README.md`.
+- `MASTER_PROMPT.md` es handoff, no fuente normativa.
+- Si una peticion cambia stack, alcance, arquitectura, persistencia, seguridad,
+  contratos publicos o estados de bloque, registra un stopper en `WORKFLOW.md`
+  antes de implementar.
 
 Antes de editar:
 1. ejecuta `git status --branch --short`, `git log -5 --oneline` y verifica el
@@ -79,28 +97,17 @@ Antes de editar:
 2. lee completos `README.md`, `CURRENT_CONTEXT.md`, `WORKFLOW.md`,
    `DEVELOPMENT_PLAN.md` y `CONSISTENCY_AUDIT.md`;
 3. aplica la precedencia documental de `README.md`;
-4. lee completos `core/SECURITY.md`, `core/DECISIONS.md`, `core/SCOPE.md`,
-   `core/STACK.md` y `core/ARCHITECTURE.md`;
-5. lee completos `standards/CODING_STANDARDS.md` y `standards/DELIVERY.md`;
-6. lee completos `modules/ADMIN_PORTAL.md`, `modules/WEB_DELIVERY.md`,
-   `modules/OPERATIONS.md`, `modules/PILOT_HARDENING.md`, `modules/TEAMS.md` y
-   `modules/ASSISTANT.md`;
-7. lee completos `docs/modules/admin-portal-foundation.md`,
-   `docs/modules/admin-portal-read-model.md`,
-   `docs/modules/admin-portal-local-quality-gate.md`,
-   `docs/modules/admin-portal-local-skeleton-closure.md`,
-   `docs/modules/lab-bridge-reuse-notes.md`,
-   `docs/modules/control-plane-foundation.md`,
-   `docs/modules/control-plane-local-flow.md`,
-   `docs/modules/local-mvp-lab.md`, `docs/runbooks/local-hermes-chat.md`,
-   `docs/threat-model/README.md` y `project-management/INFORMATION_REQUESTS.md`;
-8. inspecciona completos `src/AdminWeb/package.json`, `src/AdminWeb/src/app`,
-   `src/AdminWeb/src/modules/identity`, `src/AdminWeb/src/platform`,
-   `src/AdminWeb/tests`, `src/AdminWeb/prisma`, `src/Contracts/Web` y
-   `src/Worker`;
-9. confirma que la pagina actual, dependencias, identidad, capabilities y
-   pruebas coinciden con la linea base documentada antes de elegir la
-   implementacion.
+4. lee los documentos normativos y modulares relevantes para la unidad:
+   `core/SECURITY.md`, `core/DECISIONS.md`, `core/SCOPE.md`,
+   `core/STACK.md`, `core/ARCHITECTURE.md`, `standards/`,
+   el documento propietario bajo `modules/` y los documentos en `docs/modules/`
+   citados por la unidad;
+5. si la unidad toca AdminWeb, inspecciona `src/AdminWeb/package.json`,
+   `src/AdminWeb/src/app`, `src/AdminWeb/src/modules/identity`,
+   `src/AdminWeb/src/platform`, `src/AdminWeb/tests`, `src/AdminWeb/prisma`,
+   `src/Contracts/Web` y `src/Worker`;
+6. confirma que pagina actual, dependencias, identidad, capabilities y pruebas
+   coinciden con la linea base documentada antes de elegir implementacion.
 
 Reglas no negociables:
 - no cambies stack, alcance, arquitectura, persistencia, seguridad o contratos
@@ -140,91 +147,64 @@ Reglas no negociables:
   para la unidad; conserva versiones fijadas y lockfile reproducible;
 - no declares terminada una unidad sin ejecutar los gates aplicables.
 
+Direccion para los siguientes chats:
+- Continuar con capacidades de laboratorio personal/local y reemplazables, no
+  conexiones productivas.
+- Usar `docs/modules/local-mvp-lab.md` y
+  `docs/modules/lab-bridge-reuse-notes.md` como base para cualquier puente,
+  gateway, adaptador, RAG, Hermes, UEMS trial, Power Automate/Copilot Studio de
+  laboratorio o recorrido end-to-end personal.
+- Toda integracion de laboratorio debe ser explicita, `Development`/`local-demo`
+  only, fail-closed, sin secretos en repo, sin datos corporativos, con
+  allowlists de requester/hostname/software, confirmacion explicita,
+  correlacion, idempotencia y auditoria antes de cualquier accion.
+- El modo `validate-only` es aceptable y preferible cuando no hay endpoint
+  soportado. No afirmar despliegue o instalacion real si el proveedor no acepto
+  la orden.
+- Mantener proveedores detras de interfaces/adaptadores reemplazables. No
+  acoplar dominio, portal, Teams, IA o Power Automate directamente a UEMS,
+  DeviceAgent o servicios corporativos.
+- Si se usa el laboratorio Bunny Bridge externo, tratarlo como referencia de
+  patron y evidencia saneada. No copiar `.env`, cookies, CSRF, headers de
+  sesion, claves, hostnames productivos, tenant ni rutas internas.
+- El objetivo inmediato no es cerrar Bloques 9, 10 u 11 completos; es preparar
+  ciclos de laboratorio seguros y documentados que luego puedan sustituirse por
+  proveedores corporativos aprobados.
+
 Configuracion local opcional de Hermes para demo WinUI:
-- Si el usuario pide habilitar o probar Hermes local, usa solo variables de
-  entorno de sesion:
+- Usa solo variables de entorno de sesion:
   `$env:IT_SUPPORT_HERMES_CHAT_ENABLED='true'`,
   `$env:IT_SUPPORT_HERMES_BASE_URL='http://127.0.0.1:8765/v1'`,
   `$env:IT_SUPPORT_HERMES_MODEL='it-support'`,
   `$env:IT_SUPPORT_HERMES_API_KEY='<api-key-local>'`.
 - La app llama internamente a `/chat/completions` bajo la base URL configurada.
+- La app envia `Authorization: Bearer <key>`, no `x-api-key`.
 - El modelo esperado de prueba es `it-support`.
 - El endpoint debe ser `http` o `https` de loopback; endpoints externos se
   rechazan.
+- Timeout actual de la app: 20 segundos.
 - Con Hermes apagado o mal configurado, el campo de texto libre queda
   deshabilitado y el asistente conserva las opciones deterministas.
 - Hermes solo puede responder orientacion informativa; no autoriza ni ejecuta
   acciones y no alimenta comandos del agente.
 
-Tarea sugerida para el siguiente chat:
-Continua el Bloque 11 desde las tres unidades locales publicadas y cierra, si
-no aparece un blocker normativo, el esqueleto local del portal administrativo.
-La unidad debe enfocarse en navegacion, superficies protegidas y estados
-sinteticos de solo lectura. No debe conectar servicios corporativos, inventar
-gobierno productivo ni agregar mutaciones.
-
-Pendientes locales no bloqueantes priorizados:
-
-1. completar superficies `/admin/*` para los modulos objetivo aun sin ruta
-   propia, siguiendo `docs/modules/admin-portal-local-skeleton-closure.md`;
-2. mantener cada superficie protegida en servidor antes de renderizar contenido;
-3. reutilizar la identidad de portal existente y rechazar capabilities
-   desconocidas;
-4. cubrir acceso permitido/denegado, teclado, foco, estado activo, estados
-   vacios, solo lectura y ausencia de overflow horizontal;
-5. conservar la tercera unidad de pruebas existente y ampliarla solo donde el
-   esqueleto nuevo lo requiera;
-6. evaluar Fluent UI React solo si reduce riesgo y no fuerza reescritura. Si
-   aumenta deuda, documentar que sigue diferido.
-
-Antes de implementar:
-- verifica que las rutas, capabilities y proyecciones actuales coinciden con
-  `docs/modules/admin-portal-read-model.md` y
-  `docs/modules/admin-portal-local-quality-gate.md`;
-- conserva la identidad de portal separada de usuario de API y agente;
-- usa `docs/modules/admin-portal-local-skeleton-closure.md` como documento
-  modular de alcance, alternativas, evidencia y criterio de aceptacion;
-- decide la estrategia exacta de pruebas de UI/navegador usando el stack ya
-  instalado. No agregues una tecnologia solo para marcar una casilla;
-- si agregas dependencias, usa solo las aprobadas por `core/STACK.md`, fija
-  versiones y actualiza el lockfile;
-- registra un stopper solo si la solucion exige alterar una frontera normativa
-  o depende de una decision externa no documentada.
-
-Alcance minimo esperado:
-- mantener identidad local, autorizacion server-side y deny-by-default;
-- conservar `/admin/*` accesible, adaptable y de solo lectura;
-- agregar solo rutas/superficies sinteticas o estados vacios para completar el
-  esqueleto local;
-- cubrir denegacion fail-closed para perfiles invalidos sin filtrar contenido;
-- ninguna mutacion administrativa sin cumplir el gate completo de identidad,
-  confirmacion, correlacion, idempotencia y auditoria;
-- sin cambios a contratos IPC, acciones del DeviceAgent o worker durable;
-- pruebas proporcionales de acceso permitido/denegado, limites y ausencia de
-  efectos laterales;
-- verificacion de teclado, foco, layout adaptable y semantica;
-- conservar el punto de sustitucion documentado para OIDC/Entra futuro;
-- riesgos residuales y gates externos claramente separados.
-
-Criterios de aceptacion:
-- Bloques 0 a 8 permanecen `completed`;
-- Bloques 9 y 10 permanecen `blocked`;
-- Bloque 11 permanece como unico bloque `in_progress`;
-- no se crea ninguna conexion o identidad corporativa;
-- la identidad local falla cerrada fuera de desarrollo;
-- la autorizacion ocurre en servidor antes de mostrar contenido protegido;
-- roles o capabilities desconocidos se rechazan;
-- el shell no ejecuta comandos ni llama al DeviceAgent;
-- no se agregan mutaciones, secretos, PII o datos corporativos;
-- las rutas nuevas y existentes renderizan, navegan y mantienen solo lectura;
-- la ruta protegida con identidad invalida muestra solo acceso no disponible;
-- `src/AdminWeb` conserva sus APIs y modulos existentes;
-- el worker Node sigue separado;
-- las cuatro migraciones existentes no se modifican retroactivamente;
-- las rutas administrativas actuales siguen protegidas y operativas;
-- los gates de los Bloques 7 a 10 siguen pasando;
-- `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan;
-- no se simula Entra, aprobacion Security ni un portal productivo completo.
+Tareas sugeridas para el siguiente chat:
+1. Elegir una unidad pequena de laboratorio personal que no conecte servicios
+   productivos. Opciones validas:
+   - diagnosticar y estabilizar Hermes local y su timeout/respuesta;
+   - preparar RAG local curado con contenido publico/sintetico;
+   - disenar un adaptador de laboratorio inspirado en Bunny Bridge en modo
+     `validate-only`;
+   - documentar/validar un recorrido end-to-end `local-demo` con proveedores
+     fake/locales;
+   - agregar una vista de solo lectura del portal que muestre estado de
+     conectores/laboratorio sin mutaciones ni secretos.
+2. Antes de implementar, confirmar el documento propietario y si la unidad toca
+   Bloque 11, AdminWeb o el laboratorio local.
+3. Mantener Bloques 9 y 10 `blocked`; Bloque 11 sigue `in_progress`.
+4. No conectar Entra, Microsoft 365, Teams corporativo, OpenText, Rescue, UEMS
+   corporativo, Sophos, PKI ni datos reales.
+5. No declarar completo un bloque por evidencia de laboratorio personal.
 
 Stopper externo de Teams que debe conservarse:
 Fecha: 2026-06-14
@@ -254,9 +234,6 @@ Gates externos futuros del Bloque 11:
 - OpenText/Rescue y sus mecanismos de enlace o adaptador;
 - datos, ambientes y proceso de despliegue aprobados.
 
-Estos gates no bloquean cerrar el esqueleto local si la unidad permanece
-sintetica, de solo lectura, fail-closed y reemplazable.
-
 Gate base:
 .\scripts\Validate.ps1
 
@@ -264,12 +241,11 @@ Comandos adicionales:
 corepack pnpm@11.5.3 audit --prod --audit-level high
 .\scripts\Test-Secrets.ps1
 
-Al terminar:
+Al terminar una unidad:
 - informa alcance implementado, archivos, autorizacion y pruebas;
 - lista riesgos y pendientes externos;
-- actualiza `modules/ADMIN_PORTAL.md`,
-  `docs/modules/admin-portal-local-skeleton-closure.md`, `WORKFLOW.md`,
-  `CURRENT_CONTEXT.md`, `README.md` y el threat model si cambia la superficie;
+- actualiza documentos propietarios y `WORKFLOW.md`, `CURRENT_CONTEXT.md`,
+  `README.md` y threat model si cambia una superficie;
 - actualiza `CONSISTENCY_AUDIT.md` si cambia el estado o una frontera;
 - recomienda un Conventional Commit;
 - no hagas commit ni push automaticamente.
