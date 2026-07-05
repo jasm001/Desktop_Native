@@ -50,6 +50,12 @@ Estado confirmado:
   saneada, kill switch y confinamiento de `local-demo` a `Development`.
 - OpenText real, Teams corporativo, Entra, UEMS, Sophos, PKI, Rescue,
   RAG productivo y portal administrativo productivo siguen deshabilitados.
+- El laboratorio externo Bunny Bridge queda documentado en
+  `docs/modules/lab-bridge-reuse-notes.md` solo como patron reutilizable:
+  bridge local `validate-only`, requester/hostname/software allowlisted,
+  gateway y separacion de secretos. Sus dominios y hostnames simulan una
+  operacion realista, pero no son supuestos productivos ni desbloquean UEMS,
+  Teams, Entra, Power Automate productivo o el Bloque 10.
 - WinUI puede habilitar Hermes local temporalmente mediante variables de
   entorno para texto libre informativo, sin acciones, sin datos corporativos,
   sin solicitudes, sin tickets, sin auditoria, sin outbox y sin llamadas al
@@ -83,6 +89,7 @@ Antes de editar:
    `docs/modules/admin-portal-read-model.md`,
    `docs/modules/admin-portal-local-quality-gate.md`,
    `docs/modules/admin-portal-local-skeleton-closure.md`,
+   `docs/modules/lab-bridge-reuse-notes.md`,
    `docs/modules/control-plane-foundation.md`,
    `docs/modules/control-plane-local-flow.md`,
    `docs/modules/local-mvp-lab.md`, `docs/runbooks/local-hermes-chat.md`,
@@ -118,6 +125,9 @@ Reglas no negociables:
   entorno de sesion y placeholders como `<api-key-local>`;
 - no conectes Entra, Microsoft 365, Teams, OpenText, Rescue, UEMS, Sophos, PKI
   ni servicios productivos;
+- no heredes rutas internas `/dcapi`, cookies, CSRF, headers de sesion,
+  credenciales humanas, IDs concretos de UEMS ni afirmaciones de instalacion
+  real desde el laboratorio Bunny Bridge;
 - no inventes owners, asignaciones de rol, scopes corporativos, cuentas de
   servicio, permisos, retencion, excepciones ni mecanismos de despliegue;
 - los roles productivos de `modules/ADMIN_PORTAL.md` son un modelo objetivo, no
