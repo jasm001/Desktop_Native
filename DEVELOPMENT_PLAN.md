@@ -10,8 +10,9 @@ corporativos aun no aprobados.
 ## Ruta de demostracion local
 
 Mientras se resuelve la aprobacion corporativa, los Bloques 6-11 pueden avanzar
-en una VM Windows 11 y servicios locales usando datos publicos/sinteticos,
-identidad de desarrollo y adaptadores fake.
+en una VM Windows 11 y servicios locales usando datos publicos, sinteticos o
+datos reales de laboratorio persistidos y saneados, identidad de desarrollo y
+adaptadores fake.
 
 La demostracion local puede incluir:
 
@@ -29,7 +30,9 @@ reemplazables, sin declarar cerrado el gate anterior. Los gates corporativos de
 UEMS, Security, Entra, OpenText, Teams, PKI, hosting y conectividad permanecen
 pendientes y se cierran antes del piloto.
 
-El detalle vive en `docs/modules/local-mvp-lab.md`.
+El detalle vive en `docs/modules/local-mvp-lab.md`. La ruta para pasar de
+muestras a datos reales de laboratorio persistidos por unidades independientes
+vive en `docs/modules/local-lab-real-data-roadmap.md`.
 
 ## Bloque 0: fundacion del repositorio
 
@@ -245,6 +248,12 @@ acceso, aprobaciones, soporte y reportes, pruebas de componentes y recorridos
 Playwright. No existen aun OIDC/Entra, sesiones, RBAC productivo, Fluent UI ni
 mutaciones. El esqueleto local protegido queda cerrado, pero el bloque completo
 sigue abierto hasta cumplir sus gates productivos.
+
+Siguiente ruta local documentada: `docs/modules/local-lab-real-data-roadmap.md`
+define cinco unidades independientes para mostrar datos reales de laboratorio
+persistidos bajo la categoria `lab-real-sanitized`. La primera superficie debe
+ser de solo lectura y puede reportar la VM o APIs de laboratorio como apagadas,
+no comprobadas o no disponibles sin intentar iniciarlas.
 
 ## Regla de escalamiento
 

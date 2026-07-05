@@ -25,8 +25,12 @@
   UEMS, Teams, Entra o piloto.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes local opcional para texto libre informativo en WinUI,
-  historial visual en memoria, RAG local pendiente y continuidad degradada; no
-  equivale a piloto corporativo.
+  historial visual en memoria, RAG local pendiente, datos reales de laboratorio
+  persistidos bajo `lab-real-sanitized` y continuidad degradada; no equivale a
+  piloto corporativo.
+- Ruta documental nueva: `docs/modules/local-lab-real-data-roadmap.md` define
+  cinco unidades independientes para sustituir muestras por evidencia real de
+  laboratorio saneada sin cerrar los Bloques 9, 10 u 11.
 
 ## Ultima validacion
 
@@ -198,9 +202,10 @@ Solo un bloque principal puede estar `in_progress`.
 
 El MVP local permanece utilizable con proveedores locales o fake aunque los
 Bloques 9 y 10 esten bloqueados. D-072 permite conservar unidades locales
-reemplazables sin cerrar gates externos y permite iniciar el Bloque 11 con
-identidad y datos exclusivamente sinteticos. No autoriza promover `local-demo`
-ni declarar cerrado un gate corporativo. La referencia tecnica es
+reemplazables sin cerrar gates externos y permite continuar el Bloque 11 con
+identidad de desarrollo, datos sinteticos y datos reales de laboratorio
+persistidos bajo `lab-real-sanitized`. No autoriza promover `local-demo` ni
+declarar cerrado un gate corporativo. La referencia tecnica es
 `docs/modules/local-mvp-lab.md`.
 
 Permitido antes de la decision corporativa:
@@ -209,6 +214,8 @@ Permitido antes de la decision corporativa:
 - Windows Service de laboratorio y Salud real por IPC;
 - software libre redistribuible desde mirror local con SHA-256;
 - backend, persistencia, portal e identidad de desarrollo;
+- datos reales de laboratorio generados localmente, saneados y etiquetados como
+  `lab-real-sanitized`;
 - Hermes local con API externa usando contenido publico/sintetico para texto
   libre informativo;
 - RAG e indice locales pendientes;
@@ -220,6 +227,30 @@ Pendiente para piloto:
 - Security/Sophos, PKI, firma y confianza de publicador;
 - identidad restringida y despliegue corporativo del servicio;
 - hosting, retencion, conectividad y paquetes corporativos aprobados.
+
+## Decisiones locales registradas
+
+La siguiente decision local ajusta el alcance del laboratorio sin cerrar gates
+externos ni cambiar el estado de bloques.
+
+```text
+Fecha: 2026-07-05
+Modulo: Laboratorio local / Portal administrativo
+Decision requerida: Confirmar si el perfil local puede pasar de muestras a
+  datos reales de laboratorio persistidos y saneados.
+Evidencia: Solicitud y aprobacion del owner del repositorio para documentar la
+  categoria `lab-real-sanitized` y cinco unidades independientes antes de
+  implementar.
+Alternativas: Mantener solo muestras sinteticas; exponer datos puramente en
+  memoria; esperar datos corporativos aprobados.
+Impacto: Se permite usar evidencia generada por laboratorio local controlado,
+  etiquetada como `lab-real-sanitized`, sin secretos ni datos corporativos. No
+  cierra Bloques 9, 10 u 11 y no habilita integraciones productivas.
+Recomendacion: Empezar por las Unidades 1 y 2 de
+  `docs/modules/local-lab-real-data-roadmap.md`; tratar VM y APIs apagadas como
+  `not_checked`, `offline` o `unavailable`.
+Owner: Desarrollo / operador local del laboratorio.
+```
 
 ## Stoppers externos
 

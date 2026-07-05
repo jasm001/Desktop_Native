@@ -74,6 +74,7 @@
 | D-070 | Hermes puede ejecutarse localmente con RAG e indice locales y consumir una API externa para inferencia. Sin conexion, el producto conserva busqueda/conocimiento local y flujos deterministas; no se presenta esa configuracion como LLM offline. |
 | D-071 | El agente puede operar sin conexion solo con politicas, autorizaciones, acciones y artefactos ya disponibles. En `local-demo`, una politica de desarrollo instalada y confirmacion local pueden autorizar acciones allowlisted; esa politica no se promueve a piloto. |
 | D-072 | Los Bloques 6-11 pueden preparar un MVP local mediante proveedores reemplazables. Los gates corporativos de UEMS, Entra, OpenText, Teams, PKI, Security y conectividad permanecen pendientes y separados. |
+| D-073 | El perfil `local-demo` puede persistir y mostrar datos reales de laboratorio saneados bajo la categoria `lab-real-sanitized`, siempre que sean generados por componentes locales controlados, no contengan datos corporativos ni secretos, esten etiquetados como laboratorio y no cierren los Bloques 9, 10 u 11. |
 
 ## Supuestos de trabajo por validar
 

@@ -54,6 +54,16 @@ La precedencia vigente permanece definida en `README.md`:
   secretos correctos.
 - Cuatro unidades locales del Bloque 11 publicadas sin cambiar contratos
   publicos, migraciones, mutaciones o integraciones corporativas.
+- `docs/modules/local-mvp-lab.md` define `lab-real-sanitized` como categoria de
+  datos reales de laboratorio persistidos y saneados. La categoria permite
+  mejorar visualizacion local con evidencia generada por el propio laboratorio,
+  pero no admite datos corporativos ni cierra Bloques 9, 10 u 11.
+- `core/DECISIONS.md` agrega D-073 y `core/SCOPE.md` distingue datos reales de
+  laboratorio saneados de datos reales corporativos o productivos.
+- `docs/modules/local-lab-real-data-roadmap.md` registra cinco unidades
+  independientes para estado de laboratorio, lecturas operativas reales locales,
+  health de conectores simulados, catalogo local curado y recorrido end-to-end
+  visual.
 - Unidad local intermedia: WinUI puede usar Hermes local compatible con OpenAI
   para texto libre informativo mediante variables de entorno, deshabilitado por
   defecto, limitado a loopback, con historial visual en memoria y sin archivos
@@ -133,6 +143,11 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `docs/modules/admin-portal-local-skeleton-closure.md` registra la cuarta
   unidad local que cierra el esqueleto protegido sin cerrar el Bloque 11
   completo.
+- `modules/ADMIN_PORTAL.md` permite una futura superficie de laboratorio de
+  solo lectura para `lab-real-sanitized`, protegida en servidor, sin mutaciones,
+  sin llamadas directas al DeviceAgent y sin administrar VM, servicios o
+  bridges. Una VM apagada se trata como `not_checked`, `offline` o
+  `unavailable`, no como fallo productivo.
 
 ## Correcciones realizadas
 
@@ -153,6 +168,9 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `modules/ADMIN_PORTAL.md`, `modules/WEB_DELIVERY.md`, `src/AdminWeb/README.md`
   y `tests/AdminWeb/README.md` distinguen las lecturas locales ya implementadas
   del portal productivo todavia pendiente;
+- `docs/modules/local-lab-real-data-roadmap.md` agrega la ruta documental para
+  sustituir muestras por datos reales de laboratorio saneados antes de
+  implementar nuevas unidades;
 - `docs/modules/repository-foundation.md`,
   `docs/modules/control-plane-foundation.md` y
   `docs/modules/local-mvp-lab.md` conservan su evidencia historica sin afirmar
@@ -171,6 +189,9 @@ proveedores locales sin declarar cerrada la integracion Teams.
   contexto historico.
 - El perfil local puede usar fakes; eso no declara validada una integracion
   corporativa.
+- El perfil local tambien puede usar `lab-real-sanitized`; eso mejora la
+  demostracion pero no autoriza datos productivos, pilotos ni integraciones
+  corporativas.
 - `blocked` en el Bloque 9 significa que su siguiente avance depende de
   evidencia externa; no revierte el incremento local publicado.
 - `blocked` en el Bloque 10 significa que el trabajo local reproducible termino,

@@ -105,6 +105,21 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   requester/hostname/software allowlisted, gateway y separacion de secretos. Sus
   dominios y hostnames simulan una operacion realista, pero no son supuestos
   productivos ni desbloquean UEMS, Teams, Entra o el Bloque 10.
+- `docs/modules/local-mvp-lab.md` define la categoria
+  `lab-real-sanitized` para datos reales de laboratorio persistidos y saneados:
+  filas reales de PostgreSQL local, health checks locales, estado saneado de VM
+  cuando este disponible, artefactos libres con hash y estados `validate-only`.
+  No admite datos corporativos, secretos, endpoints, hostnames, tenants,
+  tickets reales ni cierre de los Bloques 9, 10 u 11.
+- `docs/modules/local-lab-real-data-roadmap.md` documenta cinco unidades
+  independientes para pasar de muestras a datos reales de laboratorio:
+  estado del laboratorio, lecturas operativas reales locales, health de
+  conectores simulados, catalogo local curado y recorrido end-to-end visual.
+  La VM puede estar apagada por defecto; las futuras vistas deben mostrar
+  `not_checked`, `offline` o `unavailable` sin intentar iniciarla.
+- `core/DECISIONS.md` registra D-073 para permitir `lab-real-sanitized` solo en
+  `local-demo`; `core/SCOPE.md` diferencia estos datos de cualquier dato real
+  corporativo o productivo.
 - El gate completo mantiene 140 pruebas .NET; Node tiene 40 pruebas
   unitarias/de contrato/componente, 12 integraciones AdminWeb y 4 del Worker,
   mas el E2E WinUI/DeviceAgent sobre PostgreSQL efimero. El portal agrega 12
@@ -118,8 +133,9 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 ## Siguiente reanudacion
 
 1. Mantener los Bloques 9 y 10 `blocked` y el Bloque 11 `in_progress`.
-2. Mantener validadas las cuatro unidades locales del Bloque 11 y definir una
-   unidad nueva y acotada antes de seguir el portal o el laboratorio local.
+2. Mantener validadas las cuatro unidades locales del Bloque 11 y, si se sigue
+   el laboratorio/portal, comenzar por las Unidades 1 y 2 de
+   `docs/modules/local-lab-real-data-roadmap.md`.
 3. Conservar la identidad de portal solo en entorno local; Entra, MFA,
    grupos y usuarios corporativos permanecen deshabilitados.
 4. Reanudar el Bloque 10 solo cuando exista evidencia saneada de UEMS, cuenta
@@ -133,6 +149,8 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 ## Limites vigentes
 
 - No usar datos, credenciales, endpoints ni identificadores corporativos.
+- Usar `lab-real-sanitized` solo para evidencia generada por laboratorio local
+  controlado, nunca para datos corporativos o productivos.
 - No conectar OpenText real.
 - No permitir que Teams, WinUI, IA o portal ejecuten comandos.
 - No presentar el trabajo local del Bloque 10 como piloto corporativo ni

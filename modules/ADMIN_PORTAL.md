@@ -116,20 +116,52 @@ scopes, secretos ni datos corporativos. La evidencia vive en
 
 ## Siguiente avance
 
-El siguiente avance no bloqueado puede cerrar el esqueleto local del portal si
-permanece dentro de las fronteras actuales:
+El siguiente avance no bloqueado puede pasar del esqueleto local hacia datos
+reales de laboratorio persistidos si permanece dentro de las fronteras actuales:
 
-1. agregar superficies `/admin/*` para los modulos objetivo aun no representados
-   por una ruta propia;
-2. mantenerlas protegidas en servidor, sinteticas y de solo lectura;
+1. agregar una superficie de laboratorio de solo lectura para estado de
+   conectores y componentes locales;
+2. mantenerla protegida en servidor, de solo lectura y etiquetada como
+   `local-demo`;
 3. reutilizar el shell y la identidad de portal existentes;
 4. cubrir acceso permitido/denegado, teclado, foco, estados activos, estados
-   vacios y ausencia de overflow;
+   vacios, dependencias apagadas y ausencia de overflow;
 5. no agregar mutaciones, migraciones, integraciones corporativas, roles
    productivos, owners ni scopes reales.
 
 Aunque el esqueleto local este cerrado, el Bloque 11 seguira `in_progress`
 hasta cumplir los gates productivos de este documento.
+
+## Datos reales de laboratorio persistidos
+
+El portal puede leer la categoria `lab-real-sanitized` definida en
+`../docs/modules/local-mvp-lab.md`. Esta categoria permite visualizar evidencia
+real generada por el laboratorio local, como filas de PostgreSQL local, health
+checks de servicios locales, resultados saneados de VM `local-demo`, manifiestos
+de artefactos libres y estados `validate-only` de bridges de laboratorio.
+
+Restricciones para cualquier superficie administrativa que lea esta categoria:
+
+- identidad de portal sintetica solo en `Development`;
+- capability de lectura separada y autorizacion server-side fail-closed;
+- sin formularios, Server Actions, Route Handlers mutantes ni migraciones salvo
+  que una unidad posterior los justifique explicitamente;
+- sin secretos, payloads completos, prompts completos, logs completos, cookies,
+  CSRF, headers, tenants, endpoints o identificadores corporativos;
+- sin llamadas directas al DeviceAgent;
+- sin comandos, scripts, rutas, argumentos operativos ni texto ejecutable;
+- sin arranque, apagado o administracion de VM, servicios o bridges desde el
+  portal.
+
+La VM Windows 11 de laboratorio no es una dependencia siempre encendida. Una
+vista administrativa puede mostrarla como `not_checked`, `offline` o
+`unavailable` cuando no se haya iniciado manualmente o no exista una API local
+habilitada para reportar salud. El portal no debe iniciar Hyper-V ni inferir que
+una VM apagada es un fallo del producto.
+
+La ruta de unidades independientes vive en
+`../docs/modules/local-lab-real-data-roadmap.md`. Sus unidades no completan el
+Bloque 11 ni desbloquean los Bloques 9 o 10.
 
 ## Responsabilidad
 
@@ -265,3 +297,4 @@ Las unidades locales actuales no cierran este gate.
 - `../docs/modules/control-plane-foundation.md`
 - `../docs/modules/control-plane-local-flow.md`
 - `../docs/modules/admin-portal-local-skeleton-closure.md`
+- `../docs/modules/local-lab-real-data-roadmap.md`

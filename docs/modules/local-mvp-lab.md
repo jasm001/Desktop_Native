@@ -36,6 +36,55 @@ Endpoint Central queda registrado solo como patron reutilizable en
 operacion empresarial realista, pero siguen siendo valores de laboratorio y no
 constituyen supuestos productivos confirmados.
 
+## Datos reales de laboratorio persistidos
+
+El laboratorio puede pasar de muestras sinteticas a datos reales de laboratorio
+persistidos bajo la categoria `lab-real-sanitized`.
+
+`lab-real-sanitized` significa evidencia generada por componentes locales o de
+laboratorio controlado, saneada antes de persistirse o mostrarse. No significa
+datos productivos, corporativos ni de piloto. Esta categoria no cierra los
+Bloques 9, 10 u 11 y no sustituye Entra, UEMS, OpenText, Teams, Security, PKI,
+hosting ni retencion aprobados.
+
+Fuentes permitidas:
+
+- filas reales creadas en PostgreSQL local por `SupportRequest`, `ExecutionJob`,
+  `BotCase`, `ExternalTicket`, auditoria y outbox;
+- health checks reales de API local, worker, PostgreSQL, Hermes local, mirror
+  local y bridges de laboratorio;
+- estado saneado de la VM Windows 11 personal cuando este disponible;
+- resultados reales de adaptadores ejecutados solo en VM `local-demo`;
+- hashes, versiones, manifiestos y licencias de artefactos libres permitidos;
+- folios, correlaciones y estados `validate-only` de bridges de laboratorio.
+
+No se permiten:
+
+- datos, usuarios, tickets, hostnames, tenants, endpoints, paquetes,
+  credenciales o identificadores corporativos;
+- secretos en repositorio, Markdown, fixtures, capturas o logs;
+- cookies, CSRF, headers de sesion, rutas internas o IDs concretos de UEMS;
+- salida completa de instaladores, logs completos, prompts completos o archivos
+  personales;
+- afirmar que una validacion de laboratorio equivale a despliegue, piloto o
+  produccion.
+
+Reglas de persistencia:
+
+1. cada dato persistido debe indicar ambiente `Development` o perfil
+   `local-demo`;
+2. cada vista debe etiquetar la fuente como `fake`, `local`, `validate-only` o
+   `lab-real-sanitized`;
+3. las consultas administrativas siguen limitadas y de solo lectura;
+4. el portal no arranca, detiene ni administra la VM, servicios o bridges;
+5. si la VM o una API de laboratorio estan apagadas, la UI muestra
+   `not_checked`, `offline` o `unavailable` sin intentar corregirlo;
+6. toda integracion nueva debe quedar detras de interfaces reemplazables y
+   fallar cerrada fuera de `Development`.
+
+El documento de ruta para implementar esta categoria por unidades vive en
+`local-lab-real-data-roadmap.md`.
+
 ## Perfil `local-demo`
 
 Componentes previstos:

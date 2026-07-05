@@ -15,6 +15,8 @@ Este perfil `local-demo` puede incluir:
 - un origen local de artefactos que simula un mirror mediante HTTP o filesystem
   controlado, con manifiestos, versiones y SHA-256;
 - API, PostgreSQL, worker, portal y tickets fake ejecutados localmente;
+- datos reales de laboratorio persistidos y saneados bajo
+  `lab-real-sanitized`, generados solo por componentes locales controlados;
 - Hermes como proveedor opcional del chat, ejecutado localmente y consumiendo
   una API externa solo con contenido publico o sintetico;
 - RAG local con documentos curados, versionados y sin datos corporativos;
@@ -22,9 +24,14 @@ Este perfil `local-demo` puede incluir:
   autorizaciones y artefactos ya disponibles localmente.
 
 El perfil local no equivale a piloto ni produccion. No usa UEMS, OpenText,
-Entra, Teams corporativo, PKI corporativa, paquetes comerciales, datos reales ni
-endpoints internos. Las integraciones no disponibles se mantienen detras de
-adaptadores fake o contratos reemplazables.
+Entra, Teams corporativo, PKI corporativa, paquetes comerciales, datos reales
+corporativos ni endpoints internos. Las integraciones no disponibles se
+mantienen detras de adaptadores fake o contratos reemplazables.
+
+Los datos `lab-real-sanitized` son reales solo dentro del laboratorio: filas
+locales de PostgreSQL, health checks locales, evidencia saneada de VM
+`local-demo`, manifiestos de artefactos libres y estados `validate-only`. No son
+datos productivos ni corporativos y no sustituyen gates externos.
 
 La falta de aprobacion corporativa no obliga a reescribir el dominio. Cambia los
 proveedores de identidad, artefactos, IA, tickets, despliegue y hosting.
