@@ -72,10 +72,11 @@ La vista Asistente ofrece opciones fijas para:
 - solicitar software prohibido;
 - continuar, confirmar o cancelar.
 
-`AssistantViewModel` traduce estados y codigos a texto de presentacion y
-habilita comandos. No evalua licencia, estado, alternativas ni transiciones.
-El campo de texto libre permanece deshabilitado por defecto. Solo se habilita
-cuando existe un `IAssistantProvider` local configurado explicitamente.
+`AssistantViewModel` traduce estados y codigos a texto de presentacion,
+mantiene un historial visual en memoria y habilita comandos. No evalua
+licencia, estado, alternativas ni transiciones. El campo de texto libre
+permanece deshabilitado por defecto. Solo se habilita cuando existe un
+`IAssistantProvider` local configurado explicitamente.
 
 ## Frontera compartida del Bloque 9
 
@@ -107,7 +108,8 @@ Hermes local, compatible con OpenAI, detras de variables de entorno:
 - `IT_SUPPORT_HERMES_CHAT_ENABLED=true`;
 - `IT_SUPPORT_HERMES_BASE_URL=http://127.0.0.1:8765/v1`;
 - `IT_SUPPORT_HERMES_MODEL=it-support`;
-- `IT_SUPPORT_HERMES_API_KEY` definido solo en la sesion local.
+- `IT_SUPPORT_HERMES_API_KEY` definido solo en entorno local del usuario, fuera
+  de Git y sin archivos `.env` en el repositorio.
 
 El endpoint debe ser `http` o `https` de loopback. Si falta el flag, la clave,
 el modelo o el endpoint local valido, WinUI usa `DisabledAssistantProvider` y
@@ -123,9 +125,10 @@ Hermes ejecutado localmente conserva estas restricciones:
 - limites de contexto, timeout, costo y cancelacion.
 
 Hermes no llama al DeviceAgent, no construye comandos y no autoriza acciones. Su
-salida actual no crea `ConversationCommand`, `SupportRequest`, ticket, trabajo,
-auditoria ni outbox. Las opciones deterministas existentes siguen siendo las
-unicas que pueden avanzar a propuesta, confirmacion y solicitud sintetica.
+salida actual solo se agrega al historial visual de la sesion WinUI y no crea
+`ConversationCommand`, `SupportRequest`, ticket, trabajo, auditoria ni outbox.
+Las opciones deterministas existentes siguen siendo las unicas que pueden
+avanzar a propuesta, confirmacion y solicitud sintetica.
 
 Cuando no hay conexion o el proveedor falla, el asistente conserva:
 

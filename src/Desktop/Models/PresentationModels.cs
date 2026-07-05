@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using Microsoft.UI.Xaml;
 
 namespace ITSupportNative.Desktop.Models;
 
@@ -35,6 +36,13 @@ public sealed record AssistantSuggestion(
     string Prompt,
     string Glyph,
     ICommand Command);
+
+public sealed record AssistantChatMessage(
+    string Author,
+    string Body,
+    string Detail,
+    string Glyph,
+    HorizontalAlignment Alignment);
 
 public sealed record RequestPreview(
     string Reference,

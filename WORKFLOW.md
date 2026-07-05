@@ -24,8 +24,8 @@
   UEMS, Teams, Entra o piloto.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes local opcional para texto libre informativo en WinUI,
-  RAG local pendiente y continuidad degradada; no equivale a piloto
-  corporativo.
+  historial visual en memoria, RAG local pendiente y continuidad degradada; no
+  equivale a piloto corporativo.
 
 ## Ultima validacion
 
@@ -110,6 +110,23 @@
 - Timeout, `1618`, `1641` y `3010` no se indujeron en la VM; permanecen cubiertos
   por pruebas automatizadas.
 - El MSI no se ejecuto en la PC principal y el Bloque 6 esta `completed`.
+
+Validacion focalizada posterior:
+
+- Fecha: 2026-07-05.
+- Unidad local del asistente WinUI: historial visual de chat en memoria,
+  indicador de respuesta de Hermes, autoscroll y envio con Enter. No agrega
+  persistencia, mutaciones, comandos, llamadas al DeviceAgent ni archivos `.env`
+  con secretos.
+- `dotnet build ITSupportNative.slnx --configuration Release --no-restore -m:1
+  --artifacts-path .artifacts\validate --disable-build-servers`: correcto, 0
+  warnings y 0 errores.
+- `dotnet test ITSupportNative.slnx --configuration Release --no-build -m:1
+  --artifacts-path .artifacts\validate --disable-build-servers`: correcto, 140
+  pruebas.
+- `dotnet format ITSupportNative.slnx --verify-no-changes --no-restore`:
+  correcto.
+- `scripts/Test-Secrets.ps1`: correcto, sin hallazgos.
 
 Validacion anterior de fundacion:
 

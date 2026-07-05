@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ITSupportNative.Contracts.Conversation;
@@ -21,6 +22,7 @@ public sealed class AssistantViewModel : ObservableObject
     private string _response =
         "Elige una intencion fija o escribe una consulta si Hermes local esta habilitado.";
     private string _requestReference = "Sin solicitud creada";
+    private bool _isWaitingForAssistant;
     private ConversationChannelOutput? _lastChannelOutput;
 
     public AssistantViewModel(
@@ -44,13 +46,13 @@ public sealed class AssistantViewModel : ObservableObject
                 ConversationChannelActions.SoftwareRequest,
                 "share-anywhere"));
         ContinueCommand = new AsyncRelayCommand(
-            () => RunAsync(ConversationChannelActions.ProposalContinue),
+            () => RunUserActionAsync(ConversationChannelActions.ProposalContinue),
             () => _session.State == ConversationState.Proposal);
         ConfirmCommand = new AsyncRelayCommand(
-            () => RunAsync(ConversationChannelActions.RequestConfirm),
+            () => RunUserActionAsync(ConversationChannelActions.RequestConfirm),
             () => _session.State == ConversationState.ConfirmationRequired);
         CancelCommand = new AsyncRelayCommand(
-            () => RunAsync(ConversationChannelActions.ConversationCancel),
+            () => RunUserActionAsync(ConversationChannelActions.ConversationCancel),
             () => _session.State is ConversationState.Proposal
                 or ConversationState.ConfirmationRequired);
         SendMessageCommand = new AsyncRelayCommand(
@@ -75,9 +77,19 @@ public sealed class AssistantViewModel : ObservableObject
                 "\uE783",
                 RequestProhibitedCommand),
         ];
+
+        ChatMessages =
+        [
+            AssistantMessage(
+                "Asistente",
+                "Elige una opcion fija o escribe una consulta para Hermes local.",
+                "Consulta informativa; sin solicitud ni accion creada"),
+        ];
     }
 
     public IReadOnlyList<AssistantSuggestion> Suggestions { get; }
+
+    public ObservableCollection<AssistantChatMessage> ChatMessages { get; }
 
     public IAsyncRelayCommand QueryApprovedCommand { get; }
 
@@ -94,6 +106,18 @@ public sealed class AssistantViewModel : ObservableObject
     public IAsyncRelayCommand SendMessageCommand { get; }
 
     public bool IsFreeTextEnabled => _assistantProvider.IsAvailable;
+
+    public bool IsWaitingForAssistant
+    {
+        get => _isWaitingForAssistant;
+        private set
+        {
+            if (SetProperty(ref _isWaitingForAssistant, value))
+            {
+                SendMessageCommand.NotifyCanExecuteChanged();
+            }
+        }
+    }
 
     public string FreeTextPlaceholder => _assistantProvider.IsAvailable
         ? "Escribe una consulta para Hermes local"
@@ -139,10 +163,17 @@ public sealed class AssistantViewModel : ObservableObject
         string action,
         string productReference)
     {
+        AddUserMessage(ToSuggestionTitle(action, productReference));
         _conversationSequence++;
         _session = ConversationSession.Start(
             $"desktop-demo-{_conversationSequence}");
         await RunAsync(action, productReference);
+    }
+
+    private async Task RunUserActionAsync(string action)
+    {
+        AddUserMessage(ToConversationActionTitle(action));
+        await RunAsync(action);
     }
 
     private async Task RunAsync(
@@ -167,6 +198,7 @@ public sealed class AssistantViewModel : ObservableObject
     private bool CanSendMessage()
     {
         return _assistantProvider.IsAvailable
+            && !IsWaitingForAssistant
             && !string.IsNullOrWhiteSpace(DraftMessage);
     }
 
@@ -174,9 +206,11 @@ public sealed class AssistantViewModel : ObservableObject
     {
         string message = DraftMessage.Trim();
         DraftMessage = string.Empty;
+        AddUserMessage(message);
         StateLabel = "Hermes local";
         Response = "Consultando Hermes local...";
         RequestReference = "Consulta informativa; sin solicitud ni accion creada";
+        IsWaitingForAssistant = true;
 
         try
         {
@@ -187,24 +221,48 @@ public sealed class AssistantViewModel : ObservableObject
             Response = reply.Text;
             RequestReference =
                 $"Fuente: {reply.Source}; sin solicitud ni accion creada";
+            ChatMessages.Add(
+                AssistantMessage(
+                    "Hermes local",
+                    reply.Text,
+                    RequestReference));
         }
         catch (OperationCanceledException)
         {
             Response =
                 "Hermes local no respondio dentro del limite. El asistente conserva las opciones deterministas.";
             RequestReference = "Sin solicitud creada";
+            ChatMessages.Add(
+                AssistantMessage(
+                    "Hermes local",
+                    Response,
+                    "Sin solicitud ni accion creada"));
         }
         catch (HttpRequestException)
         {
             Response =
                 "Hermes local no esta disponible. El asistente conserva las opciones deterministas.";
             RequestReference = "Sin solicitud creada";
+            ChatMessages.Add(
+                AssistantMessage(
+                    "Hermes local",
+                    Response,
+                    "Sin solicitud ni accion creada"));
         }
         catch (InvalidOperationException)
         {
             Response =
                 "Hermes local devolvio una respuesta no utilizable. El asistente conserva las opciones deterministas.";
             RequestReference = "Sin solicitud creada";
+            ChatMessages.Add(
+                AssistantMessage(
+                    "Hermes local",
+                    Response,
+                    "Sin solicitud ni accion creada"));
+        }
+        finally
+        {
+            IsWaitingForAssistant = false;
         }
     }
 
@@ -215,6 +273,8 @@ public sealed class AssistantViewModel : ObservableObject
         StateLabel = ToStateLabel(turn.Output.State);
         Response = ToResponse(turn.Output);
         RequestReference = ToRequestReference(turn.Output.Request);
+        ChatMessages.Add(
+            AssistantMessage(StateLabel, Response, RequestReference));
 
         ContinueCommand.NotifyCanExecuteChanged();
         ConfirmCommand.NotifyCanExecuteChanged();
@@ -225,6 +285,58 @@ public sealed class AssistantViewModel : ObservableObject
     {
         _commandSequence++;
         return $"desktop-command-{_commandSequence}";
+    }
+
+    private void AddUserMessage(string text)
+    {
+        ChatMessages.Add(
+            new AssistantChatMessage(
+                "Tu",
+                text,
+                "Entrada local; sin solicitud creada por la consulta",
+                "\uE13D",
+                Microsoft.UI.Xaml.HorizontalAlignment.Right));
+    }
+
+    private static AssistantChatMessage AssistantMessage(
+        string author,
+        string body,
+        string detail)
+    {
+        return new(
+            author,
+            body,
+            detail,
+            "\uE8BD",
+            Microsoft.UI.Xaml.HorizontalAlignment.Left);
+    }
+
+    private static string ToSuggestionTitle(
+        string action,
+        string productReference)
+    {
+        return action switch
+        {
+            ConversationChannelActions.CatalogQuery =>
+                $"Consultar {productReference}",
+            ConversationChannelActions.SoftwareRequest =>
+                $"Solicitar {productReference}",
+            _ => "Continuar conversacion",
+        };
+    }
+
+    private static string ToConversationActionTitle(string action)
+    {
+        return action switch
+        {
+            ConversationChannelActions.ProposalContinue =>
+                "Continuar propuesta",
+            ConversationChannelActions.RequestConfirm =>
+                "Confirmar solicitud sintetica",
+            ConversationChannelActions.ConversationCancel =>
+                "Cancelar propuesta",
+            _ => "Continuar conversacion",
+        };
     }
 
     private static string ToStateLabel(string state)

@@ -26,6 +26,9 @@ public sealed class AssistantViewModelTests
         Assert.Equal("Consulta", viewModel.StateLabel);
         Assert.Contains("No se creó ninguna solicitud", viewModel.Response);
         Assert.Equal("Sin solicitud creada", viewModel.RequestReference);
+        Assert.Equal(3, viewModel.ChatMessages.Count);
+        Assert.Equal("Tu", viewModel.ChatMessages[1].Author);
+        Assert.Equal("Consulta", viewModel.ChatMessages[2].Author);
     }
 
     [Fact]
@@ -56,6 +59,11 @@ public sealed class AssistantViewModelTests
             "Fuente: hermes-local; sin solicitud ni accion creada",
             viewModel.RequestReference);
         Assert.Null(viewModel.LastChannelOutput);
+        Assert.Equal(3, viewModel.ChatMessages.Count);
+        Assert.Equal("Tu", viewModel.ChatMessages[1].Author);
+        Assert.Equal("Que puedo instalar?", viewModel.ChatMessages[1].Body);
+        Assert.Equal("Hermes local", viewModel.ChatMessages[2].Author);
+        Assert.Equal("Respuesta conectada a Hermes.", viewModel.ChatMessages[2].Body);
     }
 
     [Fact]
@@ -109,6 +117,7 @@ public sealed class AssistantViewModelTests
             "Referencia sintética: SYN-",
             viewModel.RequestReference);
         Assert.False(viewModel.ConfirmCommand.CanExecute(null));
+        Assert.Equal(7, viewModel.ChatMessages.Count);
     }
 
     [Fact]

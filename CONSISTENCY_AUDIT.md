@@ -52,8 +52,9 @@ La precedencia vigente permanece definida en `README.md`:
   publicos, migraciones, mutaciones o integraciones corporativas.
 - Unidad local intermedia: WinUI puede usar Hermes local compatible con OpenAI
   para texto libre informativo mediante variables de entorno, deshabilitado por
-  defecto, limitado a loopback y sin crear solicitudes, comandos, tickets,
-  auditoria, outbox ni llamadas al DeviceAgent.
+  defecto, limitado a loopback, con historial visual en memoria y sin archivos
+  `.env` del repositorio como fuente de secretos. No crea solicitudes, comandos,
+  tickets, auditoria, outbox ni llamadas al DeviceAgent.
 - `SQLitePCLRaw.bundle_e_sqlite3` queda fijado a `3.0.3` para evitar la
   vulnerabilidad alta reportada por NuGet Audit en la transitiva
   `SQLitePCLRaw.lib.e_sqlite3` 2.1.11.
