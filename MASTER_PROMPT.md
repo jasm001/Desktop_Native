@@ -49,11 +49,21 @@ Estado confirmado:
 - DeviceAgent conserva IPC tipado, allowlist cerrada, idempotencia, evidencia
   saneada, kill switch y confinamiento de `local-demo` a `Development`.
 - OpenText real, Teams corporativo, Entra, UEMS, Sophos, PKI, Rescue,
-  Hermes/RAG productivo y portal administrativo productivo siguen
-  deshabilitados.
-- Ultimo gate completo: 136 pruebas .NET, 40 pruebas Node unitarias/de
+  RAG productivo y portal administrativo productivo siguen deshabilitados.
+- WinUI puede habilitar Hermes local temporalmente mediante variables de
+  entorno para texto libre informativo, sin acciones, sin datos corporativos,
+  sin solicitudes, sin tickets, sin auditoria, sin outbox y sin llamadas al
+  DeviceAgent. El procedimiento vive en `docs/runbooks/local-hermes-chat.md`.
+- Hermes local usa un endpoint compatible con OpenAI limitado a loopback. No
+  guardes API keys en archivos del repositorio, `.env`, notas, capturas ni logs
+  compartidos; `scripts/Test-Secrets.ps1` escanea tambien archivos ignorados.
+- `SQLitePCLRaw.bundle_e_sqlite3` esta fijado en `3.0.3` mediante Central
+  Package Management para evitar la vulnerabilidad alta reportada por NuGet
+  Audit en la transitiva `SQLitePCLRaw.lib.e_sqlite3` 2.1.11.
+- Ultimo gate completo: 140 pruebas .NET, 40 pruebas Node unitarias/de
   contrato/componente, 12 integraciones AdminWeb, 4 del Worker, cuatro
-  migraciones PostgreSQL, E2E local y 12 recorridos Playwright del portal.
+  migraciones PostgreSQL, E2E local, auditoria de dependencias y escaneo de
+  secretos correctos. El portal conserva 12 recorridos Playwright locales.
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
 - `context/` y `reference/` conservan historia y no definen el estado actual.
 
@@ -67,15 +77,16 @@ Antes de editar:
    `core/STACK.md` y `core/ARCHITECTURE.md`;
 5. lee completos `standards/CODING_STANDARDS.md` y `standards/DELIVERY.md`;
 6. lee completos `modules/ADMIN_PORTAL.md`, `modules/WEB_DELIVERY.md`,
-   `modules/OPERATIONS.md`, `modules/PILOT_HARDENING.md` y `modules/TEAMS.md`;
+   `modules/OPERATIONS.md`, `modules/PILOT_HARDENING.md`, `modules/TEAMS.md` y
+   `modules/ASSISTANT.md`;
 7. lee completos `docs/modules/admin-portal-foundation.md`,
    `docs/modules/admin-portal-read-model.md`,
    `docs/modules/admin-portal-local-quality-gate.md`,
    `docs/modules/admin-portal-local-skeleton-closure.md`,
    `docs/modules/control-plane-foundation.md`,
    `docs/modules/control-plane-local-flow.md`,
-   `docs/modules/local-mvp-lab.md`, `docs/threat-model/README.md` y
-   `project-management/INFORMATION_REQUESTS.md`;
+   `docs/modules/local-mvp-lab.md`, `docs/runbooks/local-hermes-chat.md`,
+   `docs/threat-model/README.md` y `project-management/INFORMATION_REQUESTS.md`;
 8. inspecciona completos `src/AdminWeb/package.json`, `src/AdminWeb/src/app`,
    `src/AdminWeb/src/modules/identity`, `src/AdminWeb/src/platform`,
    `src/AdminWeb/tests`, `src/AdminWeb/prisma`, `src/Contracts/Web` y
@@ -103,6 +114,8 @@ Reglas no negociables:
   correlacion, idempotencia y auditoria;
 - no uses datos, credenciales, endpoints, tenant, certificados ni
   identificadores corporativos;
+- no escribas API keys ni tokens locales en archivos del repo; usa variables de
+  entorno de sesion y placeholders como `<api-key-local>`;
 - no conectes Entra, Microsoft 365, Teams, OpenText, Rescue, UEMS, Sophos, PKI
   ni servicios productivos;
 - no inventes owners, asignaciones de rol, scopes corporativos, cuentas de
@@ -116,6 +129,22 @@ Reglas no negociables:
 - no agregues dependencias salvo las aprobadas por `core/STACK.md` y necesarias
   para la unidad; conserva versiones fijadas y lockfile reproducible;
 - no declares terminada una unidad sin ejecutar los gates aplicables.
+
+Configuracion local opcional de Hermes para demo WinUI:
+- Si el usuario pide habilitar o probar Hermes local, usa solo variables de
+  entorno de sesion:
+  `$env:IT_SUPPORT_HERMES_CHAT_ENABLED='true'`,
+  `$env:IT_SUPPORT_HERMES_BASE_URL='http://127.0.0.1:8765/v1'`,
+  `$env:IT_SUPPORT_HERMES_MODEL='it-support'`,
+  `$env:IT_SUPPORT_HERMES_API_KEY='<api-key-local>'`.
+- La app llama internamente a `/chat/completions` bajo la base URL configurada.
+- El modelo esperado de prueba es `it-support`.
+- El endpoint debe ser `http` o `https` de loopback; endpoints externos se
+  rechazan.
+- Con Hermes apagado o mal configurado, el campo de texto libre queda
+  deshabilitado y el asistente conserva las opciones deterministas.
+- Hermes solo puede responder orientacion informativa; no autoriza ni ejecuta
+  acciones y no alimenta comandos del agente.
 
 Tarea sugerida para el siguiente chat:
 Continua el Bloque 11 desde las tres unidades locales publicadas y cierra, si
