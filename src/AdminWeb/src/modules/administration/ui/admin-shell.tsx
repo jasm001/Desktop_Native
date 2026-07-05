@@ -6,7 +6,11 @@ export type AdminNavigationKey =
   | "overview"
   | "catalog"
   | "operations"
-  | "audit";
+  | "audit"
+  | "access"
+  | "approvals"
+  | "support"
+  | "reporting";
 
 interface AdminShellProps {
   readonly activeItem: AdminNavigationKey;
@@ -36,6 +40,30 @@ const navigation = [
     label: "Auditoría",
     href: "/admin/audit",
     icon: EvidenceIcon,
+  },
+  {
+    key: "access",
+    label: "Acceso",
+    href: "/admin/access",
+    icon: AccessIcon,
+  },
+  {
+    key: "approvals",
+    label: "Aprobaciones",
+    href: "/admin/approvals",
+    icon: ApprovalsIcon,
+  },
+  {
+    key: "support",
+    label: "Soporte",
+    href: "/admin/support",
+    icon: SupportIcon,
+  },
+  {
+    key: "reporting",
+    label: "Reportes",
+    href: "/admin/reporting",
+    icon: ReportingIcon,
   },
 ] as const;
 
@@ -168,6 +196,38 @@ function EvidenceIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path d="M6 3h9l4 4v14H6V3Zm8 2v3h3l-3-3ZM9 12h7v-2H9v2Zm0 4h7v-2H9v2Zm0 4h5v-2H9v2Z" />
+    </svg>
+  );
+}
+
+function AccessIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 3a4 4 0 0 1 4 4c0 1.3-.62 2.45-1.58 3.18A7 7 0 0 1 19 16.75V20H5v-3.25a7 7 0 0 1 4.58-6.57A4 4 0 0 1 12 3Zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 7a5 5 0 0 0-5 5v1h10v-1a5 5 0 0 0-5-5Z" />
+    </svg>
+  );
+}
+
+function ApprovalsIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M5 3h10l4 4v14H5V3Zm9 2v3h3l-3-3ZM8 12h8v-2H8v2Zm0 4h5v-2H8v2Zm1.8 4.2 7.4-7.4-1.4-1.4-6 6-2.6-2.6-1.4 1.4 4 4Z" />
+    </svg>
+  );
+}
+
+function SupportIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 3a8 8 0 0 0-8 8v4a3 3 0 0 0 3 3h1v-7H6a6 6 0 0 1 12 0h-2v7h1.6A5.6 5.6 0 0 1 12 21h-2v-2h2a3.6 3.6 0 0 0 3.45-2.55L15.6 16H18v-5a6 6 0 0 0-6-6Z" />
+    </svg>
+  );
+}
+
+function ReportingIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M4 19h16v2H4v-2Zm2-9h3v7H6v-7Zm5-5h3v12h-3V5Zm5 8h3v4h-3v-4Z" />
     </svg>
   );
 }

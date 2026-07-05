@@ -18,8 +18,11 @@ solicitudes, trabajos, casos y ticketing fake.
 La primera unidad local agrega `/admin`, una identidad sintetica de portal
 separada y autorizacion server-side fail-closed. La segunda unidad agrega
 navegacion real hacia `/admin/catalog`, `/admin/operations` y `/admin/audit`,
-capabilities de lectura separadas y proyecciones Prisma limitadas. La pagina
-`/` permanece como superficie tecnica.
+capabilities de lectura separadas y proyecciones Prisma limitadas. La tercera
+unidad agrega pruebas de componentes y Playwright. La cuarta unidad cierra el
+esqueleto local con `/admin/access`, `/admin/approvals`, `/admin/support` y
+`/admin/reporting`, todas sinteticas, protegidas en servidor y de solo lectura.
+La pagina `/` permanece como superficie tecnica.
 
 Todavia no contiene:
 
@@ -90,7 +93,28 @@ No se agregan migraciones, mutaciones, integraciones, secretos ni conexiones
 corporativas. La evidencia vive en
 `../docs/modules/admin-portal-local-quality-gate.md`.
 
-## Siguiente unidad local propuesta
+## Cuarta unidad local
+
+La cuarta unidad cierra el esqueleto local no productivo:
+
+1. agrega capabilities locales `portal.identity.read`,
+   `portal.approvals.read`, `portal.support.read` y
+   `portal.reporting.read`;
+2. agrega rutas server-rendered `/admin/access`, `/admin/approvals`,
+   `/admin/support` y `/admin/reporting`;
+3. reutiliza el shell y la identidad sintetica del portal;
+4. mantiene contenido en memoria, sin Prisma nuevo, migraciones, formularios,
+   Server Actions, Route Handlers ni mutaciones;
+5. representa identidad/acceso, aprobaciones, tickets/soporte remoto y
+   reportes/configuracion como estados locales vacios o diferidos;
+6. amplia Testing Library y Playwright para acceso permitido/denegado, teclado,
+   estado activo, solo lectura y ausencia de overflow.
+
+No se agregan Entra, OpenText, Rescue, Teams, UEMS, roles productivos, owners,
+scopes, secretos ni datos corporativos. La evidencia vive en
+`../docs/modules/admin-portal-local-skeleton-closure.md`.
+
+## Siguiente avance
 
 El siguiente avance no bloqueado puede cerrar el esqueleto local del portal si
 permanece dentro de las fronteras actuales:
@@ -104,10 +128,8 @@ permanece dentro de las fronteras actuales:
 5. no agregar mutaciones, migraciones, integraciones corporativas, roles
    productivos, owners ni scopes reales.
 
-La especificacion de esta unidad vive en
-`../docs/modules/admin-portal-local-skeleton-closure.md`. Aunque se complete,
-el Bloque 11 seguira `in_progress` hasta cumplir los gates productivos de este
-documento.
+Aunque el esqueleto local este cerrado, el Bloque 11 seguira `in_progress`
+hasta cumplir los gates productivos de este documento.
 
 ## Responsabilidad
 

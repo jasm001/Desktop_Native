@@ -1,6 +1,6 @@
 # Auditoria de consistencia documental
 
-Fecha: 2026-06-28.
+Fecha: 2026-07-05.
 
 ## Cobertura
 
@@ -46,6 +46,9 @@ La precedencia vigente permanece definida en `README.md`:
   migraciones PostgreSQL, E2E local, auditoria de dependencias y escaneo de
   secretos correctos.
 - Tres unidades locales del Bloque 11 publicadas sin cambiar contratos
+  publicos, migraciones, mutaciones o integraciones corporativas.
+- La cuarta unidad local del Bloque 11 esta implementada localmente: cierra el
+  esqueleto `/admin/*` con ocho rutas protegidas y sigue sin cambiar contratos
   publicos, migraciones, mutaciones o integraciones corporativas.
 - Unidad local intermedia: WinUI puede usar Hermes local compatible con OpenAI
   para texto libre informativo mediante variables de entorno, deshabilitado por
@@ -100,13 +103,15 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `modules/ADMIN_PORTAL.md` es el documento propietario y define el gate.
 - `src/AdminWeb` conserva el control plane modular, cuatro migraciones y la
   superficie tecnica `/` del Bloque 8.
-- `/admin`, `/admin/catalog`, `/admin/operations` y `/admin/audit` implementan
-  identidad sintetica separada, cuatro capabilities fail-closed, navegacion
-  accesible y lecturas limitadas de solo lectura.
+- `/admin`, `/admin/catalog`, `/admin/operations`, `/admin/audit`,
+  `/admin/access`, `/admin/approvals`, `/admin/support` y `/admin/reporting`
+  implementan identidad sintetica separada, ocho capabilities fail-closed,
+  navegacion accesible, lecturas limitadas de solo lectura y estados sinteticos
+  en memoria.
 - Las consultas administrativas toman como maximo 25 registros, usan
   selecciones explicitas y omiten payloads de auditoria.
 - Testing Library/jsdom y Playwright estan instalados e implementados solo para
-  calidad local de la superficie de solo lectura.
+  calidad local de la superficie de solo lectura y el esqueleto protegido.
 - No estan instalados ni implementados Fluent UI, OIDC/Entra, sesiones, RBAC
   productivo o mutaciones administrativas.
 - Los roles de produccion son un modelo objetivo; no representan owners,
@@ -119,9 +124,9 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `docs/modules/admin-portal-local-quality-gate.md` registra la tercera unidad,
   estrategia de Testing Library/Playwright, diferimiento de Fluent UI y riesgos
   residuales.
-- `docs/modules/admin-portal-local-skeleton-closure.md` registra la siguiente
-  unidad local posible para cerrar el esqueleto protegido sin cerrar el Bloque
-  11 completo.
+- `docs/modules/admin-portal-local-skeleton-closure.md` registra la cuarta
+  unidad local que cierra el esqueleto protegido sin cerrar el Bloque 11
+  completo.
 
 ## Correcciones realizadas
 

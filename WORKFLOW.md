@@ -6,17 +6,18 @@
 - Bloque activo: Bloque 11, portal administrativo web, `in_progress`. Los
   Bloques 9 y 10 permanecen `blocked`.
 - Los Bloques 0 a 8 estan `completed`.
-- Ultimo resultado publicado: tercera unidad local del Bloque 11 en `7a65f3e`,
-  con pruebas de componentes y recorridos Playwright para las cuatro rutas
-  protegidas y acceso denegado. El bloque completo sigue abierto.
+- Ultimo resultado publicado: tercera unidad local del Bloque 11 en `7a65f3e`.
+  Resultado local pendiente de publicacion: cuarta unidad del Bloque 11, que
+  cierra el esqueleto `/admin/*` con rutas protegidas de acceso, aprobaciones,
+  soporte y reportes. El bloque completo sigue abierto.
 - Unidades locales del Bloque 11: identidad sintetica separada, autorizacion
   server-side fail-closed, shell accesible, proyecciones Prisma sin mutacion,
   pruebas de componentes y recorridos de navegador. No hay OIDC/Entra, RBAC
   productivo, Fluent UI ni mutaciones.
-- Siguiente unidad local propuesta: cierre del esqueleto protegido de
-  navegacion y superficies `/admin/*`, documentado en
-  `docs/modules/admin-portal-local-skeleton-closure.md`, sin mutaciones,
-  integraciones corporativas ni gobierno productivo inventado.
+- La unidad de esqueleto protegido `/admin/*`, documentada en
+  `docs/modules/admin-portal-local-skeleton-closure.md`, esta implementada
+  localmente sin mutaciones, integraciones corporativas ni gobierno productivo
+  inventado.
 - Nota modular nueva: `docs/modules/lab-bridge-reuse-notes.md` registra que el
   laboratorio externo Bunny Bridge puede reutilizarse como patron de bridge y
   validacion `validate-only`, no como dependencia productiva ni como cierre de
@@ -61,14 +62,16 @@
 - `corepack pnpm@11.5.3 run check`: correcto.
 - Contratos/Node: 40 pruebas unitarias, de contrato y de componentes; lint,
   TypeScript estricto y builds de Contracts, AdminWeb y Worker correctos.
-- Portal local: 27 pruebas unitarias/componentes cubren identidad separada,
-  ambiente o flag invalido, rol/capability desconocidos, cuatro capabilities
+- Portal local: 33 pruebas unitarias/componentes cubren identidad separada,
+  ambiente o flag invalido, rol/capability desconocidos, ocho capabilities
   permitidas, limites fijos para lecturas administrativas, shell, tablas,
-  estados vacios y acceso denegado.
-- QA de navegador: 12 recorridos Playwright cubren acceso denegado, `/admin`,
-  `/admin/catalog`, `/admin/operations`, `/admin/audit`, escritorio `1440x1000`,
-  movil `390x844`, teclado, estados activos, solo lectura, ausencia de
-  formularios/botones mutantes en `main` y cero overflow horizontal de pagina.
+  estados vacios, esqueleto local y acceso denegado.
+- QA de navegador: 24 recorridos Playwright cubren acceso denegado, `/admin`,
+  `/admin/catalog`, `/admin/operations`, `/admin/audit`, `/admin/access`,
+  `/admin/approvals`, `/admin/support`, `/admin/reporting`, escritorio
+  `1440x1000`, movil `390x844`, teclado, estados activos, solo lectura,
+  ausencia de formularios/botones mutantes en `main` y cero overflow horizontal
+  de pagina.
 - Canal Teams local: contrato estricto C#/Zod, acciones allowlisted, rechazo de
   campos ejecutables, adaptador recorded, correlacion, idempotencia, estado,
   caso y paridad con WinUI cubiertos.
@@ -171,7 +174,7 @@ Solo un bloque principal puede estar `in_progress`.
 | 8. Casos, tickets y OpenText fake | completed | `BotCase`, politica de 72 horas, evento de escalamiento, `ITicketingProvider` fake, `ExternalTicket`, worker idempotente y consulta HTTP validados sobre PostgreSQL real efimero; `cf262b4`. |
 | 9. Canal Teams existente | blocked | Incremento local publicado en `0448a42`: contrato v1 estricto, `IConversationChannel`, adaptador recorded, API compartida y paridad Teams/WinUI. Integracion corporativa bloqueada por evidencia externa. |
 | 10. Endurecimiento para piloto | blocked | Trabajo local acotado: threat model trazable, kill switch apagado por defecto, perfil `local-demo` confinado a `Development`, fallos del host saneados y runbook de retiro. Revision externa y ensayo en dos endpoints pendientes. |
-| 11. Portal administrativo web | in_progress | Tres unidades locales validadas: identidad separada, cuatro capabilities server-side, navegacion `/admin/*`, lecturas Prisma limitadas sin payload de auditoria ni mutaciones, pruebas de componentes y recorridos Playwright locales; sin Entra, RBAC productivo, Fluent UI o integraciones corporativas. |
+| 11. Portal administrativo web | in_progress | Cuatro unidades locales validadas: identidad separada, ocho capabilities server-side, navegacion `/admin/*`, lecturas Prisma limitadas sin payload de auditoria, estados sinteticos en memoria, pruebas de componentes y recorridos Playwright locales; sin Entra, RBAC productivo, Fluent UI o integraciones corporativas. |
 
 ## Alcance del MVP local
 

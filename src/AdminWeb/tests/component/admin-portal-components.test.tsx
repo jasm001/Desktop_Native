@@ -8,11 +8,13 @@ import type {
   AdminAuditSummary,
   AdminOperationSummary,
 } from "@/modules/administration/application/admin-read-repository";
+import { getAdminApprovalsSkeleton } from "@/modules/administration/application/get-admin-skeleton";
 import { AdminAccessDenied } from "@/modules/administration/ui/admin-access-denied";
 import { AdminAuditContent } from "@/modules/administration/ui/admin-audit-content";
 import { AdminCatalogContent } from "@/modules/administration/ui/admin-catalog-content";
 import { AdminOperationsContent } from "@/modules/administration/ui/admin-operations-content";
 import { AdminShell } from "@/modules/administration/ui/admin-shell";
+import { AdminSkeletonContent } from "@/modules/administration/ui/admin-skeleton-content";
 import type { PortalPrincipal } from "@/modules/identity/domain/portal-principal";
 
 const principal: PortalPrincipal = {
@@ -43,6 +45,13 @@ describe("admin portal components", () => {
     expect(
       within(navigation).getByRole("link", { name: "Operaciones" }),
     ).toHaveAttribute("aria-current", "page");
+    expect(within(navigation).getByRole("link", { name: "Acceso" })).toHaveAttribute(
+      "href",
+      "/admin/access",
+    );
+    expect(
+      within(navigation).getByRole("link", { name: "Aprobaciones" }),
+    ).toHaveAttribute("href", "/admin/approvals");
     expect(screen.getByRole("main")).toHaveAttribute("id", "admin-content");
     expect(
       screen.getByRole("link", {
@@ -136,6 +145,19 @@ describe("admin portal components", () => {
 
     expect(screen.getByText("Sin evidencia")).toBeVisible();
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
+  });
+
+  it("renders local skeleton surfaces as read-only empty states", () => {
+    render(<AdminSkeletonContent view={getAdminApprovalsSkeleton()} />);
+
+    expect(
+      screen.getByRole("heading", { name: "Superficie protegida" }),
+    ).toBeVisible();
+    expect(screen.getByText("Sin acciones configuradas")).toBeVisible();
+    expect(screen.getAllByText("Diferido")).toHaveLength(2);
+    expect(screen.getByText("Bloqueado")).toBeVisible();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(document.querySelector("form")).toBeNull();
   });
 
   it("renders access denied without protected portal content", () => {

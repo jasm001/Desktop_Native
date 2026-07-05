@@ -2,16 +2,15 @@
 
 ## Estado
 
-Unidad local propuesta para continuar el Bloque 11 despues de las tres unidades
-publicadas. No cierra el Bloque 11 completo; solo puede cerrar el esqueleto
-local de navegacion y superficies protegidas si no introduce integraciones,
-mutaciones ni gobierno productivo.
+Cuarta unidad local del Bloque 11 implementada. Cierra el esqueleto local de
+navegacion y superficies protegidas, pero no cierra el Bloque 11 completo. No
+introduce integraciones, mutaciones ni gobierno productivo.
 
 ## Alcance exacto
 
-La unidad puede completar el esqueleto local del portal agregando superficies
+La unidad completa el esqueleto local del portal agregando superficies
 administrativas protegidas, sinteticas y de solo lectura para los modulos
-objetivo que aun no tienen ruta propia:
+objetivo que no tenian ruta propia:
 
 - identidad y acceso, sin crear usuarios, roles, owners, grupos ni scopes
   corporativos;
@@ -22,10 +21,10 @@ objetivo que aun no tienen ruta propia:
 - reportes y configuracion, con resumen local o estado vacio, sin exportaciones
   productivas ni retencion real.
 
-Las rutas exactas deben elegirse dentro del namespace `/admin/*`, reutilizando
-el shell existente y manteniendo `/admin`, `/admin/catalog`,
-`/admin/operations` y `/admin/audit` operativas. La pagina `/` permanece como
-superficie tecnica del Bloque 8.
+Las rutas elegidas son `/admin/access`, `/admin/approvals`, `/admin/support` y
+`/admin/reporting`. Reutilizan el shell existente y mantienen `/admin`,
+`/admin/catalog`, `/admin/operations` y `/admin/audit` operativas. La pagina
+`/` permanece como superficie tecnica del Bloque 8.
 
 ## Limites
 
@@ -51,13 +50,14 @@ Toda ruta nueva debe resolver identidad y capabilities en servidor antes de
 renderizar contenido protegido. Los perfiles, roles, capabilities, payloads o
 versiones desconocidos deben rechazarse sin filtrar datos de la ruta.
 
-Si se agregan capabilities sinteticas para separar vistas del esqueleto, deben
-permanecer locales, documentadas, denegadas por defecto y cubiertas por pruebas
+Se agregan capabilities sinteticas `portal.identity.read`,
+`portal.approvals.read`, `portal.support.read` y `portal.reporting.read`. Son
+locales, documentadas, denegadas por defecto y cubiertas por pruebas
 permitidas/denegadas. No representan roles productivos ni asignaciones reales.
 
 ## Estrategia de pruebas
 
-La unidad debe ampliar la cobertura existente en lugar de reemplazarla:
+La unidad amplia la cobertura existente en lugar de reemplazarla:
 
 - pruebas unitarias/componentes para navegacion, shell, estados vacios,
   tablas/listas locales y acceso denegado;
@@ -69,6 +69,21 @@ La unidad debe ampliar la cobertura existente en lugar de reemplazarla:
   `main`;
 - gate completo del repositorio, auditoria de dependencias y escaneo de
   secretos antes de proponer cierre de la unidad.
+
+## Evidencia local
+
+- `corepack pnpm@11.5.3 --filter @it-support-native/admin-web run test`:
+  33 pruebas unitarias/componentes.
+- `corepack pnpm@11.5.3 --filter @it-support-native/admin-web run lint`:
+  ESLint y TypeScript estricto.
+- `corepack pnpm@11.5.3 --filter @it-support-native/admin-web run test:e2e`:
+  6 recorridos de acceso denegado y 18 recorridos protegidos en desktop y
+  movil.
+- `corepack pnpm@11.5.3 --filter @it-support-native/admin-web run build`:
+  build standalone con ocho rutas `/admin/*` dinamicas.
+
+No se modifican contratos publicos, Worker, DeviceAgent, Prisma schema ni las
+cuatro migraciones historicas.
 
 ## Criterio de aceptacion
 

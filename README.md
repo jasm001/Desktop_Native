@@ -16,9 +16,11 @@ blocked on external pilot evidence. Block 11 is active for the bounded local
 administrative portal. Its first two local units add a protected read-only
 shell, real navigation, synthetic catalog data, and bounded PostgreSQL reads
 for operations and audit; no production integration or corporate identity is
-implemented. The third local unit adds component tests and browser walkthroughs
-for the current read-only administrative surface; it still does not add
-production identity, RBAC, mutations, Fluent UI, or corporate integrations.
+  implemented. The third local unit adds component tests and browser walkthroughs
+  for the read-only administrative surface. The fourth local unit closes the
+  local `/admin/*` skeleton with protected synthetic routes for access,
+  approvals, support, and reporting; it still does not add production identity,
+  RBAC, mutations, Fluent UI, or corporate integrations.
 
 ## Current Status
 
@@ -47,14 +49,14 @@ production identity, RBAC, mutations, Fluent UI, or corporate integrations.
   two authorized endpoints.
 - Block 11: `in_progress` as the only active block. The current `src/AdminWeb`
   remains the modular control plane. `/` is the engineering status surface and
-  `/admin`, `/admin/catalog`, `/admin/operations`, and `/admin/audit` are
-  development-only read views protected by a separate portal identity and
-  server-side capabilities. Component tests and Playwright walkthroughs now
-  cover the local read-only surface. OIDC/Entra, productive RBAC, Fluent UI,
-  mutations, and product role tests are not implemented.
-- Next local gate: close the protected read-only administrative skeleton under
-  `/admin/*` without weakening the fail-closed boundary or inventing corporate
-  roles and scopes. UEMS, Entra, Security/Sophos, publisher trust, real Teams
+  `/admin`, `/admin/catalog`, `/admin/operations`, `/admin/audit`,
+  `/admin/access`, `/admin/approvals`, `/admin/support`, and
+  `/admin/reporting` are development-only read views protected by a separate
+  portal identity and server-side capabilities. Component tests and Playwright
+  walkthroughs now cover the local read-only skeleton. OIDC/Entra, productive
+  RBAC, Fluent UI, mutations, and product role tests are not implemented.
+- Next local gate: move beyond the protected skeleton only after a new bounded
+  unit is defined. UEMS, Entra, Security/Sophos, publisher trust, real Teams
   and OpenText remain disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data, local or
   fake providers, a development artifact mirror, and optional Hermes chat for

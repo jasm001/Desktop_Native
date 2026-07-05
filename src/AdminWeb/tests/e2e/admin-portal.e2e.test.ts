@@ -25,6 +25,30 @@ const routes = [
     active: /Auditor/u,
     landmark: "Eventos recientes",
   },
+  {
+    path: "/admin/access",
+    title: "Identidad y acceso",
+    active: "Acceso",
+    landmark: "Superficie protegida",
+  },
+  {
+    path: "/admin/approvals",
+    title: "Aprobaciones pendientes",
+    active: "Aprobaciones",
+    landmark: "Superficie protegida",
+  },
+  {
+    path: "/admin/support",
+    title: "Tickets y soporte remoto",
+    active: "Soporte",
+    landmark: "Superficie protegida",
+  },
+  {
+    path: "/admin/reporting",
+    title: "Reportes y configuracion",
+    active: "Reportes",
+    landmark: "Superficie protegida",
+  },
 ] as const;
 
 for (const route of routes) {

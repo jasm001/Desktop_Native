@@ -6,6 +6,10 @@ export const portalCapabilities = [
   "portal.catalog.read",
   "portal.operations.read",
   "portal.audit.read",
+  "portal.identity.read",
+  "portal.approvals.read",
+  "portal.support.read",
+  "portal.reporting.read",
 ] as const;
 export type PortalCapability = (typeof portalCapabilities)[number];
 

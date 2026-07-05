@@ -23,16 +23,21 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   `https://github.com/jasm001/Desktop_Native.git`.
 - La tercera unidad local del Bloque 11 esta publicada en `7a65f3e`: pruebas de
   componentes y recorridos Playwright del portal administrativo local.
+- La cuarta unidad local del Bloque 11 esta implementada localmente y pendiente
+  de publicacion: cierra el esqueleto local con rutas protegidas
+  `/admin/access`, `/admin/approvals`, `/admin/support` y `/admin/reporting`.
 - El cierre local del Bloque 10 esta publicado en `be6c4fc`.
 - El Bloque 9 local esta publicado en `0448a42`; su integracion corporativa no
   esta completada.
 - `src/AdminWeb` es el control plane Next.js modular sobre el que se construye
   el Bloque 11. `/` sigue siendo la superficie tecnica del Bloque 8. Las rutas
-  `/admin`, `/admin/catalog`, `/admin/operations` y `/admin/audit` usan una
-  identidad sintetica separada, capabilities server-side fail-closed y lecturas
-  limitadas. Testing Library/jsdom cubre componentes locales y Playwright cubre
-  recorridos desktop/movil de las cuatro rutas y acceso denegado. No existen
-  OIDC/Entra, RBAC productivo, Fluent UI ni mutaciones.
+  `/admin`, `/admin/catalog`, `/admin/operations`, `/admin/audit`,
+  `/admin/access`, `/admin/approvals`, `/admin/support` y `/admin/reporting`
+  usan una identidad sintetica separada, capabilities server-side fail-closed y
+  lecturas limitadas o estados sinteticos en memoria. Testing Library/jsdom
+  cubre componentes locales y Playwright cubre recorridos desktop/movil de las
+  ocho rutas y acceso denegado. No existen OIDC/Entra, RBAC productivo, Fluent
+  UI ni mutaciones.
 - Prisma/PostgreSQL tiene cuatro migraciones versionadas.
 - Cada confirmacion crea una sola `SupportRequest`, `ExecutionJob` y `BotCase`.
 - Exito deja el caso en `attended_waiting_user` sin ticket.
@@ -81,9 +86,9 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 - La tercera unidad vive en `docs/modules/admin-portal-local-quality-gate.md`;
   agrega pruebas de componentes y recorridos Playwright sobre PostgreSQL
   efimero, sin ampliar roles, contratos, migraciones o mutaciones.
-- La siguiente unidad local propuesta vive en
-  `docs/modules/admin-portal-local-skeleton-closure.md`; puede cerrar el
-  esqueleto local de navegacion y superficies protegidas si permanece sintetica,
+- La cuarta unidad local vive en
+  `docs/modules/admin-portal-local-skeleton-closure.md`; cierra el esqueleto
+  local de navegacion y superficies protegidas sin dejar de ser sintetica,
   server-side, de solo lectura y sin integraciones corporativas.
 - OpenText, Teams, Entra, UEMS, RAG y portal productivos siguen
   deshabilitados. WinUI puede habilitar Hermes local temporalmente mediante

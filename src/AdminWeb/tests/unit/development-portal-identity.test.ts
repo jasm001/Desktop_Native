@@ -1,4 +1,10 @@
 import { describe, expect, it } from "vitest";
+import {
+  getAdminAccessSkeleton,
+  getAdminApprovalsSkeleton,
+  getAdminReportingSkeleton,
+  getAdminSupportSkeleton,
+} from "@/modules/administration/application/get-admin-skeleton";
 import { getAdminOverview } from "@/modules/administration/application/get-admin-overview";
 import { getDevelopmentPortalIdentity } from "@/modules/identity/application/development-portal-identity";
 import type { PortalPrincipal } from "@/modules/identity/domain/portal-principal";
@@ -106,5 +112,27 @@ describe("portal authorization", () => {
         }),
       ]),
     );
+  });
+
+  it("builds local skeleton views without enabling administrative mutation", () => {
+    const views = [
+      getAdminAccessSkeleton(),
+      getAdminApprovalsSkeleton(),
+      getAdminSupportSkeleton(),
+      getAdminReportingSkeleton(),
+    ];
+
+    expect(views).toHaveLength(4);
+    expect(views.flatMap((view) => view.boundaries)).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("solo lectura"),
+        expect.stringContaining("DeviceAgent directo"),
+      ]),
+    );
+    expect(
+      views.flatMap((view) => view.sections).map((section) => section.status),
+    ).toEqual(expect.arrayContaining(["Available", "Deferred", "Blocked"]));
+    expect(JSON.stringify(views)).not.toContain("softtek.com");
+    expect(JSON.stringify(views)).not.toContain("api-key");
   });
 });
