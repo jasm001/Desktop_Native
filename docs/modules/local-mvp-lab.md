@@ -30,6 +30,12 @@ sigue pendiente. El portal ya tiene unidades locales de solo lectura, pero no
 forma parte de los gates cerrados de los Bloques 6, 7 y 8 ni representa una
 integracion corporativa.
 
+El laboratorio externo Copilot Studio + Power Automate + Bunny Bridge +
+Endpoint Central queda registrado solo como patron reutilizable en
+`lab-bridge-reuse-notes.md`. Sus dominios, hostnames y usuarios simulan una
+operacion empresarial realista, pero siguen siendo valores de laboratorio y no
+constituyen supuestos productivos confirmados.
+
 ## Perfil `local-demo`
 
 Componentes previstos:
@@ -41,6 +47,8 @@ Componentes previstos:
 - API, PostgreSQL y worker locales;
 - portal e identidad de desarrollo;
 - ticketing, Teams, UEMS y demas integraciones mediante fakes;
+- referencia externa de bridge validado en modo `validate-only`, sin mezclar
+  UEMS, Copilot Studio ni Power Automate como dependencias de este repo;
 - mirror local de artefactos;
 - Hermes local con API externa opcional para texto libre informativo;
 - documentos e indice RAG locales pendientes de curacion;

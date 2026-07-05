@@ -17,6 +17,10 @@
   navegacion y superficies `/admin/*`, documentado en
   `docs/modules/admin-portal-local-skeleton-closure.md`, sin mutaciones,
   integraciones corporativas ni gobierno productivo inventado.
+- Nota modular nueva: `docs/modules/lab-bridge-reuse-notes.md` registra que el
+  laboratorio externo Bunny Bridge puede reutilizarse como patron de bridge y
+  validacion `validate-only`, no como dependencia productiva ni como cierre de
+  UEMS, Teams, Entra o piloto.
 - Ruta local aprobada para desarrollo: mirror local de software libre, servicios
   locales/fake, Hermes local opcional para texto libre informativo en WinUI,
   RAG local pendiente y continuidad degradada; no equivale a piloto

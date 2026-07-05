@@ -89,6 +89,11 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   deshabilitados. WinUI puede habilitar Hermes local temporalmente mediante
   variables de entorno para texto libre informativo, sin acciones ni datos
   corporativos.
+- El laboratorio externo Bunny Bridge se documento como patron reutilizable en
+  `docs/modules/lab-bridge-reuse-notes.md`: bridge local `validate-only`,
+  requester/hostname/software allowlisted, gateway y separacion de secretos. Sus
+  dominios y hostnames simulan una operacion realista, pero no son supuestos
+  productivos ni desbloquean UEMS, Teams, Entra o el Bloque 10.
 - El gate completo mantiene 140 pruebas .NET; Node tiene 40 pruebas
   unitarias/de contrato/componente, 12 integraciones AdminWeb y 4 del Worker,
   mas el E2E WinUI/DeviceAgent sobre PostgreSQL efimero. El portal agrega 12
