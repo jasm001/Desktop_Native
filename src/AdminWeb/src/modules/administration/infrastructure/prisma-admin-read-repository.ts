@@ -5,9 +5,18 @@ import type {
   AdminOperationSummary,
   AdminReadRepository,
 } from "../application/admin-read-repository";
+import type { AdminLabHealthProvider } from "../application/admin-lab-health-provider";
+import {
+  createFakeTicketingHealth,
+  LocalLabHealthProvider,
+} from "./local-lab-health-provider";
 
 export class PrismaAdminReadRepository implements AdminReadRepository {
-  public constructor(private readonly prisma: PrismaClient) {}
+  public constructor(
+    private readonly prisma: PrismaClient,
+    private readonly labHealthProvider: AdminLabHealthProvider =
+      new LocalLabHealthProvider(),
+  ) {}
 
   public async listRecentOperations(
     limit: number,
@@ -90,6 +99,7 @@ export class PrismaAdminReadRepository implements AdminReadRepository {
       recentAuditEvents,
       recentOutboxEvents,
       recentExternalTickets,
+      connectorStatuses,
     ] = await Promise.all([
       this.prisma.supportRequest.count(),
       this.prisma.executionJob.count(),
@@ -124,6 +134,7 @@ export class PrismaAdminReadRepository implements AdminReadRepository {
           createdAt: true,
         },
       }),
+      this.labHealthProvider.listComponentStatuses(),
     ]);
 
     return {
@@ -133,6 +144,8 @@ export class PrismaAdminReadRepository implements AdminReadRepository {
           name: "AdminWeb local",
           status: "available",
           source: "local",
+          scope: "development",
+          mode: "read-only",
           detail: "La ruta server-rendered respondio con identidad local.",
           lastCheckedAt: checkedAt,
         },
@@ -141,6 +154,8 @@ export class PrismaAdminReadRepository implements AdminReadRepository {
           name: "PostgreSQL local",
           status: "available",
           source: "lab-real-sanitized",
+          scope: "development",
+          mode: "read-only",
           detail: "Lectura bounded completada sobre tablas locales existentes.",
           lastCheckedAt: checkedAt,
         },
@@ -149,38 +164,20 @@ export class PrismaAdminReadRepository implements AdminReadRepository {
           name: "Worker Node",
           status: "not_checked",
           source: "local",
+          scope: "local-demo",
+          mode: "not-configured",
           detail: "Proceso durable separado; esta vista no inspecciona procesos.",
           lastCheckedAt: null,
         },
-        {
-          id: "hermes",
-          name: "Hermes local",
-          status: "not_checked",
-          source: "local",
-          detail: "Proveedor opcional de WinUI; el portal no lee API keys ni endpoints.",
-          lastCheckedAt: null,
-        },
-        {
-          id: "artifact-mirror",
-          name: "Mirror de artefactos",
-          status: "not_checked",
-          source: "local",
-          detail: "Artefactos fuera de Git; sin probe desde el portal.",
-          lastCheckedAt: null,
-        },
-        {
-          id: "lab-bridge",
-          name: "Bridge de laboratorio",
-          status: "validate-only",
-          source: "validate-only",
-          detail: "Patron documentado para validar solicitudes sin prometer despliegue.",
-          lastCheckedAt: checkedAt,
-        },
+        ...connectorStatuses,
+        createFakeTicketingHealth(ticketCount, checkedAt),
         {
           id: "windows-vm",
           name: "VM Windows 11",
           status: "not_checked",
           source: "local",
+          scope: "local-demo",
+          mode: "not-configured",
           detail: "La VM se inicia manualmente; el portal no administra Hyper-V.",
           lastCheckedAt: null,
         },
@@ -248,6 +245,7 @@ export class PrismaAdminReadRepository implements AdminReadRepository {
         "Sin payloads de auditoria, outbox o prompts completos.",
         "Sin llamadas directas al DeviceAgent.",
         "Sin arranque o administracion de VM, servicios o bridges.",
+        "Validate-only no equivale a despliegue enviado.",
       ],
     };
   }

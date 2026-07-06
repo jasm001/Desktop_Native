@@ -41,8 +41,9 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   `/admin/lab` usan una identidad sintetica separada, capabilities server-side
   fail-closed y lecturas limitadas o estados sinteticos en memoria. `/admin/lab`
   agrega `portal.lab.read`, estado de laboratorio y resumenes reales locales de
-  PostgreSQL bajo `lab-real-sanitized`, sin payloads completos ni control de VM
-  o servicios. Testing Library/jsdom cubre componentes locales y Playwright
+  PostgreSQL bajo `lab-real-sanitized`, mas health real local para Hermes,
+  mirror, bridge `validate-only` y ticketing fake, sin payloads completos ni
+  control de VM o servicios. Testing Library/jsdom cubre componentes locales y Playwright
   cubre recorridos desktop/movil de las rutas administrativas y acceso
   denegado. No existen OIDC/Entra, RBAC productivo, Fluent UI ni mutaciones.
 - Prisma/PostgreSQL tiene cuatro migraciones versionadas.
@@ -103,6 +104,13 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   capability `portal.lab.read`, tarjetas de estado de laboratorio y lecturas
   reales locales de `SupportRequest`, `ExecutionJob`, `BotCase`,
   `ExternalTicket`, auditoria y outbox, sin migraciones ni mutaciones.
+- La sexta unidad local vive en
+  `docs/modules/admin-portal-lab-health-connectors.md`; implementa la Unidad 3
+  de `docs/modules/local-lab-real-data-roadmap.md` con
+  `AdminLabHealthProvider`, health local de Hermes, mirror, bridge
+  `validate-only` y ticketing fake, estados apagado/mal configurado/denegado,
+  sin secretos, headers, endpoints renderizados, mutaciones ni probes fuera de
+  `Development`.
 - OpenText, Teams, Entra, UEMS, RAG y portal productivos siguen
   deshabilitados. WinUI puede habilitar Hermes local temporalmente mediante
   variables de entorno para texto libre informativo con historial visual en
@@ -123,13 +131,14 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   independientes para pasar de muestras a datos reales de laboratorio:
   estado del laboratorio, lecturas operativas reales locales, health de
   conectores simulados, catalogo local curado y recorrido end-to-end visual.
-  Las dos primeras unidades estan implementadas en `/admin/lab`. La VM puede
+  Las tres primeras unidades estan implementadas en `/admin/lab`. La VM puede
   estar apagada por defecto; las vistas deben mostrar `not_checked`, `offline`
-  o `unavailable` sin intentar iniciarla.
+  o `unavailable` sin intentar iniciarla. Al completar las cinco unidades, se
+  documentara por separado un roadmap WinUI para datos reales de laboratorio.
 - `core/DECISIONS.md` registra D-073 para permitir `lab-real-sanitized` solo en
   `local-demo`; `core/SCOPE.md` diferencia estos datos de cualquier dato real
   corporativo o productivo.
-- El gate completo mantiene 140 pruebas .NET; Node tiene 40 pruebas
+- El gate completo mantiene 140 pruebas .NET; Node tiene 53 pruebas
   unitarias/de contrato/componente, 13 integraciones AdminWeb y 4 del Worker,
   mas el E2E WinUI/DeviceAgent sobre PostgreSQL efimero. El portal agrega 28
   recorridos Playwright locales para rutas administrativas y acceso denegado.
@@ -142,8 +151,8 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 ## Siguiente reanudacion
 
 1. Mantener los Bloques 9 y 10 `blocked` y el Bloque 11 `in_progress`.
-2. Mantener validadas las cinco unidades locales del Bloque 11 y, si se sigue
-   el laboratorio/portal, continuar con la Unidad 3 de
+2. Mantener validadas las seis unidades locales del Bloque 11 y, si se sigue
+   el laboratorio/portal, continuar con la Unidad 4 de
    `docs/modules/local-lab-real-data-roadmap.md`.
 3. Conservar la identidad de portal solo en entorno local; Entra, MFA,
    grupos y usuarios corporativos permanecen deshabilitados.

@@ -34,11 +34,24 @@ export type AdminLabSource =
   | "validate-only"
   | "lab-real-sanitized";
 
+export type AdminLabScope =
+  | "development"
+  | "local-demo"
+  | "validate-only";
+
+export type AdminLabMode =
+  | "read-only"
+  | "health-check"
+  | "validate-only"
+  | "not-configured";
+
 export interface AdminLabComponentStatus {
   readonly id: string;
   readonly name: string;
   readonly status: AdminLabStatus;
   readonly source: AdminLabSource;
+  readonly scope: AdminLabScope;
+  readonly mode: AdminLabMode;
   readonly detail: string;
   readonly lastCheckedAt: Date | null;
 }

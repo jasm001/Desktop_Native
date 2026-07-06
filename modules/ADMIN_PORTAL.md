@@ -24,7 +24,8 @@ esqueleto local con `/admin/access`, `/admin/approvals`, `/admin/support` y
 `/admin/reporting`, todas sinteticas, protegidas en servidor y de solo lectura.
 La quinta unidad agrega `/admin/lab` para estado de laboratorio y lecturas
 reales locales `lab-real-sanitized`, tambien protegida en servidor y de solo
-lectura.
+lectura. La sexta unidad agrega health real de conectores locales para Hermes,
+mirror, bridge `validate-only` y ticketing fake, sin acciones ni secretos.
 La pagina `/` permanece como superficie tecnica.
 
 Todavia no contiene:
@@ -138,18 +139,36 @@ No agrega migraciones, mutaciones, Server Actions, Route Handlers mutantes,
 integraciones corporativas, secretos ni control de servicios o VM. La evidencia
 vive en `../docs/modules/admin-portal-lab-real-read-model.md`.
 
+## Sexta unidad local
+
+La sexta unidad implementa la Unidad 3 de la ruta `lab-real-sanitized`:
+
+1. agrega el contrato `AdminLabHealthProvider`;
+2. agrega adaptadores de health para Hermes local, mirror de artefactos y bridge
+   de laboratorio;
+3. agrega health de ticketing fake desde la lectura real local de PostgreSQL;
+4. extiende las tarjetas de `/admin/lab` con fuente, alcance, modo y ultima
+   comprobacion;
+5. valida que Hermes y bridge solo apunten a loopback;
+6. valida que el mirror viva fuera del repositorio Git;
+7. falla cerrado fuera de `Development` sin ejecutar probes.
+
+No agrega migraciones, mutaciones, Route Handlers, Server Actions, formularios,
+secretos ni control de servicios o VM. `validate-only` se muestra como
+validacion, nunca como despliegue enviado. La evidencia vive en
+`../docs/modules/admin-portal-lab-health-connectors.md`.
+
 ## Siguiente avance
 
-El siguiente avance no bloqueado puede agregar health real de conectores de
-laboratorio si permanece dentro de las fronteras actuales:
+El siguiente avance no bloqueado puede agregar catalogo local curado si
+permanece dentro de las fronteras actuales:
 
 1. mantener `/admin/lab` protegida en servidor y de solo lectura;
-2. agregar contratos de health para dependencias locales apagadas, disponibles o
-   mal configuradas;
-3. conservar errores saneados y acotados;
-4. cubrir acceso permitido/denegado, teclado, foco, estados activos, estados de
-   dependencia apagada y ausencia de overflow;
-5. no agregar mutaciones, migraciones, integraciones corporativas, roles
+2. modelar artefactos libres con version, licencia, origen publico y SHA-256;
+3. conservar instaladores fuera de Git;
+4. distinguir catalogo sintetico, catalogo de laboratorio y catalogo corporativo
+   futuro;
+5. no agregar mutaciones administrativas, integraciones corporativas, roles
    productivos, owners ni scopes reales.
 
 Aunque el esqueleto local este cerrado, el Bloque 11 seguira `in_progress`
@@ -321,4 +340,5 @@ Las unidades locales actuales no cierran este gate.
 - `../docs/modules/control-plane-local-flow.md`
 - `../docs/modules/admin-portal-local-skeleton-closure.md`
 - `../docs/modules/admin-portal-lab-real-read-model.md`
+- `../docs/modules/admin-portal-lab-health-connectors.md`
 - `../docs/modules/local-lab-real-data-roadmap.md`

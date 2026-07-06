@@ -240,10 +240,19 @@ describe("control plane persistence", () => {
           id: "postgresql",
           status: "available",
           source: "lab-real-sanitized",
+          scope: "development",
+          mode: "read-only",
+        }),
+        expect.objectContaining({
+          id: "ticketing-fake",
+          status: "available",
+          source: "fake",
+          scope: "local-demo",
         }),
         expect.objectContaining({
           id: "windows-vm",
           status: "not_checked",
+          mode: "not-configured",
         }),
       ]),
     );
@@ -266,6 +275,7 @@ describe("control plane persistence", () => {
     expect(lab.recentOutboxEvents[0]).not.toHaveProperty("payload");
     expect(lab.recentExternalTickets).toEqual([]);
     expect(JSON.stringify(lab)).not.toContain("api-key");
+    expect(JSON.stringify(lab)).not.toContain("Authorization");
     await expect(mutationCounts()).resolves.toEqual(countsBefore);
   });
 

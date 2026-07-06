@@ -173,6 +173,8 @@ describe("admin portal components", () => {
           name: "PostgreSQL local",
           status: "available",
           source: "lab-real-sanitized",
+          scope: "development",
+          mode: "read-only",
           detail: "Lectura bounded completada.",
           lastCheckedAt: new Date("2026-07-05T12:00:00.000Z"),
         },
@@ -181,6 +183,8 @@ describe("admin portal components", () => {
           name: "VM Windows 11",
           status: "not_checked",
           source: "local",
+          scope: "local-demo",
+          mode: "not-configured",
           detail: "La VM se inicia manualmente.",
           lastCheckedAt: null,
         },
@@ -235,6 +239,8 @@ describe("admin portal components", () => {
     expect(screen.getByText("support-request.confirmed.v1")).toBeVisible();
     expect(screen.getByText("FAKE-1234")).toBeVisible();
     expect(screen.getAllByText("lab-real-sanitized").length).toBeGreaterThan(0);
+    expect(screen.getByText(/development - read-only/u)).toBeVisible();
+    expect(screen.getByText(/local-demo - not-configured/u)).toBeVisible();
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
     expect(document.querySelector("form")).toBeNull();
     expect(screen.queryByText("payload")).not.toBeInTheDocument();

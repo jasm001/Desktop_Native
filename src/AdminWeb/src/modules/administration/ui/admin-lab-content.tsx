@@ -179,7 +179,7 @@ function LabStatusCard({
         {statusLabels[component.status]}
       </span>
       <small>
-        {component.source}
+        {component.source} - {component.scope} - {component.mode}
         {component.lastCheckedAt === null
           ? ""
           : ` - ${formatDate(component.lastCheckedAt)}`}

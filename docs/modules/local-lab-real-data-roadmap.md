@@ -110,7 +110,8 @@ Gate:
 - `validate-only` nunca se muestra como despliegue enviado;
 - pruebas cubren disponible, apagado, mal configurado y denegado.
 
-Estado: `pending`.
+Estado: `completed` como incremento local validado en
+`admin-portal-lab-health-connectors.md`.
 
 ## Unidad 4: catalogo local curado
 
@@ -158,12 +159,17 @@ Gate:
 
 Estado: `pending`.
 
+Nota posterior: al completar las cinco unidades de este roadmap, conviene crear
+un roadmap separado para WinUI. Ese documento debe definir como la app nativa
+consume datos reales de laboratorio mediante APIs/contratos de solo lectura, sin
+mezclar el gobierno del portal con la experiencia nativa.
+
 ## Secuencia recomendada
 
 Avanzar primero por las Unidades 1 y 2. Juntas dan visibilidad real del
 laboratorio sin requerir que la VM este siempre encendida ni introducir
 conectores de accion.
 
-La Unidad 3 debe esperar a que el contrato de health sea estable. Las Unidades 4
-y 5 dependen de que la categoria `lab-real-sanitized` ya este visible y probada
-en el portal.
+La Unidad 3 ya estabiliza el contrato de health local. Las Unidades 4 y 5
+dependen de que la categoria `lab-real-sanitized` y los conectores locales ya
+esten visibles y probados en el portal.

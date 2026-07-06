@@ -16,8 +16,10 @@ The protected `/admin`, `/admin/catalog`, `/admin/operations`, `/admin/audit`,
 `/admin/lab` routes use a separate synthetic portal identity, fail-closed
 server-side read capabilities, bounded Prisma projections or in-memory
 synthetic states, and an accessible read-only shell. `/admin/lab` reads local
-PostgreSQL counts and summaries as `lab-real-sanitized` data. They do not add
-OIDC/Entra, production RBAC, Fluent UI, mutations, or corporate integrations.
+PostgreSQL counts and summaries as `lab-real-sanitized` data and reports local
+connector health for Hermes, mirror, validate-only bridge, and fake ticketing.
+They do not add OIDC/Entra, production RBAC, Fluent UI, mutations, or corporate
+integrations.
 
 Local runtime configuration is documented in `.env.example`. Values are not
 committed in `.env`.

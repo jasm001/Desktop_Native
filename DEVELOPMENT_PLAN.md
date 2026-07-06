@@ -240,23 +240,24 @@ Gate: autorizacion server-side, Playwright por rol, migraciones y auditoria.
 
 Estado: `in_progress`. Es el unico bloque principal activo. Parte del control
 plane modular existente en `src/AdminWeb`, cuya pagina actual sigue siendo una
-superficie tecnica del Bloque 8. Las cinco primeras unidades locales ya
+superficie tecnica del Bloque 8. Las seis primeras unidades locales ya
 establecen identidad de portal separada y fail-closed, nueve capabilities de
 lectura, navegacion `/admin/*`, catalogo sintetico, proyecciones Prisma
 limitadas para operaciones y auditoria, estados sinteticos en memoria para
 acceso, aprobaciones, soporte y reportes, y `/admin/lab` con estado de
-laboratorio y lecturas reales locales `lab-real-sanitized`. Las pruebas de
-componentes y recorridos Playwright cubren la superficie local. No existen aun
-OIDC/Entra, sesiones, RBAC productivo, Fluent UI ni mutaciones. El esqueleto
-local protegido y las primeras lecturas de laboratorio quedan cerradas, pero el
-bloque completo sigue abierto hasta cumplir sus gates productivos.
+laboratorio, lecturas reales locales `lab-real-sanitized` y health local de
+conectores. Las pruebas de componentes y recorridos Playwright cubren la
+superficie local. No existen aun OIDC/Entra, sesiones, RBAC productivo, Fluent
+UI ni mutaciones. El esqueleto local protegido, las primeras lecturas de
+laboratorio y el health local quedan cerrados, pero el bloque completo sigue
+abierto hasta cumplir sus gates productivos.
 
 Siguiente ruta local documentada: `docs/modules/local-lab-real-data-roadmap.md`
 define cinco unidades independientes para mostrar datos reales de laboratorio
-persistidos bajo la categoria `lab-real-sanitized`. Las Unidades 1 y 2 estan
-implementadas; la siguiente unidad puede agregar health real de conectores
-locales sin ejecutar acciones, sin secretos y con dependencias apagadas como
-estado degradado.
+persistidos bajo la categoria `lab-real-sanitized`. Las Unidades 1, 2 y 3 estan
+implementadas; la siguiente unidad puede agregar catalogo local curado con
+artefactos libres, licencias, origen publico y SHA-256, sin versionar
+instaladores en Git.
 
 ## Regla de escalamiento
 

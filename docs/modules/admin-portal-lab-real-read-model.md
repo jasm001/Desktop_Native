@@ -72,3 +72,6 @@ aplico las cuatro migraciones y paso correctamente.
 Las Unidades 1 y 2 quedan implementadas como incremento local validado. Los
 Bloques 9 y 10 permanecen `blocked`, y el Bloque 11 permanece `in_progress`
 hasta cumplir sus gates productivos.
+
+Nota posterior: la Unidad 3 agrega ese contrato de health en
+`admin-portal-lab-health-connectors.md`.

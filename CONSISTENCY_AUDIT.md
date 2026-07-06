@@ -48,16 +48,19 @@ La precedencia vigente permanece definida en `README.md`:
 - Documento propietario del Bloque 9: `modules/TEAMS.md`.
 - Documento propietario del Bloque 10: `modules/PILOT_HARDENING.md`.
 - Documento propietario del Bloque 11: `modules/ADMIN_PORTAL.md`.
-- Gate completo vigente: 140 pruebas .NET, 40 pruebas Node unitarias/de
+- Gate completo vigente: 140 pruebas .NET, 53 pruebas Node unitarias/de
   contrato/componente, 13 integraciones AdminWeb, 4 del Worker, cuatro
   migraciones PostgreSQL, E2E local, auditoria de dependencias y escaneo de
   secretos correctos.
 - Cuatro unidades locales del Bloque 11 publicadas sin cambiar contratos
   publicos, migraciones, mutaciones o integraciones corporativas.
-- Una quinta unidad local del Bloque 11 queda pendiente de commit: `/admin/lab`
-  con `portal.lab.read`, estado de laboratorio y lecturas reales locales
+- Quinta unidad local del Bloque 11 publicada en `dc7ad98`: `/admin/lab` con
+  `portal.lab.read`, estado de laboratorio y lecturas reales locales
   `lab-real-sanitized`, sin migraciones, mutaciones, secretos ni integraciones
   corporativas.
+- Una sexta unidad local del Bloque 11 queda pendiente de commit: health local
+  de Hermes, mirror, bridge `validate-only` y ticketing fake, sin probes fuera
+  de `Development`, secretos, mutaciones ni integraciones corporativas.
 - `docs/modules/local-mvp-lab.md` define `lab-real-sanitized` como categoria de
   datos reales de laboratorio persistidos y saneados. La categoria permite
   mejorar visualizacion local con evidencia generada por el propio laboratorio,
@@ -127,7 +130,8 @@ proveedores locales sin declarar cerrada la integracion Teams.
   `/admin/access`, `/admin/approvals`, `/admin/support`, `/admin/reporting` y
   `/admin/lab` implementan identidad sintetica separada, capabilities
   fail-closed, navegacion accesible, lecturas limitadas de solo lectura,
-  estados sinteticos en memoria y lecturas `lab-real-sanitized`.
+  estados sinteticos en memoria, lecturas `lab-real-sanitized` y health local
+  de conectores.
 - Las consultas administrativas toman como maximo 25 registros, usan
   selecciones explicitas y omiten payloads de auditoria.
 - Testing Library/jsdom y Playwright estan instalados e implementados solo para
@@ -150,6 +154,9 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `docs/modules/admin-portal-lab-real-read-model.md` registra la quinta unidad
   local que implementa las dos primeras unidades de laboratorio sin cerrar el
   Bloque 11 completo.
+- `docs/modules/admin-portal-lab-health-connectors.md` registra la sexta unidad
+  local que implementa la tercera unidad de laboratorio sin cerrar el Bloque 11
+  completo.
 - `modules/ADMIN_PORTAL.md` gobierna una superficie de laboratorio de
   solo lectura para `lab-real-sanitized`, protegida en servidor, sin mutaciones,
   sin llamadas directas al DeviceAgent y sin administrar VM, servicios o
@@ -176,7 +183,7 @@ proveedores locales sin declarar cerrada la integracion Teams.
   y `tests/AdminWeb/README.md` distinguen las lecturas locales ya implementadas
   del portal productivo todavia pendiente;
 - `docs/modules/local-lab-real-data-roadmap.md` agrega la ruta documental para
-  sustituir muestras por datos reales de laboratorio saneados y marca las dos
+  sustituir muestras por datos reales de laboratorio saneados y marca las tres
   primeras unidades como implementadas;
 - `docs/modules/repository-foundation.md`,
   `docs/modules/control-plane-foundation.md` y

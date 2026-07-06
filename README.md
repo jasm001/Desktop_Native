@@ -21,8 +21,9 @@ for operations and audit; no production integration or corporate identity is
   local `/admin/*` skeleton with protected synthetic routes for access,
   approvals, support, and reporting; it still does not add production identity,
   RBAC, mutations, Fluent UI, or corporate integrations. The latest local unit
-  adds `/admin/lab` for read-only laboratory status and persisted
-  `lab-real-sanitized` PostgreSQL readings without controlling services or VM.
+  extends `/admin/lab` with real local health checks for Hermes, the artifact
+  mirror, the validate-only bridge, and fake ticketing without controlling
+  services or VM.
 
 ## Current Status
 
@@ -56,13 +57,14 @@ for operations and audit; no production integration or corporate identity is
   `/admin/reporting` are development-only read views protected by a separate
   portal identity and server-side capabilities. `/admin/lab` adds read-only
   laboratory status, local PostgreSQL counts, outbox summaries and fake ticket
-  summaries under `portal.lab.read`. Component tests and Playwright
-  walkthroughs now cover the local read-only skeleton and lab route.
+  summaries, plus local connector health under `portal.lab.read`. Component
+  tests and Playwright walkthroughs now cover the local read-only skeleton and
+  lab route.
   OIDC/Entra, productive RBAC, Fluent UI, mutations, and product role tests are
   not implemented.
-- Next local gate: continue with simulated connector health only after the
-  contract remains local, read-only, fail-closed and free of secrets. UEMS,
-  Entra, Security/Sophos, publisher trust, real Teams and OpenText remain
+- Next local gate: continue with the curated local catalog only if installers
+  stay outside Git and every artifact has license, source, version and SHA-256.
+  UEMS, Entra, Security/Sophos, publisher trust, real Teams and OpenText remain
   disabled.
 - Local demonstration profile: Windows 11 VM, public/synthetic data,
   persisted sanitized lab-real data, local or fake providers, a development
@@ -86,6 +88,8 @@ handoff is scoped in
 [`docs/modules/admin-portal-local-skeleton-closure.md`](docs/modules/admin-portal-local-skeleton-closure.md).
 The local laboratory portal increment is documented in
 [`docs/modules/admin-portal-lab-real-read-model.md`](docs/modules/admin-portal-lab-real-read-model.md).
+The local connector health increment is documented in
+[`docs/modules/admin-portal-lab-health-connectors.md`](docs/modules/admin-portal-lab-health-connectors.md).
 Hermes local chat startup is documented in
 [`docs/runbooks/local-hermes-chat.md`](docs/runbooks/local-hermes-chat.md).
 
