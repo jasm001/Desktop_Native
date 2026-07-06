@@ -2,26 +2,32 @@ import { AdminAccessDenied } from "@/modules/administration/ui/admin-access-deni
 import { AdminCatalogContent } from "@/modules/administration/ui/admin-catalog-content";
 import { AdminShell } from "@/modules/administration/ui/admin-shell";
 import { listCatalogProducts } from "@/modules/catalog/application/list-catalog-products";
+import { listLocalLabCatalogEntries } from "@/modules/catalog/application/list-local-lab-catalog";
 import { resolveDevelopmentPortalAccess } from "@/modules/identity/application/portal-authorization";
 
 export const dynamic = "force-dynamic";
 
-export default function AdminCatalogPage() {
+export default async function AdminCatalogPage() {
   const principal = resolveDevelopmentPortalAccess("portal.catalog.read");
 
   if (principal === null) {
     return <AdminAccessDenied />;
   }
 
+  const labEntries = await listLocalLabCatalogEntries();
+
   return (
     <AdminShell
       activeItem="catalog"
-      description="Productos sintéticos disponibles para validar decisiones de catálogo sin publicar paquetes ni ejecutar acciones."
-      kicker="Catálogo"
+      description="Catalogo sintetico y catalogo local curado para laboratorio, sin publicar paquetes ni ejecutar acciones desde el portal."
+      kicker="Catalogo"
       principal={principal}
-      title="Catálogo controlado"
+      title="Catalogo controlado"
     >
-      <AdminCatalogContent products={listCatalogProducts(25).items} />
+      <AdminCatalogContent
+        labEntries={labEntries}
+        products={listCatalogProducts(25).items}
+      />
     </AdminShell>
   );
 }

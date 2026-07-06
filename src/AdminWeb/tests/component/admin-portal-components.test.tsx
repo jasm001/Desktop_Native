@@ -9,6 +9,7 @@ import type {
   AdminLabReadModel,
   AdminOperationSummary,
 } from "@/modules/administration/application/admin-read-repository";
+import type { LocalLabCatalogEntry } from "@/modules/catalog/application/list-local-lab-catalog";
 import { getAdminApprovalsSkeleton } from "@/modules/administration/application/get-admin-skeleton";
 import { AdminAccessDenied } from "@/modules/administration/ui/admin-access-denied";
 import { AdminAuditContent } from "@/modules/administration/ui/admin-audit-content";
@@ -88,15 +89,46 @@ describe("admin portal components", () => {
         actionId: null,
       },
     ];
+    const labEntries: LocalLabCatalogEntry[] = [
+      {
+        artifactId: "seven-zip-26.01-x64-msi",
+        product: "7-Zip",
+        version: "26.01",
+        packageVersion: "26.01.00.0",
+        architecture: "x64",
+        license: "GNU LGPL with BSD components and unRAR restriction",
+        licenseUrl: "https://www.7-zip.org/license.txt",
+        originUrl:
+          "https://github.com/ip7z/7zip/releases/download/26.01/7z2601-x64.msi",
+        publicReleaseUrl: "https://github.com/ip7z/7zip/releases/tag/26.01",
+        sha256: "A47EA8DCF8BC08E6DE474CAE77C828E031FA22CB528F6095DEFFFEBF11CD02F2",
+        adapterId: "seven-zip.msi.v1",
+        source: "lab-real-sanitized",
+        scope: "local-demo",
+        catalogKind: "laboratory",
+        validationStatus: "valid",
+        validationMessages: [],
+        artifactStatus: "absent",
+        artifactStatusDetail:
+          "Mirror local no configurado; no se versiona instalador en Git.",
+      },
+    ];
 
-    render(<AdminCatalogContent products={products} />);
+    render(<AdminCatalogContent labEntries={labEntries} products={products} />);
 
-    const table = screen.getByRole("table");
+    const table = screen.getAllByRole("table")[0]!;
     expect(within(table).getByRole("columnheader", { name: "Producto" })).toBeVisible();
     expect(within(table).getByRole("columnheader", { name: /Versi/u })).toBeVisible();
     expect(screen.getByText("2 registros")).toBeVisible();
     expect(screen.getByText("Secure Transfer")).toBeVisible();
     expect(screen.getByText(/Sin acci/u)).toBeVisible();
+    expect(screen.getByText("Catalogo local curado")).toBeVisible();
+    expect(screen.getByText("7-Zip")).toBeVisible();
+    expect(screen.getByText("Hash")).toBeVisible();
+    expect(screen.getByText("Ausente")).toBeVisible();
+    expect(screen.getByText("Corporativo futuro")).toBeVisible();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+    expect(document.querySelector("form")).toBeNull();
   });
 
   it("renders operation rows with table semantics and the empty state without controls", () => {

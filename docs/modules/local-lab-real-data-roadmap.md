@@ -134,7 +134,8 @@ Gate:
 - fallos de artefacto ocurren antes de iniciar ejecucion;
 - documentacion y pruebas conservan `local-demo` como unico perfil habilitado.
 
-Estado: `pending`.
+Estado: `completed` como incremento local validado en
+`admin-portal-local-lab-catalog.md`.
 
 ## Unidad 5: recorrido end-to-end visual de laboratorio
 
