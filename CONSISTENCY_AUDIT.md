@@ -52,15 +52,15 @@ La precedencia vigente permanece definida en `README.md`:
   contrato/componente, 13 integraciones AdminWeb, 4 del Worker, cuatro
   migraciones PostgreSQL, E2E local, auditoria de dependencias y escaneo de
   secretos correctos.
-- Cuatro unidades locales del Bloque 11 publicadas sin cambiar contratos
+- Seis unidades locales del Bloque 11 publicadas sin cambiar contratos
   publicos, migraciones, mutaciones o integraciones corporativas.
 - Quinta unidad local del Bloque 11 publicada en `dc7ad98`: `/admin/lab` con
   `portal.lab.read`, estado de laboratorio y lecturas reales locales
   `lab-real-sanitized`, sin migraciones, mutaciones, secretos ni integraciones
   corporativas.
-- Una sexta unidad local del Bloque 11 queda pendiente de commit: health local
-  de Hermes, mirror, bridge `validate-only` y ticketing fake, sin probes fuera
-  de `Development`, secretos, mutaciones ni integraciones corporativas.
+- Sexta unidad local del Bloque 11 publicada en `3d6b7bd`: health local de
+  Hermes, mirror, bridge `validate-only` y ticketing fake, sin probes fuera de
+  `Development`, secretos, mutaciones ni integraciones corporativas.
 - `docs/modules/local-mvp-lab.md` define `lab-real-sanitized` como categoria de
   datos reales de laboratorio persistidos y saneados. La categoria permite
   mejorar visualizacion local con evidencia generada por el propio laboratorio,

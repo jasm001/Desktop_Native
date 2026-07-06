@@ -6,9 +6,10 @@
 - Bloque activo: Bloque 11, portal administrativo web, `in_progress`. Los
   Bloques 9 y 10 permanecen `blocked`.
 - Los Bloques 0 a 8 estan `completed`.
-- Ultimo resultado publicado: `/admin/lab` de solo lectura en `dc7ad98`, que
-  agrega la vista de laboratorio y lecturas reales locales
-  `lab-real-sanitized`. El bloque completo sigue abierto.
+- Ultimo resultado publicado: health local de conectores para `/admin/lab` en
+  `3d6b7bd`, que agrega `AdminLabHealthProvider` para Hermes, mirror de
+  artefactos, bridge `validate-only` y ticketing fake. El bloque completo sigue
+  abierto.
 - Unidades locales del Bloque 11: identidad sintetica separada, autorizacion
   server-side fail-closed, shell accesible, proyecciones Prisma sin mutacion,
   pruebas de componentes y recorridos de navegador. No hay OIDC/Entra, RBAC
@@ -22,8 +23,8 @@
   `portal.lab.read`, estado de laboratorio y lecturas reales locales
   `lab-real-sanitized` sin mutaciones, migraciones, secretos, control de VM ni
   integraciones corporativas.
-- La unidad local de health de laboratorio, pendiente de commit, implementa la
-  Unidad 3 de `docs/modules/local-lab-real-data-roadmap.md` con
+- La unidad local de health de laboratorio, publicada en `3d6b7bd`, implementa
+  la Unidad 3 de `docs/modules/local-lab-real-data-roadmap.md` con
   `AdminLabHealthProvider`, health local de Hermes, mirror, bridge
   `validate-only` y ticketing fake, sin secretos, mutaciones ni probes fuera de
   `Development`.

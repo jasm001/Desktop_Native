@@ -22,6 +22,12 @@ Estado confirmado:
 - La cuarta unidad local del Bloque 11 esta publicada en `212f274`; cerro el
   esqueleto local `/admin/*` con rutas protegidas y sinteticas
   `/admin/access`, `/admin/approvals`, `/admin/support` y `/admin/reporting`.
+- La quinta unidad local del Bloque 11 esta publicada en `dc7ad98`; agrego
+  `/admin/lab` de solo lectura con categoria `lab-real-sanitized`, datos reales
+  de laboratorio saneados y persistidos, sin secretos ni mutaciones.
+- La sexta unidad local del Bloque 11 esta publicada en `3d6b7bd`; implemento
+  la Unidad 3 del roadmap con `AdminLabHealthProvider`, health local para
+  Hermes, mirror de artefactos, bridge `validate-only` y ticketing fake.
 - La unidad local del asistente WinUI esta publicada en `cfa3342`; agrego chat
   visual en memoria para Hermes local, indicador de respuesta, autoscroll y
   envio con Enter, sin persistencia ni acciones.
@@ -38,13 +44,17 @@ Estado confirmado:
   Prisma/PostgreSQL, auditoria append-only, outbox, solicitudes, trabajos,
   `BotCase` y ticketing fake.
 - `/admin`, `/admin/catalog`, `/admin/operations`, `/admin/audit`,
-  `/admin/access`, `/admin/approvals`, `/admin/support` y `/admin/reporting`
-  contienen identidad de portal sintetica separada, autorizacion server-side
-  fail-closed, navegacion real, capabilities de lectura separadas, lecturas
-  limitadas o estados sinteticos en memoria.
+  `/admin/access`, `/admin/approvals`, `/admin/support`, `/admin/reporting` y
+  `/admin/lab` contienen identidad de portal sintetica separada, autorizacion
+  server-side fail-closed, navegacion real, capabilities de lectura separadas,
+  lecturas limitadas, estados sinteticos en memoria, datos reales de laboratorio
+  saneados y health local de conectores.
 - Testing Library/jsdom cubre componentes del portal local. Playwright cubre
   escritorio, movil, teclado, estado activo, acceso denegado, solo lectura y
-  ausencia de overflow horizontal para la superficie administrativa actual.
+  ausencia de overflow horizontal para la superficie administrativa actual; el
+  reintento focalizado de Playwright administrativo de la Unidad 3 quedo
+  pendiente por restricciones de sandbox/red tras un fallo HMR de ejecucion
+  paralela.
 - No existen aun OIDC/Entra, sesiones productivas, RBAC productivo, mutaciones,
   Fluent UI, roles productivos, owners ni scopes corporativos.
 - `src/Worker` conserva el proceso Node durable separado.
@@ -63,6 +73,14 @@ Estado confirmado:
   VM Windows 11, datos publicos o sinteticos, proveedores fake/locales, mirror
   local, Hermes local opcional, RAG local curado pendiente y perfil
   `local-demo`. No acredita piloto ni produccion.
+- `docs/modules/local-lab-real-data-roadmap.md` documenta cinco unidades para
+  pasar de muestras a datos reales de laboratorio saneados; las Unidades 1 a 3
+  estan implementadas y la Unidad 4, catalogo local curado, es el siguiente
+  avance recomendado.
+- `docs/modules/admin-portal-lab-real-read-model.md` documenta las Unidades 1 y
+  2 del portal de laboratorio real saneado.
+- `docs/modules/admin-portal-lab-health-connectors.md` documenta la Unidad 3:
+  health local reemplazable, fail-closed y sin exposicion de secretos.
 - El laboratorio externo Bunny Bridge queda documentado en
   `docs/modules/lab-bridge-reuse-notes.md` solo como patron reutilizable:
   bridge local `validate-only`, requester/hostname/software allowlisted,
@@ -82,11 +100,12 @@ Estado confirmado:
 - `SQLitePCLRaw.bundle_e_sqlite3` esta fijado en `3.0.3` mediante Central
   Package Management para evitar la vulnerabilidad alta reportada por NuGet
   Audit en la transitiva `SQLitePCLRaw.lib_e_sqlite3` 2.1.11.
-- Ultimo gate completo: 140 pruebas .NET, pruebas Node unitarias/de
-  contrato/componente, 12 integraciones AdminWeb, 4 del Worker, cuatro
-  migraciones PostgreSQL, E2E local, auditoria de dependencias y escaneo de
-  secretos correctos. El portal conserva recorridos Playwright locales para las
-  ocho rutas administrativas.
+- Ultimo gate completo publicado: 140 pruebas .NET, 53 pruebas Node
+  unitarias/de contrato/componente, 13 integraciones AdminWeb, 4 del Worker,
+  cuatro migraciones PostgreSQL, E2E local y escaneo de secretos correctos. El
+  portal conserva recorridos Playwright locales para nueve rutas administrativas;
+  la auditoria `pnpm audit --prod --audit-level high` de la Unidad 3 no pudo
+  repetirse por red restringida del sandbox y no hubo cambios de dependencias.
 - Ultima validacion focalizada: 2026-07-05, build Release, 140 pruebas .NET,
   `dotnet format` y `scripts/Test-Secrets.ps1` correctos para la unidad del
   asistente WinUI y el timeout cliente de Hermes.
@@ -199,22 +218,31 @@ Configuracion local opcional de Hermes para demo WinUI:
   acciones y no alimenta comandos del agente.
 
 Tareas sugeridas para el siguiente chat:
-1. Elegir una unidad pequena de laboratorio personal que no conecte servicios
-   productivos. Opciones validas:
-   - diagnosticar y estabilizar Hermes local y su timeout/respuesta;
-   - preparar RAG local curado con contenido publico/sintetico;
-   - disenar un adaptador de laboratorio inspirado en Bunny Bridge en modo
-     `validate-only`;
-   - documentar/validar un recorrido end-to-end `local-demo` con proveedores
-     fake/locales;
-   - agregar una vista de solo lectura del portal que muestre estado de
-     conectores/laboratorio sin mutaciones ni secretos.
-2. Antes de implementar, confirmar el documento propietario y si la unidad toca
-   Bloque 11, AdminWeb o el laboratorio local.
-3. Mantener Bloques 9 y 10 `blocked`; Bloque 11 sigue `in_progress`.
-4. No conectar Entra, Microsoft 365, Teams corporativo, OpenText, Rescue, UEMS
-   corporativo, Sophos, PKI ni datos reales.
-5. No declarar completo un bloque por evidencia de laboratorio personal.
+1. Iniciar la Unidad 4 de `docs/modules/local-lab-real-data-roadmap.md`:
+   catalogo local curado para datos reales de laboratorio saneados.
+2. Documento propietario: `modules/ADMIN_PORTAL.md`; documentos de unidad:
+   `docs/modules/local-lab-real-data-roadmap.md`,
+   `docs/modules/admin-portal-lab-real-read-model.md` y
+   `docs/modules/admin-portal-lab-health-connectors.md`.
+3. Alcance esperado de la Unidad 4:
+   - entradas de laboratorio con producto, version, arquitectura, licencia,
+     origen publico, SHA-256 y adaptador compatible;
+   - distincion entre catalogo sintetico, catalogo de laboratorio y catalogo
+     corporativo futuro;
+   - validaciones de licencia redistribuible, version fija y hash;
+   - estados de artefacto disponible, ausente y hash no coincidente.
+4. Restricciones especificas de la Unidad 4:
+   - no versionar instaladores ni binarios en Git;
+   - no agregar paquetes comerciales, corporativos ni datos reales de empresa;
+   - fallar antes de ejecutar cuando el artefacto falte o el hash no coincida;
+   - mantener `Development`/`local-demo`, solo lectura y proveedores
+     reemplazables;
+   - no conectar Entra, Microsoft 365, Teams corporativo, OpenText, Rescue,
+     UEMS corporativo, Sophos, PKI ni servicios productivos.
+5. Antes de implementar, confirmar si la Unidad 4 requiere solo documentacion y
+   contratos, o tambien lectura de manifiestos locales desde AdminWeb.
+6. Mantener Bloques 9 y 10 `blocked`; Bloque 11 sigue `in_progress`.
+7. No declarar completo un bloque por evidencia de laboratorio personal.
 
 Stopper externo de Teams que debe conservarse:
 Fecha: 2026-06-14

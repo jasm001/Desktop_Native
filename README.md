@@ -84,8 +84,8 @@ five-unit lab-real data route is defined in
 Block 9 is owned by [`modules/TEAMS.md`](modules/TEAMS.md), and Block 10 is
 owned by [`modules/PILOT_HARDENING.md`](modules/PILOT_HARDENING.md). Block 11 is owned by
 [`modules/ADMIN_PORTAL.md`](modules/ADMIN_PORTAL.md). The next local Block 11
-handoff is scoped in
-[`docs/modules/admin-portal-local-skeleton-closure.md`](docs/modules/admin-portal-local-skeleton-closure.md).
+handoff is Unit 4, the curated local catalog in
+[`docs/modules/local-lab-real-data-roadmap.md`](docs/modules/local-lab-real-data-roadmap.md).
 The local laboratory portal increment is documented in
 [`docs/modules/admin-portal-lab-real-read-model.md`](docs/modules/admin-portal-lab-real-read-model.md).
 The local connector health increment is documented in
