@@ -273,9 +273,29 @@ describe("control plane persistence", () => {
     expect(lab.recentAuditEvents.length).toBeGreaterThan(0);
     expect(lab.recentOutboxEvents.length).toBeGreaterThan(0);
     expect(lab.recentOutboxEvents[0]).not.toHaveProperty("payload");
+    expect(lab.traces.length).toBeGreaterThan(0);
+    expect(lab.traces[0]).toEqual(
+      expect.objectContaining({
+        correlationId: expect.any(String),
+        stages: expect.arrayContaining([
+          expect.objectContaining({
+            id: "winui-confirmation",
+            source: "lab-real-sanitized",
+          }),
+          expect.objectContaining({
+            id: "agent",
+            detail: expect.stringContaining("sin comandos generados por IA"),
+          }),
+        ]),
+        idempotency: expect.objectContaining({
+          requestReplayProtected: true,
+        }),
+      }),
+    );
     expect(lab.recentExternalTickets).toEqual([]);
     expect(JSON.stringify(lab)).not.toContain("api-key");
     expect(JSON.stringify(lab)).not.toContain("Authorization");
+    expect(JSON.stringify(lab)).not.toContain("payload");
     await expect(mutationCounts()).resolves.toEqual(countsBefore);
   });
 

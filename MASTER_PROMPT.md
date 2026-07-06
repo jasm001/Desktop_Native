@@ -28,6 +28,11 @@ Estado confirmado:
 - La sexta unidad local del Bloque 11 esta publicada en `3d6b7bd`; implemento
   la Unidad 3 del roadmap con `AdminLabHealthProvider`, health local para
   Hermes, mirror de artefactos, bridge `validate-only` y ticketing fake.
+- Las Unidades 4 y 5 del roadmap local de laboratorio estan implementadas como
+  incrementos locales pendientes de publicacion: catalogo local curado y
+  recorrido end-to-end visual por correlacion. No agregan migraciones,
+  mutaciones administrativas, instaladores en Git ni integraciones
+  corporativas.
 - La unidad local del asistente WinUI esta publicada en `cfa3342`; agrego chat
   visual en memoria para Hermes local, indicador de respuesta, autoscroll y
   envio con Enter, sin persistencia ni acciones.
@@ -48,7 +53,8 @@ Estado confirmado:
   `/admin/lab` contienen identidad de portal sintetica separada, autorizacion
   server-side fail-closed, navegacion real, capabilities de lectura separadas,
   lecturas limitadas, estados sinteticos en memoria, datos reales de laboratorio
-  saneados y health local de conectores.
+  saneados, health local de conectores, catalogo local curado y trazas
+  end-to-end por correlacion con evidencia saneada e idempotencia.
 - Testing Library/jsdom cubre componentes del portal local. Playwright cubre
   escritorio, movil, teclado, estado activo, acceso denegado, solo lectura y
   ausencia de overflow horizontal para la superficie administrativa actual; el
@@ -74,13 +80,20 @@ Estado confirmado:
   local, Hermes local opcional, RAG local curado pendiente y perfil
   `local-demo`. No acredita piloto ni produccion.
 - `docs/modules/local-lab-real-data-roadmap.md` documenta cinco unidades para
-  pasar de muestras a datos reales de laboratorio saneados; las Unidades 1 a 3
-  estan implementadas y la Unidad 4, catalogo local curado, es el siguiente
-  avance recomendado.
+  pasar de muestras a datos reales de laboratorio saneados; las cinco unidades
+  estan implementadas localmente como superficies de solo lectura. El siguiente
+  roadmap recomendado debe ser separado para WinUI, consumiendo estos datos por
+  APIs/contratos de solo lectura sin mezclar el gobierno del portal.
 - `docs/modules/admin-portal-lab-real-read-model.md` documenta las Unidades 1 y
   2 del portal de laboratorio real saneado.
 - `docs/modules/admin-portal-lab-health-connectors.md` documenta la Unidad 3:
   health local reemplazable, fail-closed y sin exposicion de secretos.
+- `docs/modules/admin-portal-local-lab-catalog.md` documenta la Unidad 4:
+  catalogo local curado con manifiestos development-only, licencia
+  redistribuible, origen publico, version fija, SHA-256 y estados de artefacto.
+- `docs/modules/admin-portal-lab-e2e-visual-demo.md` documenta la Unidad 5:
+  trazas por `correlationId`, etapas WinUI/API/worker/agente/evidencia/caso/
+  ticket fake, outbox/effects e idempotencia, sin payloads completos ni piloto.
 - El laboratorio externo Bunny Bridge queda documentado en
   `docs/modules/lab-bridge-reuse-notes.md` solo como patron reutilizable:
   bridge local `validate-only`, requester/hostname/software allowlisted,
@@ -109,6 +122,13 @@ Estado confirmado:
 - Ultima validacion focalizada: 2026-07-05, build Release, 140 pruebas .NET,
   `dotnet format` y `scripts/Test-Secrets.ps1` correctos para la unidad del
   asistente WinUI y el timeout cliente de Hermes.
+- Ultima validacion local del portal: 2026-07-06, `AdminWeb` lint/typecheck,
+  45 pruebas unitarias/componente del paquete y HTTP `GET /admin/lab` 200 con
+  traza visible. La integracion directa `control-plane.integration.test.ts`
+  queda pendiente porque el setup choco con el trigger append-only de
+  `audit_events`. El reintento focalizado `.NET` de `SevenZipAdapterTests`
+  queda pendiente porque `dotnet test` salio con codigo 1 despues de restore
+  sin diagnostico util; no forzar ni deshabilitar controles para hacerlo pasar.
 - `scripts/Validate.ps1`, auditoria de dependencias y escaneo de secretos pasan.
 - `context/` y `reference/` conservan historia y no definen el estado actual.
 
@@ -218,31 +238,23 @@ Configuracion local opcional de Hermes para demo WinUI:
   acciones y no alimenta comandos del agente.
 
 Tareas sugeridas para el siguiente chat:
-1. Iniciar la Unidad 4 de `docs/modules/local-lab-real-data-roadmap.md`:
-   catalogo local curado para datos reales de laboratorio saneados.
-2. Documento propietario: `modules/ADMIN_PORTAL.md`; documentos de unidad:
-   `docs/modules/local-lab-real-data-roadmap.md`,
-   `docs/modules/admin-portal-lab-real-read-model.md` y
-   `docs/modules/admin-portal-lab-health-connectors.md`.
-3. Alcance esperado de la Unidad 4:
-   - entradas de laboratorio con producto, version, arquitectura, licencia,
-     origen publico, SHA-256 y adaptador compatible;
-   - distincion entre catalogo sintetico, catalogo de laboratorio y catalogo
-     corporativo futuro;
-   - validaciones de licencia redistribuible, version fija y hash;
-   - estados de artefacto disponible, ausente y hash no coincidente.
-4. Restricciones especificas de la Unidad 4:
-   - no versionar instaladores ni binarios en Git;
-   - no agregar paquetes comerciales, corporativos ni datos reales de empresa;
-   - fallar antes de ejecutar cuando el artefacto falte o el hash no coincida;
-   - mantener `Development`/`local-demo`, solo lectura y proveedores
-     reemplazables;
-   - no conectar Entra, Microsoft 365, Teams corporativo, OpenText, Rescue,
-     UEMS corporativo, Sophos, PKI ni servicios productivos.
-5. Antes de implementar, confirmar si la Unidad 4 requiere solo documentacion y
-   contratos, o tambien lectura de manifiestos locales desde AdminWeb.
-6. Mantener Bloques 9 y 10 `blocked`; Bloque 11 sigue `in_progress`.
-7. No declarar completo un bloque por evidencia de laboratorio personal.
+1. Si se quiere cerrar la validacion pendiente, diagnosticar sin forzar:
+   - `dotnet test tests\Integration\ITSupportNative.IntegrationTests.csproj
+     --filter FullyQualifiedName~SevenZipAdapterTests --verbosity minimal`;
+   - la integracion AdminWeb directa
+     `corepack pnpm@11.5.3 --filter @it-support-native/admin-web exec vitest
+     run tests/integration/control-plane.integration.test.ts`, que requiere un
+     harness limpio porque el trigger append-only de `audit_events` puede
+     bloquear la limpieza.
+2. No deshabilitar triggers append-only, no relajar idempotencia, no modificar
+   DeviceAgent ni cambiar controles solo para hacer pasar esas pruebas.
+3. Si se sigue con producto, crear un roadmap separado para WinUI y datos reales
+   de laboratorio, como recomienda
+   `docs/modules/local-lab-real-data-roadmap.md`: la app nativa debe consumir
+   APIs/contratos de solo lectura y no mezclar gobierno del portal con la
+   experiencia nativa.
+4. Mantener Bloques 9 y 10 `blocked`; Bloque 11 sigue `in_progress`.
+5. No declarar completo un bloque por evidencia de laboratorio personal.
 
 Stopper externo de Teams que debe conservarse:
 Fecha: 2026-06-14

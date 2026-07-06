@@ -158,7 +158,8 @@ Gate:
 - no se ejecutan comandos generados por IA ni texto operativo;
 - el cierre documenta que el recorrido es demostracion local, no piloto.
 
-Estado: `pending`.
+Estado: `completed` como incremento local validado en
+`admin-portal-lab-e2e-visual-demo.md`.
 
 Nota posterior: al completar las cinco unidades de este roadmap, conviene crear
 un roadmap separado para WinUI. Ese documento debe definir como la app nativa

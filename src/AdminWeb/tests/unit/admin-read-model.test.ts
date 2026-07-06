@@ -36,6 +36,7 @@ class RecordingAdminReadRepository implements AdminReadRepository {
     return Promise.resolve({
       components: [],
       metrics: [],
+      traces: [],
       recentOperations: [],
       recentAuditEvents: [],
       recentOutboxEvents: [],

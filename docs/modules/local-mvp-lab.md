@@ -26,9 +26,10 @@ El Windows Service instalado y la conexion IPC de Salud desde WinUI siguen
 siendo componentes previstos. WinUI ya puede habilitar texto libre contra
 Hermes local compatible con OpenAI mediante variables de entorno, solo para
 orientacion informativa y sin crear solicitudes ni acciones. RAG local curado
-sigue pendiente. El portal ya tiene unidades locales de solo lectura, pero no
-forma parte de los gates cerrados de los Bloques 6, 7 y 8 ni representa una
-integracion corporativa.
+sigue pendiente. El portal ya tiene las cinco unidades de datos reales de
+laboratorio como superficies locales de solo lectura, pero no forma parte de los
+gates cerrados de los Bloques 6, 7 y 8 ni representa una integracion
+corporativa.
 
 El laboratorio externo Copilot Studio + Power Automate + Bunny Bridge +
 Endpoint Central queda registrado solo como patron reutilizable en
@@ -83,7 +84,10 @@ Reglas de persistencia:
    fallar cerrada fuera de `Development`.
 
 El documento de ruta para implementar esta categoria por unidades vive en
-`local-lab-real-data-roadmap.md`.
+`local-lab-real-data-roadmap.md`. Sus cinco unidades estan cerradas localmente:
+estado del laboratorio, lecturas operativas reales, health de conectores
+simulados, catalogo local curado y recorrido end-to-end visual por
+correlacion.
 
 ## Perfil `local-demo`
 

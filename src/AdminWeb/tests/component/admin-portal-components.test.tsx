@@ -235,6 +235,65 @@ describe("admin portal components", () => {
           detail: "Registros fake persistidos localmente.",
         },
       ],
+      traces: [
+        {
+          requestId: "7d35a43a-cdb2-4fe1-941a-2234fb749652",
+          requestReference: "REQ-LOCAL-001",
+          correlationId: "lab-correlation",
+          deviceName: "Synthetic Windows 11 device",
+          productName: "secure-transfer 6.5",
+          requestStatus: "FAILED",
+          jobId: "8925e5b1-8c87-4f31-88bb-9ca945e6ba41",
+          jobStatus: "FAILED",
+          caseId: "8c25d443-7f69-4a46-b1c2-82c719e41137",
+          caseStatus: "ESCALATED",
+          ticketReference: "FAKE-1234",
+          createdAt: new Date("2026-07-05T12:00:00.000Z"),
+          stages: [
+            {
+              id: "winui-confirmation",
+              label: "WinUI confirmacion explicita",
+              status: "available",
+              source: "lab-real-sanitized",
+              detail:
+                "La fila existe porque una confirmacion explicita creo solicitud, trabajo y caso; las consultas no crean solicitudes.",
+              recordedAt: new Date("2026-07-05T12:00:00.000Z"),
+            },
+            {
+              id: "ticket",
+              label: "Ticket fake",
+              status: "available",
+              source: "fake",
+              detail: "Ticket fake persistido localmente.",
+              recordedAt: new Date("2026-07-05T12:05:00.000Z"),
+            },
+          ],
+          evidence: [
+            {
+              code: "job.simulation.failed",
+              summary:
+                "The simulated job failed without exposing internal details.",
+              recordedAt: new Date("2026-07-05T12:04:00.000Z"),
+            },
+          ],
+          outboxEvents: [
+            {
+              eventType: "bot-case.escalation-requested.v1",
+              aggregateType: "bot-case",
+              status: "COMPLETED",
+              attemptCount: 1,
+              effectType: "bot-case.external-ticket-created.v1",
+              createdAt: new Date("2026-07-05T12:05:00.000Z"),
+            },
+          ],
+          idempotency: {
+            requestReplayProtected: true,
+            resultReplayProtected: true,
+            duplicateRequestRows: 1,
+            duplicateResultRows: 1,
+          },
+        },
+      ],
       recentOperations: [],
       recentAuditEvents: [],
       recentOutboxEvents: [
@@ -269,7 +328,14 @@ describe("admin portal components", () => {
     expect(screen.getByText("PostgreSQL local")).toBeVisible();
     expect(screen.getByText("No comprobado")).toBeVisible();
     expect(screen.getByText("support-request.confirmed.v1")).toBeVisible();
-    expect(screen.getByText("FAKE-1234")).toBeVisible();
+    expect(screen.getAllByText("FAKE-1234").length).toBeGreaterThan(0);
+    expect(screen.getByText("Recorrido end-to-end local")).toBeVisible();
+    expect(screen.getByText("WinUI confirmacion explicita")).toBeVisible();
+    expect(screen.getByText("job.simulation.failed")).toBeVisible();
+    expect(
+      screen.getByText(/bot-case\.external-ticket-created\.v1/u),
+    ).toBeVisible();
+    expect(screen.getByText(/Duplicados detectados: solicitudes 0/u)).toBeVisible();
     expect(screen.getAllByText("lab-real-sanitized").length).toBeGreaterThan(0);
     expect(screen.getByText(/development - read-only/u)).toBeVisible();
     expect(screen.getByText(/local-demo - not-configured/u)).toBeVisible();

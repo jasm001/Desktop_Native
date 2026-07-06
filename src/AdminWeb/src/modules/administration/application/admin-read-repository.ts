@@ -82,9 +82,60 @@ export interface AdminLabExternalTicketSummary {
   readonly createdAt: Date;
 }
 
+export interface AdminLabTraceStage {
+  readonly id: string;
+  readonly label: string;
+  readonly status: AdminLabStatus;
+  readonly source: AdminLabSource;
+  readonly detail: string;
+  readonly recordedAt: Date | null;
+}
+
+export interface AdminLabTraceEvidence {
+  readonly code: string;
+  readonly summary: string;
+  readonly recordedAt: Date;
+}
+
+export interface AdminLabTraceOutboxEvent {
+  readonly eventType: string;
+  readonly aggregateType: string;
+  readonly status: string;
+  readonly attemptCount: number;
+  readonly effectType: string | null;
+  readonly createdAt: Date;
+}
+
+export interface AdminLabTraceIdempotency {
+  readonly requestReplayProtected: boolean;
+  readonly resultReplayProtected: boolean;
+  readonly duplicateRequestRows: number;
+  readonly duplicateResultRows: number;
+}
+
+export interface AdminLabTrace {
+  readonly requestId: string;
+  readonly requestReference: string;
+  readonly correlationId: string;
+  readonly deviceName: string;
+  readonly productName: string;
+  readonly requestStatus: string;
+  readonly jobId: string | null;
+  readonly jobStatus: string | null;
+  readonly caseId: string | null;
+  readonly caseStatus: string | null;
+  readonly ticketReference: string | null;
+  readonly createdAt: Date;
+  readonly stages: readonly AdminLabTraceStage[];
+  readonly evidence: readonly AdminLabTraceEvidence[];
+  readonly outboxEvents: readonly AdminLabTraceOutboxEvent[];
+  readonly idempotency: AdminLabTraceIdempotency;
+}
+
 export interface AdminLabReadModel {
   readonly components: readonly AdminLabComponentStatus[];
   readonly metrics: readonly AdminLabMetric[];
+  readonly traces: readonly AdminLabTrace[];
   readonly recentOperations: readonly AdminOperationSummary[];
   readonly recentAuditEvents: readonly AdminAuditSummary[];
   readonly recentOutboxEvents: readonly AdminLabOutboxSummary[];

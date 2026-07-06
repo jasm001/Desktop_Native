@@ -65,6 +65,144 @@ export function AdminLabContent({ lab }: { readonly lab: AdminLabReadModel }) {
         </div>
       </section>
 
+      <section className="admin-panel" aria-labelledby="lab-trace-title">
+        <div className="panel-heading">
+          <div>
+            <p className="section-kicker">Correlacion</p>
+            <h2 id="lab-trace-title">Recorrido end-to-end local</h2>
+          </div>
+          <span className="panel-note">
+            Maximo {adminReadPageLimit} correlaciones
+          </span>
+        </div>
+
+        {lab.traces.length === 0 ? (
+          <AdminEmptyState message="Todavia no existe un recorrido local confirmado." />
+        ) : (
+          <div className="lab-trace-list" role="list">
+            {lab.traces.map((trace) => (
+              <article className="lab-trace" role="listitem" key={trace.requestId}>
+                <div className="lab-trace__header">
+                  <div>
+                    <strong>{trace.requestReference}</strong>
+                    <small>{trace.correlationId}</small>
+                  </div>
+                  <span className="status-label status-label--available">
+                    lab-real-sanitized
+                  </span>
+                </div>
+
+                <dl className="lab-trace__facts">
+                  <div>
+                    <dt>Producto</dt>
+                    <dd>{trace.productName}</dd>
+                  </div>
+                  <div>
+                    <dt>Dispositivo</dt>
+                    <dd>{trace.deviceName}</dd>
+                  </div>
+                  <div>
+                    <dt>Solicitud</dt>
+                    <dd>{formatStatus(trace.requestStatus)}</dd>
+                  </div>
+                  <div>
+                    <dt>Trabajo</dt>
+                    <dd>{trace.jobStatus === null ? "sin trabajo" : formatStatus(trace.jobStatus)}</dd>
+                  </div>
+                  <div>
+                    <dt>Caso</dt>
+                    <dd>{trace.caseStatus === null ? "sin caso" : formatStatus(trace.caseStatus)}</dd>
+                  </div>
+                  <div>
+                    <dt>Ticket</dt>
+                    <dd>{trace.ticketReference ?? "sin ticket"}</dd>
+                  </div>
+                </dl>
+
+                <ol className="lab-trace__timeline">
+                  {trace.stages.map((stage) => (
+                    <li key={stage.id}>
+                      <span className={markerClass(stage.status)} />
+                      <div>
+                        <div className="activity-title">
+                          <h3>{stage.label}</h3>
+                          <span className={statusClasses[stage.status]}>
+                            {statusLabels[stage.status]}
+                          </span>
+                        </div>
+                        <p>{stage.detail}</p>
+                        <small>
+                          {stage.source}
+                          {stage.recordedAt === null
+                            ? ""
+                            : ` - ${formatDate(stage.recordedAt)}`}
+                        </small>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+
+                <div className="lab-trace__detail-grid">
+                  <div>
+                    <h3>Evidencia saneada</h3>
+                    {trace.evidence.length === 0 ? (
+                      <p>Sin evidencia registrada.</p>
+                    ) : (
+                      <ul>
+                        {trace.evidence.map((evidence) => (
+                          <li key={`${trace.requestId}:${evidence.code}`}>
+                            <strong>{evidence.code}</strong>
+                            <span>{evidence.summary}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3>Outbox y efectos</h3>
+                    {trace.outboxEvents.length === 0 ? (
+                      <p>Sin eventos outbox para esta correlacion.</p>
+                    ) : (
+                      <ul>
+                        {trace.outboxEvents.map((event) => (
+                          <li key={`${trace.requestId}:${event.aggregateType}:${event.eventType}:${event.createdAt.toISOString()}`}>
+                            <strong>{event.eventType}</strong>
+                            <span>
+                              {formatStatus(event.status)} / intentos{" "}
+                              {event.attemptCount}
+                              {event.effectType === null
+                                ? ""
+                                : ` / ${event.effectType}`}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+
+                  <div>
+                    <h3>Idempotencia</h3>
+                    <p>
+                      Solicitud protegida:{" "}
+                      {trace.idempotency.requestReplayProtected ? "si" : "no"}.
+                      Resultado protegido:{" "}
+                      {trace.idempotency.resultReplayProtected ? "si" : "no"}.
+                    </p>
+                    <p>
+                      Duplicados detectados: solicitudes{" "}
+                      {Math.max(0, trace.idempotency.duplicateRequestRows - 1)},
+                      resultados{" "}
+                      {Math.max(0, trace.idempotency.duplicateResultRows - 1)}.
+                    </p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
       <div className="admin-grid">
         <section className="admin-panel" aria-labelledby="lab-outbox-title">
           <div className="panel-heading">
@@ -199,6 +337,18 @@ function AdminEmptyState({ message }: { readonly message: string }) {
 
 function formatStatus(status: string): string {
   return status.replaceAll("_", " ").toLocaleLowerCase("es-MX");
+}
+
+function markerClass(status: AdminLabStatus): string {
+  if (status === "available") {
+    return "activity-marker activity-marker--completed";
+  }
+
+  if (status === "validate-only") {
+    return "activity-marker activity-marker--in-progress";
+  }
+
+  return "activity-marker activity-marker--blocked";
 }
 
 function formatDate(date: Date): string {

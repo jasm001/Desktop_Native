@@ -1,6 +1,6 @@
 # Auditoria de consistencia documental
 
-Fecha: 2026-07-05.
+Fecha: 2026-07-06.
 
 ## Cobertura
 
@@ -61,6 +61,10 @@ La precedencia vigente permanece definida en `README.md`:
 - Sexta unidad local del Bloque 11 publicada en `3d6b7bd`: health local de
   Hermes, mirror, bridge `validate-only` y ticketing fake, sin probes fuera de
   `Development`, secretos, mutaciones ni integraciones corporativas.
+- Las Unidades 4 y 5 del roadmap local de laboratorio estan implementadas como
+  incrementos locales pendientes de publicacion: catalogo local curado y
+  recorrido end-to-end visual por correlacion, sin nuevas migraciones,
+  mutaciones administrativas ni integraciones corporativas.
 - `docs/modules/local-mvp-lab.md` define `lab-real-sanitized` como categoria de
   datos reales de laboratorio persistidos y saneados. La categoria permite
   mejorar visualizacion local con evidencia generada por el propio laboratorio,
@@ -70,7 +74,11 @@ La precedencia vigente permanece definida en `README.md`:
 - `docs/modules/local-lab-real-data-roadmap.md` registra cinco unidades
   independientes para estado de laboratorio, lecturas operativas reales locales,
   health de conectores simulados, catalogo local curado y recorrido end-to-end
-  visual.
+  visual. Las cinco unidades estan marcadas como `completed` con evidencia en
+  `admin-portal-lab-real-read-model.md`,
+  `admin-portal-lab-health-connectors.md`,
+  `admin-portal-local-lab-catalog.md` y
+  `admin-portal-lab-e2e-visual-demo.md`.
 - Unidad local intermedia: WinUI puede usar Hermes local compatible con OpenAI
   para texto libre informativo mediante variables de entorno, deshabilitado por
   defecto, limitado a loopback, con historial visual en memoria y sin archivos
@@ -130,8 +138,8 @@ proveedores locales sin declarar cerrada la integracion Teams.
   `/admin/access`, `/admin/approvals`, `/admin/support`, `/admin/reporting` y
   `/admin/lab` implementan identidad sintetica separada, capabilities
   fail-closed, navegacion accesible, lecturas limitadas de solo lectura,
-  estados sinteticos en memoria, lecturas `lab-real-sanitized` y health local
-  de conectores.
+  estados sinteticos en memoria, lecturas `lab-real-sanitized`, health local de
+  conectores, catalogo local curado y trazas end-to-end por correlacion.
 - Las consultas administrativas toman como maximo 25 registros, usan
   selecciones explicitas y omiten payloads de auditoria.
 - Testing Library/jsdom y Playwright estan instalados e implementados solo para
@@ -157,19 +165,41 @@ proveedores locales sin declarar cerrada la integracion Teams.
 - `docs/modules/admin-portal-lab-health-connectors.md` registra la sexta unidad
   local que implementa la tercera unidad de laboratorio sin cerrar el Bloque 11
   completo.
+- `docs/modules/admin-portal-local-lab-catalog.md` registra la unidad local que
+  implementa la cuarta unidad de laboratorio con manifiestos development-only,
+  licencia redistribuible, origen publico, version fija, SHA-256 y estados de
+  artefacto, sin versionar instaladores ni habilitar acciones nuevas.
+- `docs/modules/admin-portal-lab-e2e-visual-demo.md` registra la unidad local
+  que implementa la quinta unidad de laboratorio con trazas por `correlationId`,
+  etapas WinUI/API/worker/agente/evidencia/caso/ticket fake, outbox/effects e
+  idempotencia, sin exponer payloads completos ni declarar piloto.
 - `modules/ADMIN_PORTAL.md` gobierna una superficie de laboratorio de
   solo lectura para `lab-real-sanitized`, protegida en servidor, sin mutaciones,
   sin llamadas directas al DeviceAgent y sin administrar VM, servicios o
-  bridges. La primera superficie ya existe en `/admin/lab`. Una VM apagada se
-  trata como `not_checked`, `offline` o `unavailable`, no como fallo productivo.
+  bridges. La superficie existe en `/admin/lab` y el catalogo local curado se
+  muestra en `/admin/catalog`. Una VM apagada se trata como `not_checked`,
+  `offline` o `unavailable`, no como fallo productivo.
+
+## Validacion pendiente
+
+- La validacion local del 2026-07-06 paso `AdminWeb` lint/typecheck, 45 pruebas
+  unitarias/componente del paquete y HTTP `GET /admin/lab` 200 con la traza
+  visible.
+- La integracion directa `control-plane.integration.test.ts` quedo pendiente
+  porque el setup choco con el trigger append-only de `audit_events`.
+- El reintento focalizado `.NET` de `SevenZipAdapterTests` queda pendiente:
+  `dotnet test` salio con codigo 1 despues de restore sin diagnostico util. No
+  se debe forzar ni modificar politica append-only solo para desbloquear esa
+  validacion.
 
 ## Correcciones realizadas
 
 - `README.md`, `CURRENT_CONTEXT.md`, `WORKFLOW.md` y `DEVELOPMENT_PLAN.md`
   registran a los Bloques 9 y 10 `blocked` y al Bloque 11 como unico
   `in_progress`;
-- `WORKFLOW.md` registra `eb99434` como ultimo resultado publicado y conserva
-  stoppers separados para Teams y hardening;
+- `WORKFLOW.md` conserva los stoppers separados para Teams y hardening; los
+  incrementos locales posteriores deben publicarse antes de tratarse como gates
+  completos;
 - `modules/PILOT_HARDENING.md` define alcance, limites y gate del Bloque 10;
 - `docs/threat-model/README.md` contiene el inventario inicial verificable;
 - `docs/modules/pilot-hardening-local-kill-switch.md` y
@@ -191,8 +221,9 @@ proveedores locales sin declarar cerrada la integracion Teams.
   que el portal actual sigue ausente;
 - las evidencias de bloques cerrados que contenian referencias al bloque activo
   fueron convertidas en contexto historico;
-- `MASTER_PROMPT.md` queda como handoff para continuar desde la linea base
-  publicada en `eb99434`.
+- `MASTER_PROMPT.md` queda como handoff para continuar desde las cinco unidades
+  locales del roadmap de laboratorio ya implementadas, con la validacion `.NET`
+  focalizada pendiente.
 
 ## Diferencias intencionales
 

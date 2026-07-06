@@ -1,6 +1,6 @@
 # Contexto actual
 
-Fecha de ultima actualizacion: 2026-07-05.
+Fecha de ultima actualizacion: 2026-07-06.
 
 ## Objetivo inmediato
 
@@ -40,12 +40,14 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   `/admin/access`, `/admin/approvals`, `/admin/support`, `/admin/reporting` y
   `/admin/lab` usan una identidad sintetica separada, capabilities server-side
   fail-closed y lecturas limitadas o estados sinteticos en memoria. `/admin/lab`
-  agrega `portal.lab.read`, estado de laboratorio y resumenes reales locales de
-  PostgreSQL bajo `lab-real-sanitized`, mas health real local para Hermes,
-  mirror, bridge `validate-only` y ticketing fake, sin payloads completos ni
-  control de VM o servicios. Testing Library/jsdom cubre componentes locales y Playwright
-  cubre recorridos desktop/movil de las rutas administrativas y acceso
-  denegado. No existen OIDC/Entra, RBAC productivo, Fluent UI ni mutaciones.
+  agrega `portal.lab.read`, estado de laboratorio, resumenes reales locales de
+  PostgreSQL bajo `lab-real-sanitized`, health real local para Hermes, mirror,
+  bridge `validate-only` y ticketing fake, catalogo local curado y trazas
+  end-to-end por correlacion con evidencia saneada e idempotencia, sin payloads
+  completos ni control de VM o servicios. Testing Library/jsdom cubre
+  componentes locales y Playwright cubre recorridos desktop/movil de las rutas
+  administrativas y acceso denegado. No existen OIDC/Entra, RBAC productivo,
+  Fluent UI ni mutaciones.
 - Prisma/PostgreSQL tiene cuatro migraciones versionadas.
 - Cada confirmacion crea una sola `SupportRequest`, `ExecutionJob` y `BotCase`.
 - Exito deja el caso en `attended_waiting_user` sin ticket.
@@ -111,6 +113,18 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   `validate-only` y ticketing fake, estados apagado/mal configurado/denegado,
   sin secretos, headers, endpoints renderizados, mutaciones ni probes fuera de
   `Development`.
+- La septima unidad local vive en
+  `docs/modules/admin-portal-local-lab-catalog.md`; implementa la Unidad 4 de
+  `docs/modules/local-lab-real-data-roadmap.md` con catalogo local curado de
+  artefactos libres, licencia, origen publico, version fija, SHA-256, estados
+  `available`, `absent` y `hash_mismatch`, sin versionar instaladores ni
+  habilitar nuevas acciones desde el portal.
+- La octava unidad local vive en
+  `docs/modules/admin-portal-lab-e2e-visual-demo.md`; implementa la Unidad 5 de
+  `docs/modules/local-lab-real-data-roadmap.md` con trazas visuales por
+  `correlationId`, etapas WinUI/API/worker/agente/evidencia/caso/ticket fake,
+  outbox/effects e idempotencia, sin mutaciones administrativas ni payloads
+  completos.
 - OpenText, Teams, Entra, UEMS, RAG y portal productivos siguen
   deshabilitados. WinUI puede habilitar Hermes local temporalmente mediante
   variables de entorno para texto libre informativo con historial visual en
@@ -131,19 +145,28 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
   independientes para pasar de muestras a datos reales de laboratorio:
   estado del laboratorio, lecturas operativas reales locales, health de
   conectores simulados, catalogo local curado y recorrido end-to-end visual.
-  Las tres primeras unidades estan implementadas en `/admin/lab`. La VM puede
-  estar apagada por defecto; las vistas deben mostrar `not_checked`, `offline`
-  o `unavailable` sin intentar iniciarla. Al completar las cinco unidades, se
-  documentara por separado un roadmap WinUI para datos reales de laboratorio.
+  Las cinco unidades estan implementadas como incrementos locales de solo
+  lectura en `/admin/lab` y `/admin/catalog`. La VM puede estar apagada por
+  defecto; las vistas deben mostrar `not_checked`, `offline` o `unavailable`
+  sin intentar iniciarla. El siguiente avance recomendado es documentar por
+  separado un roadmap WinUI para consumir datos reales de laboratorio mediante
+  APIs/contratos de solo lectura.
 - `core/DECISIONS.md` registra D-073 para permitir `lab-real-sanitized` solo en
   `local-demo`; `core/SCOPE.md` diferencia estos datos de cualquier dato real
   corporativo o productivo.
-- El gate completo mantiene 140 pruebas .NET; Node tiene 53 pruebas
+- El gate completo publicado mantiene 140 pruebas .NET; Node tiene 53 pruebas
   unitarias/de contrato/componente, 13 integraciones AdminWeb y 4 del Worker,
   mas el E2E WinUI/DeviceAgent sobre PostgreSQL efimero. El portal agrega 28
   recorridos Playwright locales para rutas administrativas y acceso denegado.
 - La validacion focalizada del 2026-07-05 para el asistente WinUI paso build
   Release, 140 pruebas .NET, `dotnet format` y `scripts/Test-Secrets.ps1`.
+- La validacion local del 2026-07-06 para las Unidades 4 y 5 del roadmap de
+  laboratorio paso `AdminWeb` lint/typecheck, 45 pruebas unitarias/componente
+  del paquete y HTTP `GET /admin/lab` 200 con la traza visible. La integracion
+  directa `control-plane.integration.test.ts` quedo pendiente porque el setup
+  choco con el trigger append-only de `audit_events`; el reintento focalizado
+  `.NET` de `SevenZipAdapterTests` tambien queda pendiente porque `dotnet test`
+  salio con codigo 1 despues de restore sin diagnostico util.
 - `SQLitePCLRaw.bundle_e_sqlite3` queda fijado a `3.0.3` para evitar la
   vulnerabilidad alta reportada por NuGet Audit en la transitiva
   `SQLitePCLRaw.lib.e_sqlite3` 2.1.11.
@@ -151,17 +174,20 @@ Bloque 10 es `modules/PILOT_HARDENING.md` y su threat model de trabajo vive en
 ## Siguiente reanudacion
 
 1. Mantener los Bloques 9 y 10 `blocked` y el Bloque 11 `in_progress`.
-2. Mantener validadas las seis unidades locales del Bloque 11 y, si se sigue
-   el laboratorio/portal, continuar con la Unidad 4 de
-   `docs/modules/local-lab-real-data-roadmap.md`.
-3. Conservar la identidad de portal solo en entorno local; Entra, MFA,
+2. Mantener validadas las ocho unidades locales del Bloque 11 y las cinco
+   unidades de `docs/modules/local-lab-real-data-roadmap.md`; no reabrir el
+   alcance salvo para correcciones.
+3. Reintentar o diagnosticar en un chat separado la prueba `.NET`
+   `SevenZipAdapterTests` y la integracion AdminWeb directa bloqueada por el
+   trigger append-only antes de usarlas como gate de cierre publicado.
+4. Conservar la identidad de portal solo en entorno local; Entra, MFA,
    grupos y usuarios corporativos permanecen deshabilitados.
-4. Reanudar el Bloque 10 solo cuando exista evidencia saneada de UEMS, cuenta
+5. Reanudar el Bloque 10 solo cuando exista evidencia saneada de UEMS, cuenta
    restringida, identidad, Security/Sophos, owner del kill switch, logs y
    retencion, paquete/publicador y dos endpoints autorizados.
-5. Definir un perfil empresarial nuevo despues de decidir si los proveedores
+6. Definir un perfil empresarial nuevo despues de decidir si los proveedores
    seran corporativos o propios; no promover ni renombrar `local-demo`.
-6. Mantener por separado el stopper de Teams; reanudar el Bloque 9 solo cuando
+7. Mantener por separado el stopper de Teams; reanudar el Bloque 9 solo cuando
    exista evidencia saneada del bot corporativo.
 
 ## Limites vigentes
